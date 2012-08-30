@@ -40,8 +40,9 @@
     <Reference Include="Renci.SshNet">
       <HintPath>..\SSH\Renci.SshNet.dll</HintPath>
     </Reference>
-    <Reference Include="SharpSSH">
-      <HintPath>..\SSH\SharpSSH-1.1.1.13.bin\SharpSSH.dll</HintPath>
+    <Reference Include="SharpSSH, Version=2.0.0.17310, Culture=neutral, PublicKeyToken=ebad8a5963bb8e78, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SSH\SharpSSH.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
