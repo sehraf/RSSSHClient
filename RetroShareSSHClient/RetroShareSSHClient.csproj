@@ -55,7 +55,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="definitions\chat.proto.cs" />
     <Compile Include="definitions\core.proto.cs" />
+    <Compile Include="definitions\files.proto.cs" />
     <Compile Include="definitions\gxs.proto.cs" />
     <Compile Include="definitions\msgs.proto.cs" />
     <Compile Include="definitions\peers.proto.cs" />

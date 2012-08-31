@@ -5,7 +5,11 @@ using System.Windows.Forms;
 
 using ProtoBuf;
 
+using rsctrl.chat;
 using rsctrl.core;
+//using rsctrl.files;
+//using rsctrl.gxs;
+//using rsctrl.msgs;
 using rsctrl.peers;
 using rsctrl.system;
 
@@ -26,7 +30,7 @@ namespace Sehraf.RetroShareSSH
         RSSSHConnector _rsConnector;
         RSProtoBuf _rsProtoBuf;
         bool _connected;
-
+        
         event ReceivedMsgEvent _receivedMsg;
         event GenericCallbackEvent _callback;
         Queue<RSProtoBuffSSHMsg> _sendQueue;
@@ -78,7 +82,7 @@ namespace Sehraf.RetroShareSSH
         internal void Reconnect()
         {
             _rsConnector.Reconnect();
-            _rsProtoBuf.Reset();
+            //_rsProtoBuf.Reset();
             System.Threading.Thread.Sleep(500);
         }
 
@@ -88,13 +92,13 @@ namespace Sehraf.RetroShareSSH
             return true;
         }
 
-        // ---------- Sender ----------
+        // ---------- sende ----------
         // ---------- generic send<T> ----------
         public uint Send<T>(T pbMsg, uint inMsgID, bool important = false)
         {
             RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg();
             msg.MsgID = inMsgID;
-            msg.ReqID = _rsProtoBuf.ReqID();
+            msg.ReqID = _rsProtoBuf.GetReqID();
             msg.IsImportant = important;
             msg.ProtoBuffMsg = new MemoryStream();
             Serializer.Serialize<T>(msg.ProtoBuffMsg, pbMsg);
@@ -107,8 +111,119 @@ namespace Sehraf.RetroShareSSH
             return msg.ReqID;
         }
 
-        // ---------- peers ----------
+        #region chat
+        public uint GetChatLobbies(RequestChatLobbies.LobbyType type)
+        {
+            throw new NotImplementedException();
 
+            uint msgID = RSProtoBuf.ConstructMsgId(
+                    (byte)ExtensionId.CORE,
+                    (ushort)PackageId.CHAT,
+                    (byte)rsctrl.chat.RequestMsgIds.MsgId_RequestChatLobbies,
+                    false
+                );
+
+            RequestChatLobbies request = new RequestChatLobbies();
+            request.lobby_type = type;
+            return Send<RequestChatLobbies>(request, msgID, true);
+        }
+
+        public uint CreateLobby(string name, string topic, LobbyPrivacyLevel privacy)
+        {
+            throw new NotImplementedException();
+
+            uint msgID = RSProtoBuf.ConstructMsgId(
+                    (byte)ExtensionId.CORE,
+                    (ushort)PackageId.CHAT,
+                    (byte)rsctrl.chat.RequestMsgIds.MsgId_RequestCreateLobby,
+                    false
+                );
+
+            RequestCreateLobby request = new RequestCreateLobby();
+            //request.invited_friends = ... // what strings?
+            request.lobby_name = name;
+            request.lobby_topic = topic;
+            request.privacy_level = privacy;
+            return Send<RequestCreateLobby>(request, msgID, true);
+        }
+
+        public uint CreateLobby(RequestJoinOrLeaveLobby.LobbyAction action, string lobbyID)
+        {
+            throw new NotImplementedException();
+
+            uint msgID = RSProtoBuf.ConstructMsgId(
+                    (byte)ExtensionId.CORE,
+                    (ushort)PackageId.CHAT,
+                    (byte)rsctrl.chat.RequestMsgIds.MsgId_RequestJoinOrLeaveLobby,
+                    false
+                );
+
+            RequestJoinOrLeaveLobby request = new RequestJoinOrLeaveLobby();
+            request.action = action;
+            request.lobby_id = lobbyID;
+            return Send<RequestJoinOrLeaveLobby>(request, msgID, true);
+        }
+
+        public uint CreateLobby(RequestRegisterEvents.RegisterAction action)
+        {
+            throw new NotImplementedException();
+
+            uint msgID = RSProtoBuf.ConstructMsgId(
+                    (byte)ExtensionId.CORE,
+                    (ushort)PackageId.CHAT,
+                    (byte)rsctrl.chat.RequestMsgIds.MsgId_RequestRegisterEvents,
+                    false
+                );
+
+            RequestRegisterEvents request = new RequestRegisterEvents();
+            request.action = action;
+            return Send<RequestRegisterEvents>(request, msgID, true);
+        }
+
+        public uint SendMsg(ChatMessage msg)
+        {
+            throw new NotImplementedException();
+
+            uint msgID = RSProtoBuf.ConstructMsgId(
+                    (byte)ExtensionId.CORE,
+                    (ushort)PackageId.CHAT,
+                    (byte)rsctrl.chat.RequestMsgIds.MsgId_RequestSendMessage,
+                    false
+                );
+
+            RequestSendMessage request = new RequestSendMessage();
+            request.msg = msg;
+            return Send<RequestSendMessage>(request, msgID, true);
+        }
+
+        public uint SetLobbyNickname(string name, List<string> lobbyIDs = null)
+        {
+            throw new NotImplementedException();
+
+            uint msgID = RSProtoBuf.ConstructMsgId(
+                    (byte)ExtensionId.CORE,
+                    (ushort)PackageId.CHAT,
+                    (byte)rsctrl.chat.RequestMsgIds.MsgId_RequestSetLobbyNickname,
+                    false
+                );
+
+            RequestSetLobbyNickname request = new RequestSetLobbyNickname();
+            //request.lobby_ids = lobbyIDs; - read only
+            request.nickname = name;
+            return Send<RequestSetLobbyNickname>(request, msgID, true);
+        }
+        #endregion
+
+        #region files
+        #endregion
+
+        #region gxs
+        #endregion
+
+        #region msgs
+        #endregion
+
+        #region peers
         public uint AddPeer(string cert, string gpgID)
         {
             uint msgID = RSProtoBuf.ConstructMsgId(
@@ -154,8 +269,9 @@ namespace Sehraf.RetroShareSSH
             request.set = option;
             return Send<RequestPeers>(request, msgID, true);
         }
+        #endregion
 
-        // ---------- system ----------
+        #region system
         public uint GetSystemStatus()
         {
             uint msgID = RSProtoBuf.ConstructMsgId(
@@ -168,6 +284,7 @@ namespace Sehraf.RetroShareSSH
             RequestSystemStatus request = new RequestSystemStatus();
             return Send<RequestSystemStatus>(request, msgID);
         }
-
+        #endregion
+        
     }
 }

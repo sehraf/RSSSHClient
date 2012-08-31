@@ -15,7 +15,7 @@ enum PackageId {
   PEERS = 1; 
   SYSTEM = 2;
   // BELOW HERE IS STILL BEING DESIGNED.
-  //CHAT = 3;
+  CHAT = 3;
   //FILES = 4;
   //MSGS = 5;
 

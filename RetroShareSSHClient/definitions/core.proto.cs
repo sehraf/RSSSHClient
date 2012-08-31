@@ -407,6 +407,9 @@ namespace rsctrl.core
       [global::ProtoBuf.ProtoEnum(Name=@"SYSTEM", Value=2)]
       SYSTEM = 2,
             
+      [global::ProtoBuf.ProtoEnum(Name=@"CHAT", Value=3)]
+      CHAT = 3,
+            
       [global::ProtoBuf.ProtoEnum(Name=@"GXS", Value=1000)]
       GXS = 1000
     }

@@ -599,7 +599,7 @@ namespace RetroShareSSHClient
             l.localaddr.port = Convert.ToUInt16(nud_peerPortInt.Value);
             //dyndns
             p.locations[lb_locations.SelectedIndex] = l;
-            uint reqID = _rpc.ModifyPeer(p, (RequestModifyPeer.ModCmd.ADDRESS | RequestModifyPeer.ModCmd.DYNDNS));
+            uint reqID = _rpc.ModifyPeer(p, RequestModifyPeer.ModCmd.ADDRESS);
             // need to save request
         }
     }

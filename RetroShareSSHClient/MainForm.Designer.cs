@@ -298,7 +298,7 @@
             // 
             // t_tick
             // 
-            this.t_tick.Interval = 15000;
+            this.t_tick.Interval = 30000;
             this.t_tick.Tick += new System.EventHandler(this.t_tick_Tick);
             // 
             // lb_friends
@@ -518,7 +518,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 412);
+            this.ClientSize = new System.Drawing.Size(984, 352);
             this.Controls.Add(this.gb_files);
             this.Controls.Add(this.gb_friends);
             this.Controls.Add(this.bg_systemStatus);
