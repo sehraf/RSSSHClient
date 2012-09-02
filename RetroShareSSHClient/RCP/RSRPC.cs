@@ -55,8 +55,8 @@ namespace Sehraf.RetroShareSSH
                 _rsConnector = new RSSSHConnector(host, port, user, pw);
                 if (_rsConnector.Connect())
                 {
-                    _rsProtoBuf = new RSProtoBuf(_rsConnector.StreamIn, _rsConnector.StreamOut, _sendQueue, this);
-                    //_rsProtoBuf = new RSProtoBuf(_rsConnector.Stream, _sendQueue, this);
+                    //_rsProtoBuf = new RSProtoBuf(_rsConnector.StreamIn, _rsConnector.StreamOut, _sendQueue, this);
+                    _rsProtoBuf = new RSProtoBuf(_rsConnector.Stream, _sendQueue, this);
                     _connected = true;
                     return true;
                 }
@@ -79,12 +79,12 @@ namespace Sehraf.RetroShareSSH
                 }
         }
 
-        internal void Reconnect()
-        {
-            _rsConnector.Reconnect();
-            //_rsProtoBuf.Reset();
-            System.Threading.Thread.Sleep(500);
-        }
+        //internal void Reconnect()
+        //{
+        //    _rsConnector.Reconnect();
+        //    //_rsProtoBuf.Reset();
+        //    System.Threading.Thread.Sleep(500);
+        //}
 
         internal bool ProcessMsg(RSProtoBuffSSHMsg msg)
         {
@@ -94,12 +94,12 @@ namespace Sehraf.RetroShareSSH
 
         // ---------- sende ----------
         // ---------- generic send<T> ----------
-        public uint Send<T>(T pbMsg, uint inMsgID, bool important = false)
+        public uint Send<T>(T pbMsg, uint inMsgID)
         {
             RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg();
             msg.MsgID = inMsgID;
             msg.ReqID = _rsProtoBuf.GetReqID();
-            msg.IsImportant = important;
+            //msg.IsImportant = important;
             msg.ProtoBuffMsg = new MemoryStream();
             Serializer.Serialize<T>(msg.ProtoBuffMsg, pbMsg);
             msg.ProtoBuffMsg.Position = 0;
@@ -125,7 +125,7 @@ namespace Sehraf.RetroShareSSH
 
             RequestChatLobbies request = new RequestChatLobbies();
             request.lobby_type = type;
-            return Send<RequestChatLobbies>(request, msgID, true);
+            return Send<RequestChatLobbies>(request, msgID);
         }
 
         public uint CreateLobby(string name, string topic, LobbyPrivacyLevel privacy)
@@ -144,7 +144,7 @@ namespace Sehraf.RetroShareSSH
             request.lobby_name = name;
             request.lobby_topic = topic;
             request.privacy_level = privacy;
-            return Send<RequestCreateLobby>(request, msgID, true);
+            return Send<RequestCreateLobby>(request, msgID);
         }
 
         public uint CreateLobby(RequestJoinOrLeaveLobby.LobbyAction action, string lobbyID)
@@ -161,7 +161,7 @@ namespace Sehraf.RetroShareSSH
             RequestJoinOrLeaveLobby request = new RequestJoinOrLeaveLobby();
             request.action = action;
             request.lobby_id = lobbyID;
-            return Send<RequestJoinOrLeaveLobby>(request, msgID, true);
+            return Send<RequestJoinOrLeaveLobby>(request, msgID);
         }
 
         public uint CreateLobby(RequestRegisterEvents.RegisterAction action)
@@ -177,7 +177,7 @@ namespace Sehraf.RetroShareSSH
 
             RequestRegisterEvents request = new RequestRegisterEvents();
             request.action = action;
-            return Send<RequestRegisterEvents>(request, msgID, true);
+            return Send<RequestRegisterEvents>(request, msgID);
         }
 
         public uint SendMsg(ChatMessage msg)
@@ -193,7 +193,7 @@ namespace Sehraf.RetroShareSSH
 
             RequestSendMessage request = new RequestSendMessage();
             request.msg = msg;
-            return Send<RequestSendMessage>(request, msgID, true);
+            return Send<RequestSendMessage>(request, msgID);
         }
 
         public uint SetLobbyNickname(string name, List<string> lobbyIDs = null)
@@ -210,7 +210,7 @@ namespace Sehraf.RetroShareSSH
             RequestSetLobbyNickname request = new RequestSetLobbyNickname();
             //request.lobby_ids = lobbyIDs; - read only
             request.nickname = name;
-            return Send<RequestSetLobbyNickname>(request, msgID, true);
+            return Send<RequestSetLobbyNickname>(request, msgID);
         }
         #endregion
 
@@ -237,7 +237,7 @@ namespace Sehraf.RetroShareSSH
             request.cert = cert;
             request.gpg_id = gpgID;
             request.cmd = RequestAddPeer.AddCmd.ADD;
-            return Send<RequestAddPeer>(request, msgID, true);
+            return Send<RequestAddPeer>(request, msgID);
         }
 
         public uint ModifyPeer(Person peer, RequestModifyPeer.ModCmd cmd)
@@ -252,7 +252,7 @@ namespace Sehraf.RetroShareSSH
             RequestModifyPeer request = new RequestModifyPeer();
             request.peers.Add(peer);
             request.cmd = cmd;
-            return Send<RequestModifyPeer>(request, msgID, true);
+            return Send<RequestModifyPeer>(request, msgID);
         }
 
         public uint GetFriendList(RequestPeers.SetOption option)
@@ -267,7 +267,7 @@ namespace Sehraf.RetroShareSSH
             RequestPeers request = new RequestPeers();
             request.info = RequestPeers.InfoOption.ALLINFO;
             request.set = option;
-            return Send<RequestPeers>(request, msgID, true);
+            return Send<RequestPeers>(request, msgID);
         }
         #endregion
 

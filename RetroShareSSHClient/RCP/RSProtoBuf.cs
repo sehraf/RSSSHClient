@@ -12,7 +12,6 @@ using ProtoBuf;
 using rsctrl.core;
 //using rsctrl.peers;
 
-using Tamir.SharpSsh;
 using Renci.SshNet;
 
 //[HEADER: 16 bytes: 4 x Network Order uint32_t][ VARIABLE LENGTH BODY ] 
@@ -35,14 +34,14 @@ namespace Sehraf.RetroShareSSH
 
         private uint _msgID, _reqID, _bodySize;
         Stream _pbMsg;
-        bool _important;
+        //bool _important;
 
         public uint MagicCode { get { return _magicCode; } }
         public uint MsgID { get { return _msgID; } set { _msgID = value; } }
         public uint ReqID { get { return _reqID; } set { _reqID = value; } }
         public uint BodySize { get { return _bodySize; } set { _bodySize = value; } }
         public Stream ProtoBuffMsg { get { return _pbMsg; } set { _pbMsg = value; } }
-        public bool IsImportant { get { return _important; } set { _important = value; } }
+        //public bool IsImportant { get { return _important; } set { _important = value; } }
     }
 
     class PersonComparer : IComparer<Person>
@@ -56,8 +55,8 @@ namespace Sehraf.RetroShareSSH
     class RSProtoBuf
     {
         const bool DEBUG = true;
-        MemoryStream _streamIn, _streamOut;
-        //ShellStream _stream;
+        //MemoryStream _streamIn, _streamOut;
+        ShellStream _stream;
         uint _nextReqID;
         uint _timeOut;
         //long _streamOutPos;
@@ -69,12 +68,12 @@ namespace Sehraf.RetroShareSSH
         Thread _t;
         bool _run;
 
-        public RSProtoBuf(MemoryStream streamIn, MemoryStream streamOut, Queue<RSProtoBuffSSHMsg> queue, RSRPC parent, uint timeout = 1000, bool useThread = true)
-        //public RSProtoBuf(ShellStream stream, Queue<RSProtoBuffSSHMsg> queue, RSRPC parent, uint timeout = 1000, bool useThread = true)
+        //public RSProtoBuf(MemoryStream streamIn, MemoryStream streamOut, Queue<RSProtoBuffSSHMsg> queue, RSRPC parent, uint timeout = 1000, bool useThread = true)
+        public RSProtoBuf(ShellStream stream, Queue<RSProtoBuffSSHMsg> queue, RSRPC parent, uint timeout = 1000, bool useThread = true)
         {
-            _streamIn = streamIn;
-            _streamOut = streamOut;
-            //_stream = stream;
+            //_streamIn = streamIn;
+            //_streamOut = streamOut;
+            _stream = stream;
 
             _nextReqID = 1;
             _timeOut = timeout;
@@ -94,35 +93,15 @@ namespace Sehraf.RetroShareSSH
             }
         }
 
-        //public void Reset()
-        //{
-        //    //_streamOutPos = 0;
-        //    //_streamInPos = 0;
-        //}
-
         public uint Send(RSProtoBuffSSHMsg msg)
         {
             System.Diagnostics.Debug.WriteLine("send: sending packet " + msg.ReqID + " MsgID: " + msg.MsgID + " body size: " + msg.BodySize);
-
-            if (_streamIn.CanWrite)
-            //if(_stream.CanWrite)
+            if(_stream.CanWrite)
             {
-                System.Diagnostics.Debug.WriteLineIf(DEBUG, "send: trying to write stream)");
-                System.Diagnostics.Debug.WriteLineIf(DEBUG, "send: lenth: " + _streamIn.Length);
-                System.Diagnostics.Debug.WriteLineIf(DEBUG, "send: position: " + _streamIn.Position);
-                //byte[] a = CreatePacketFromMsg(msg);
-                //byte[] h = new byte[16];
-                //byte[] b = new byte[msg.BodySize];
-                //Array.Copy(a, 0, h, 0, 16);
-                //Array.Copy(a, 16, b, 0, msg.BodySize);
-
-                //_streamIn.Position = (int)_streamInPos;
-                _streamIn.Write(CreatePacketFromMsg(msg), 0, 16 + (int)msg.BodySize);
-                //_streamIn.Write(h, 0, 16);
-                //_streamIn.Write(b, 0, (int)msg.BodySize);
-                //_streamInPos += 16 + msg.BodySize;
+                _stream.Write(CreatePacketFromMsg(msg), 0, 16 + (int)msg.BodySize);
+                _stream.Flush();
             }
-            else
+            else 
             {
                 System.Diagnostics.Debug.WriteLine("send: can't write stream");
                 System.Diagnostics.Debug.WriteLine("diconnecting ....");
@@ -135,8 +114,8 @@ namespace Sehraf.RetroShareSSH
         public bool Receive(out RSProtoBuffSSHMsg msg, uint timeOut = 0)
         {
             msg = new RSProtoBuffSSHMsg();
-            if (!_streamOut.CanRead) 
-            //if (!_stream.CanRead)
+            //if (!_streamOut.CanRead) 
+            if (!_stream.CanRead)
             {
                 System.Diagnostics.Debug.WriteLine("rec: cannot read stream!");
                 System.Diagnostics.Debug.WriteLine("disconnecting ....");
@@ -165,14 +144,9 @@ namespace Sehraf.RetroShareSSH
             DateTime timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
             while (DateTime.Now < timeOutTime)
             {
-                System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: trying to read stream (head)");
-                System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: lenth: " + _streamOut.Length);
-                System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: position: " + _streamOut.Position);
-                if (_streamOut.Length >= 16) // this check has to be rewriten
-                //if (_stream.DataAvailable)
+                if (_stream.DataAvailable)
                 {
-                    _streamOut.Position = 0;
-                    _streamOut.Read(input, 0, 16);
+                    _stream.Read(input, 0, 16); 
                     done = true;
                     break;
                 }
@@ -208,13 +182,11 @@ namespace Sehraf.RetroShareSSH
             timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
             done = false;
             byte[] PbMsg = new byte[msg.BodySize];
-            while (DateTime.Now < timeOutTime & _streamOut.CanRead)
-            //while (DateTime.Now < timeOutTime & _stream.CanRead)
+            while (DateTime.Now < timeOutTime)
             {
-                if (_streamOut.Length >= 16 + msg.BodySize)
-                //if (_stream.DataAvailable)
+                if (_stream.DataAvailable)
                 {
-                    _streamOut.Read(PbMsg, 0, (int)msg.BodySize);
+                    _stream.Read(PbMsg, 0, (int)msg.BodySize);
                     done = true;
                     break;
                 }
@@ -229,7 +201,6 @@ namespace Sehraf.RetroShareSSH
                 System.Diagnostics.Debug.WriteLine("rec: Coudl not get body (" + msg.BodySize + ")");
                 return false;
             }
-            _streamOut.Position = 0; //_streamOutPos;
 
             msg.ProtoBuffMsg = new MemoryStream();
             msg.ProtoBuffMsg.Write(PbMsg, 0, (int)msg.BodySize);
@@ -272,46 +243,41 @@ namespace Sehraf.RetroShareSSH
             return _nextReqID++;
         }
 
-        // main loop 'n stuff
+        // main loop
         private void mainLoop()
         {
+            bool foundWork;
             while (_run)
             {
-                // check for sending requests
+                foundWork = false;
                 if (_sendQueue.Count > 0)
                 {
                     System.Diagnostics.Debug.WriteLine("#######################################");
                     System.Diagnostics.Debug.WriteLine("loop: sending req");
                     RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg();
-                    RSProtoBuffSSHMsg newMsg = new RSProtoBuffSSHMsg();
                     lock (_sendQueue)
                         msg = _sendQueue.Dequeue();
                     Send(msg);
+                    foundWork = true;
+                }
 
-                    Thread.Sleep(500); // wait for response
-
+                if (_stream.DataAvailable)
+                {
                     System.Diagnostics.Debug.WriteLine("#######################################");
                     System.Diagnostics.Debug.WriteLine("loop: receiving");
+                    RSProtoBuffSSHMsg newMsg = new RSProtoBuffSSHMsg();
                     if (Receive(out newMsg))
-                    {
-                        if (msg.ReqID == newMsg.ReqID) // proceed
-                            _parent.ProcessMsg(newMsg);
-                    }
-                    else
-                        if (msg.IsImportant) // put in queue again else drop
-                            lock (_sendQueue)
-                                _sendQueue.Enqueue(msg);
-                    //Thread.Sleep(125); // sleep a bit 
+                        _parent.ProcessMsg(newMsg);
+                    foundWork = true;
                 }
-                else
-                    System.Threading.Thread.Sleep(500);
+                
+                if(!foundWork)
+                    System.Threading.Thread.Sleep(250);
             }
         }
 
         public void Stop() {         
             _run = false;
-            //System.Threading.Thread.Sleep(125);
-            //if (_t != null && _t.IsAlive) _t.Abort();
         }
 
         // MsgID functions
@@ -375,70 +341,70 @@ namespace Sehraf.RetroShareSSH
         }
 
         // Legacy
-        public uint Send<T>(T protoBufMsg, uint msgID)
-        {
-            System.Diagnostics.Debug.WriteLine("sending packet MsgID: " + msgID);
-            RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg();
-            msg.MsgID = msgID;
-            msg.ReqID = GetReqID();
-            msg.ProtoBuffMsg = new MemoryStream();
+        //public uint Send<T>(T protoBufMsg, uint msgID)
+        //{
+        //    System.Diagnostics.Debug.WriteLine("sending packet MsgID: " + msgID);
+        //    RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg();
+        //    msg.MsgID = msgID;
+        //    msg.ReqID = GetReqID();
+        //    msg.ProtoBuffMsg = new MemoryStream();
 
-            using (Stream serialized = new MemoryStream())
-            {
-                Serializer.Serialize<T>(serialized, protoBufMsg);
-                msg.BodySize = (uint)serialized.Length;
-                serialized.Position = 0;
-                serialized.CopyTo(msg.ProtoBuffMsg);
-            }
-            msg.ProtoBuffMsg.Position = 0;
+        //    using (Stream serialized = new MemoryStream())
+        //    {
+        //        Serializer.Serialize<T>(serialized, protoBufMsg);
+        //        msg.BodySize = (uint)serialized.Length;
+        //        serialized.Position = 0;
+        //        serialized.CopyTo(msg.ProtoBuffMsg);
+        //    }
+        //    msg.ProtoBuffMsg.Position = 0;
 
-            System.Diagnostics.Debug.WriteLine("body size: " + msg.BodySize);
+        //    System.Diagnostics.Debug.WriteLine("body size: " + msg.BodySize);
 
-            if (_streamIn.CanWrite)
-            //if(_stream.CanWrite)
-            {
-                //_pendingCallback.Add(msg.ReqID);
-                _streamIn.Write(CreatePacketFromMsg(msg), 0, 16 + (int)msg.BodySize);
-                //_stream.Write(CreatePacketFromMsg(msg), 0, 16 + (int)msg.BodySize);
-            }
-            else
-                System.Diagnostics.Debug.WriteLine("kann nicht schreiben");
+        //    if (_streamIn.CanWrite)
+        //    //if(_stream.CanWrite)
+        //    {
+        //        //_pendingCallback.Add(msg.ReqID);
+        //        _streamIn.Write(CreatePacketFromMsg(msg), 0, 16 + (int)msg.BodySize);
+        //        //_stream.Write(CreatePacketFromMsg(msg), 0, 16 + (int)msg.BodySize);
+        //    }
+        //    else
+        //        System.Diagnostics.Debug.WriteLine("kann nicht schreiben");
 
-            //_streamIn.Flush();
-            return msg.ReqID;
-        }
+        //    //_streamIn.Flush();
+        //    return msg.ReqID;
+        //}
         
-        public T Receive<T>(out uint msgID, uint timeOut = 0)
-        {
-            msgID = 0;
-            //if (_pendingCallback.Count == 0)
-            //    return default(T);
+        //public T Receive<T>(out uint msgID, uint timeOut = 0)
+        //{
+        //    msgID = 0;
+        //    //if (_pendingCallback.Count == 0)
+        //    //    return default(T);
 
-            RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg();
-            if (!ReadMsgFromStream(ref msg, timeOut))
-            {
-                System.Diagnostics.Debug.WriteLine("Error receiving data from stream");
-                return default(T);
-            }
+        //    RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg();
+        //    if (!ReadMsgFromStream(ref msg, timeOut))
+        //    {
+        //        System.Diagnostics.Debug.WriteLine("Error receiving data from stream");
+        //        return default(T);
+        //    }
 
-            //if (_pendingCallback.Contains(msg.ReqID))
-            //    _pendingCallback.Remove(msg.ReqID);
-            //else
-            //    System.Diagnostics.Debug.WriteLine("rec: unbekannte ReqID");
+        //    //if (_pendingCallback.Contains(msg.ReqID))
+        //    //    _pendingCallback.Remove(msg.ReqID);
+        //    //else
+        //    //    System.Diagnostics.Debug.WriteLine("rec: unbekannte ReqID");
 
-            System.Diagnostics.Debug.WriteLine("rec: pbMsg Length: " + msg.ProtoBuffMsg.Length);
+        //    System.Diagnostics.Debug.WriteLine("rec: pbMsg Length: " + msg.ProtoBuffMsg.Length);
 
-            T PbMsg;
-            try
-            {
-                PbMsg = Serializer.Deserialize<T>(msg.ProtoBuffMsg);
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine("Error decoding PbMsg: " + e.Message);
-                return default(T);
-            }
-            return PbMsg;
-        }
+        //    T PbMsg;
+        //    try
+        //    {
+        //        PbMsg = Serializer.Deserialize<T>(msg.ProtoBuffMsg);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine("Error decoding PbMsg: " + e.Message);
+        //        return default(T);
+        //    }
+        //    return PbMsg;
+        //}
     }
 }

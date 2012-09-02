@@ -20,6 +20,8 @@ namespace RetroShareSSHClient
         List<Person> _friendList;
         Person _selectedFriend;
 
+        uint _tickCounter;
+
         public MainForm()
         {
             InitializeComponent();
@@ -31,102 +33,101 @@ namespace RetroShareSSHClient
             _pendingPeerRequests = new Dictionary<uint, RequestPeers.SetOption>();
             _friendList = new List<Person>();
             _selectedFriend = new Person();
-            //_rpc.RPCRespSystemSatus = new RSRPCCallbackFunction<ResponseSystemStatus>(UpdateSystemStatus);
-            //l_bwDown.Text = "Down: " + String.Format("{0:0,0.00}", 133337.123);
+            _tickCounter = 0;
         }
 
-        private void TestMsgID()
-        {
-            uint msgID = RSProtoBuf.ConstructMsgId(14, 1337, 11, true);
-            tb_out.Text = RSProtoBuf.GetHex(msgID) + "\n";
-            tb_out.AppendText("Ext : " + RSProtoBuf.GetRpcMsgIdExtension(msgID) + "\n");
-            tb_out.AppendText("Service : " + RSProtoBuf.GetRpcMsgIdService(msgID) + "\n");
-            tb_out.AppendText("subMsg : " + RSProtoBuf.GetRpcMsgIdSubMsg(msgID) + "\n");
-            tb_out.AppendText("respond : " + RSProtoBuf.IsRpcMsgIdResponse(msgID).ToString() + "\n");
-        }
+        //private void TestMsgID()
+        //{
+        //    uint msgID = RSProtoBuf.ConstructMsgId(14, 1337, 11, true);
+        //    tb_out.Text = RSProtoBuf.GetHex(msgID) + "\n";
+        //    tb_out.AppendText("Ext : " + RSProtoBuf.GetRpcMsgIdExtension(msgID) + "\n");
+        //    tb_out.AppendText("Service : " + RSProtoBuf.GetRpcMsgIdService(msgID) + "\n");
+        //    tb_out.AppendText("subMsg : " + RSProtoBuf.GetRpcMsgIdSubMsg(msgID) + "\n");
+        //    tb_out.AppendText("respond : " + RSProtoBuf.IsRpcMsgIdResponse(msgID).ToString() + "\n");
+        //}
         
-        private void TestProcessPBMsg(RSProtoBuffSSHMsg msg)
-        {
-            byte extension = RSProtoBuf.GetRpcMsgIdExtension(msg.MsgID);
-            ushort service = RSProtoBuf.GetRpcMsgIdService(msg.MsgID);
-            byte submsg = RSProtoBuf.GetRpcMsgIdSubMsg(msg.MsgID);
+        //private void TestProcessPBMsg(RSProtoBuffSSHMsg msg)
+        //{
+        //    byte extension = RSProtoBuf.GetRpcMsgIdExtension(msg.MsgID);
+        //    ushort service = RSProtoBuf.GetRpcMsgIdService(msg.MsgID);
+        //    byte submsg = RSProtoBuf.GetRpcMsgIdSubMsg(msg.MsgID);
 
-            Status status = null;
+        //    Status status = null;
 
-            switch (extension)
-            {
-                case (byte)rsctrl.core.ExtensionId.CORE:
-                    switch (service)
-                    {
-                        case (ushort)rsctrl.core.PackageId.PEERS:
-                            List<Person> peers = new List<Person>();
-                            switch (submsg)
-                            {
-                                case (byte)rsctrl.peers.RequestMsgIds.MsgId_RequestAddPeer:
-                                    tb_out.AppendText("AddPeer:" + "\n");
-                                    ResponseAddPeer responseAdd = Serializer.Deserialize<ResponseAddPeer>(msg.ProtoBuffMsg);
-                                    peers = responseAdd.peers;
-                                    status = responseAdd.status;
-                                    break;
-                                case (byte)rsctrl.peers.RequestMsgIds.MsgId_RequestModifyPeer:
-                                    tb_out.AppendText("ModifyPeer:" + "\n");
-                                    ResponseModifyPeer responseModify = Serializer.Deserialize<ResponseModifyPeer>(msg.ProtoBuffMsg);
-                                    peers = responseModify.peers;
-                                    status = responseModify.status;
-                                    break;
-                                case (byte)rsctrl.peers.RequestMsgIds.MsgId_RequestPeers:
-                                    tb_out.AppendText("Peers:" + "\n");
-                                    ResponsePeerList responsePeers = Serializer.Deserialize<ResponsePeerList>(msg.ProtoBuffMsg);
-                                    peers = responsePeers.peers;
-                                    status = responsePeers.status;
-                                    break;
-                                default:
-                                    //...
-                                    break;
-                            }
+        //    switch (extension)
+        //    {
+        //        case (byte)rsctrl.core.ExtensionId.CORE:
+        //            switch (service)
+        //            {
+        //                case (ushort)rsctrl.core.PackageId.PEERS:
+        //                    List<Person> peers = new List<Person>();
+        //                    switch (submsg)
+        //                    {
+        //                        case (byte)rsctrl.peers.RequestMsgIds.MsgId_RequestAddPeer:
+        //                            tb_out.AppendText("AddPeer:" + "\n");
+        //                            ResponseAddPeer responseAdd = Serializer.Deserialize<ResponseAddPeer>(msg.ProtoBuffMsg);
+        //                            peers = responseAdd.peers;
+        //                            status = responseAdd.status;
+        //                            break;
+        //                        case (byte)rsctrl.peers.RequestMsgIds.MsgId_RequestModifyPeer:
+        //                            tb_out.AppendText("ModifyPeer:" + "\n");
+        //                            ResponseModifyPeer responseModify = Serializer.Deserialize<ResponseModifyPeer>(msg.ProtoBuffMsg);
+        //                            peers = responseModify.peers;
+        //                            status = responseModify.status;
+        //                            break;
+        //                        case (byte)rsctrl.peers.RequestMsgIds.MsgId_RequestPeers:
+        //                            tb_out.AppendText("Peers:" + "\n");
+        //                            ResponsePeerList responsePeers = Serializer.Deserialize<ResponsePeerList>(msg.ProtoBuffMsg);
+        //                            peers = responsePeers.peers;
+        //                            status = responsePeers.status;
+        //                            break;
+        //                        default:
+        //                            //...
+        //                            break;
+        //                    }
 
-                            foreach (Person p in peers)
-                            {
-                                tb_out.AppendText(p.name + ":" + "\n");
-                                List<Location> locs = p.locations;
-                                foreach (Location l in locs)
-                                    tb_out.AppendText(" - " + l.location + ": SSLID: " + l.ssl_id + "\n");
-                            }
+        //                    foreach (Person p in peers)
+        //                    {
+        //                        tb_out.AppendText(p.name + ":" + "\n");
+        //                        List<Location> locs = p.locations;
+        //                        foreach (Location l in locs)
+        //                            tb_out.AppendText(" - " + l.location + ": SSLID: " + l.ssl_id + "\n");
+        //                    }
 
-                            break;
-                        case (ushort)rsctrl.core.PackageId.SYSTEM:
-                            switch (submsg)
-                            {
-                                case (byte)rsctrl.system.ResponseMsgIds.MsgId_ResponseSystemStatus:
-                                    ResponseSystemStatus responseSystem = Serializer.Deserialize<ResponseSystemStatus>(msg.ProtoBuffMsg);
-                                    tb_out.AppendText("SystemStatus:" + "\n");
-                                    tb_out.AppendText(responseSystem.bw_total.name + " -> up: " + responseSystem.bw_total.up + " - down: " + responseSystem.bw_total.down + "\n");
-                                    tb_out.AppendText("net status: " + responseSystem.net_status + "\n");
-                                    tb_out.AppendText("connected: " + responseSystem.no_connected + "\n");
-                                    tb_out.AppendText("peers: " + responseSystem.no_peers + "\n");
-                                    status = responseSystem.status;
-                                    break;
-                                default:
-                                    //...
-                                    break;
-                            }
-                            break;
-                        default:
-                            // HOW COULD THIS HAPPEN? - ok now that bad 
-                            break;
-                    }
-                    break;
-                default:
-                    // HOW COULD THIS HAPPEN?
-                    break;
-            }
-            if (status != null)
-            {
-                tb_out.AppendText("----- Satus ----- " + "\n");
-                tb_out.AppendText("- code: " + status.code + "\n");
-                tb_out.AppendText("- msg: " + status.msg + "\n");
-            }
-        }
+        //                    break;
+        //                case (ushort)rsctrl.core.PackageId.SYSTEM:
+        //                    switch (submsg)
+        //                    {
+        //                        case (byte)rsctrl.system.ResponseMsgIds.MsgId_ResponseSystemStatus:
+        //                            ResponseSystemStatus responseSystem = Serializer.Deserialize<ResponseSystemStatus>(msg.ProtoBuffMsg);
+        //                            tb_out.AppendText("SystemStatus:" + "\n");
+        //                            tb_out.AppendText(responseSystem.bw_total.name + " -> up: " + responseSystem.bw_total.up + " - down: " + responseSystem.bw_total.down + "\n");
+        //                            tb_out.AppendText("net status: " + responseSystem.net_status + "\n");
+        //                            tb_out.AppendText("connected: " + responseSystem.no_connected + "\n");
+        //                            tb_out.AppendText("peers: " + responseSystem.no_peers + "\n");
+        //                            status = responseSystem.status;
+        //                            break;
+        //                        default:
+        //                            //...
+        //                            break;
+        //                    }
+        //                    break;
+        //                default:
+        //                    // HOW COULD THIS HAPPEN? - ok now that bad 
+        //                    break;
+        //            }
+        //            break;
+        //        default:
+        //            // HOW COULD THIS HAPPEN?
+        //            break;
+        //    }
+        //    if (status != null)
+        //    {
+        //        tb_out.AppendText("----- Satus ----- " + "\n");
+        //        tb_out.AppendText("- code: " + status.code + "\n");
+        //        tb_out.AppendText("- msg: " + status.msg + "\n");
+        //    }
+        //}
 
         private void Callback(CallbackType type)
         {
@@ -344,14 +345,7 @@ namespace RetroShareSSHClient
             return (port >= 1024 && port <= UInt16.MaxValue);
         }
 
-        private void Disconnect()
-        {
-            this.bt_disconnect_Click(null, null);
-        }
-
-        // --------- form actions ----------
-
-        private void bt_connect_Click(object sender, EventArgs e)
+        private void Connect()
         {
             cb_con.CheckState = CheckState.Indeterminate;
             _pendingPeerRequests.Clear();
@@ -359,7 +353,6 @@ namespace RetroShareSSHClient
             {
                 tb_out.Text = "connected!" + "\n";
                 cb_con.CheckState = CheckState.Checked;
-                bt_receive_Click(null, null);
                 t_tick.Start();
             }
             else
@@ -368,160 +361,35 @@ namespace RetroShareSSHClient
                 cb_con.CheckState = CheckState.Unchecked;
                 t_tick.Stop();
             }
-
         }
 
-        private void bt_disconnect_Click(object sender, EventArgs e)
+        private void Disconnect()
         {
             _rpc.Disconnect();
             tb_out.Text = "disconnected!";
             cb_con.CheckState = CheckState.Unchecked;
         }
 
+        // --------- form actions ----------
+
+        private void bt_connect_Click(object sender, EventArgs e)
+        {
+            this.Connect();
+        }
+
+        private void bt_disconnect_Click(object sender, EventArgs e)
+        {
+            this.Disconnect();
+        }
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _rpc.Disconnect();
+            this.Disconnect();
         }
 
         private void tb_pw_Enter(object sender, EventArgs e)
         {
             tb_pw.Clear();
-        }
-
-        private void bt_test_Click(object sender, EventArgs e)
-        {
-            List<uint> pendingReq = new List<uint>();
-            uint msgID;
-            tb_out.Text = "";
-
-            // ########## Request Peers ##########
-            msgID = RSProtoBuf.ConstructMsgId(
-                    (byte)ExtensionId.CORE,
-                    (ushort)PackageId.PEERS,
-                    (byte)rsctrl.peers.RequestMsgIds.MsgId_RequestPeers,
-                    false
-                );
-
-            RequestPeers requestPR = new RequestPeers();
-            requestPR.set = RequestPeers.SetOption.CONNECTED;
-            requestPR.info = RequestPeers.InfoOption.ALLINFO;
-
-            pendingReq.Add(_rpc.RSProtoBuf.Send<RequestPeers>(requestPR, msgID));
-            System.Threading.Thread.Sleep(500);
-
-            // ########## Add Peers ##########
-            msgID = RSProtoBuf.ConstructMsgId(
-                    (byte)ExtensionId.CORE,
-                    (ushort)PackageId.PEERS,
-                    (byte)rsctrl.peers.RequestMsgIds.MsgId_RequestAddPeer,
-                    false
-                );
-
-            RequestAddPeer requestAP = new RequestAddPeer();
-            requestAP.cmd = RequestAddPeer.AddCmd.NOOP;
-
-            pendingReq.Add(_rpc.RSProtoBuf.Send<RequestAddPeer>(requestAP, msgID));
-            System.Threading.Thread.Sleep(500);
-
-            // ########## Modify Peers ##########
-            msgID = RSProtoBuf.ConstructMsgId(
-                    (byte)ExtensionId.CORE,
-                    (ushort)PackageId.PEERS,
-                    (byte)rsctrl.peers.RequestMsgIds.MsgId_RequestModifyPeer,
-                    false
-                );
-
-            RequestModifyPeer requestMP = new RequestModifyPeer();
-            requestMP.cmd = RequestModifyPeer.ModCmd.NOOP;
-
-            pendingReq.Add(_rpc.RSProtoBuf.Send<RequestModifyPeer>(requestMP, msgID));
-            System.Threading.Thread.Sleep(500);
-
-            // ########## System Status ##########
-            msgID = RSProtoBuf.ConstructMsgId(
-                    (byte)ExtensionId.CORE,
-                    (ushort)PackageId.SYSTEM,
-                    (byte)rsctrl.system.RequestMsgIds.MsgId_RequestSystemStatus,
-                    false
-                );
-
-            RequestSystemStatus requestSS = new RequestSystemStatus();
-
-            pendingReq.Add(_rpc.RSProtoBuf.Send<RequestSystemStatus>(requestSS, msgID));
-            System.Threading.Thread.Sleep(500);
-
-            //b_receive_Click(null, null);
-            System.Threading.Thread.Sleep(250);
-            // ########## Receive ##########
-            byte count = 3;
-            RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg();
-            while (pendingReq.Count > 0 && (count > 0))
-            {
-                if (_rpc.RSProtoBuf.Receive(out msg))
-                {
-                    if (pendingReq.Contains(msg.ReqID))
-                    {
-                        tb_out.AppendText("#################################################" + "\n");
-                        tb_out.AppendText("received MsgID: " + msg.MsgID + " processing ...." + "\n");
-
-                        TestProcessPBMsg(msg);
-
-                        pendingReq.Remove(msg.ReqID);
-                    }
-                }
-                else
-                    count--;
-                System.Threading.Thread.Sleep(500);
-            }
-
-            //RSProtoBuffSSHMsg msg;
-            //_rpc.RSProtoBuf.Receive(out msg);
-            //ResponseAddPeer response = Serializer.Deserialize<ResponseAddPeer>(msg.ProtoBuffMsg);
-            //ResponseAddPeer response = _rpc.RSProtoBuf.Receive<ResponseAddPeer>(out msgID);
-
-            //if (response == default(ResponseAddPeer))
-            //{
-            //    tb_out.Text = "Irgendwas ging schief :S";
-            //    return;
-            //}
-
-            //if (!RSProtoBuf.IsRpcMsgIdResponse(msgID))
-            //{
-            //    tb_out.Text = "keine Antwort";
-            //    return;
-            //}
-
-            //Status status = response.status;
-            ////System.Collections.Generic.List<Person> list = rpl.peers;
-            //tb_out.Text = " --- > " + "\n";
-            //if (status != null)
-            //{
-            //    tb_out.AppendText("code: " + status.code + "\n");
-            //    tb_out.AppendText("msg: " + status.msg + "\n");
-            //}
-            //return;
-        }
-
-        private void bt_receive_Click(object sender, EventArgs e)
-        {
-            //RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg();
-            //if (_rpc.RSProtoBuf.Receive(out msg))
-            //{
-            //    {
-            //        tb_out.AppendText("#################################################" + "\n");
-            //        tb_out.AppendText("received MsgID: " + msg.MsgID + " processing ...." + "\n");
-            //        //tb_out.AppendText("stream pos: " + msg.ProtoBuffMsg.Position + "\n");
-
-            //        ProcessPBMsg(msg);
-
-            //    }
-            //}
-            uint regID;
-            regID = _rpc.GetSystemStatus();
-            regID = _rpc.GetFriendList(RequestPeers.SetOption.OWNID);
-            _pendingPeerRequests.Add(regID, RequestPeers.SetOption.OWNID);
-            regID = _rpc.GetFriendList(RequestPeers.SetOption.FRIENDS);
-            _pendingPeerRequests.Add(regID, RequestPeers.SetOption.FRIENDS);
         }
 
         private void t_tick_Tick(object sender, EventArgs e)
@@ -601,6 +469,16 @@ namespace RetroShareSSHClient
             p.locations[lb_locations.SelectedIndex] = l;
             uint reqID = _rpc.ModifyPeer(p, RequestModifyPeer.ModCmd.ADDRESS);
             // need to save request
+        }
+
+        private void bt_test_Click(object sender, EventArgs e)
+        {
+            uint regID;
+            regID = _rpc.GetSystemStatus();
+            regID = _rpc.GetFriendList(RequestPeers.SetOption.OWNID);
+            _pendingPeerRequests.Add(regID, RequestPeers.SetOption.OWNID);
+            regID = _rpc.GetFriendList(RequestPeers.SetOption.FRIENDS);
+            _pendingPeerRequests.Add(regID, RequestPeers.SetOption.FRIENDS);
         }
     }
 }

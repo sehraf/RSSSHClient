@@ -42,8 +42,6 @@
             this.l_user = new System.Windows.Forms.Label();
             this.l_port = new System.Windows.Forms.Label();
             this.l_ip = new System.Windows.Forms.Label();
-            this.bt_test = new System.Windows.Forms.Button();
-            this.bt_receive = new System.Windows.Forms.Button();
             this.bg_systemStatus = new System.Windows.Forms.GroupBox();
             this.l_peers = new System.Windows.Forms.Label();
             this.l_connected = new System.Windows.Forms.Label();
@@ -71,14 +69,13 @@
             this.l_peerID = new System.Windows.Forms.Label();
             this.l_peerLocation = new System.Windows.Forms.Label();
             this.l_peerLocationID = new System.Windows.Forms.Label();
-            this.gb_files = new System.Windows.Forms.GroupBox();
+            this.bt_test = new System.Windows.Forms.Button();
             this.gb_connection.SuspendLayout();
             this.bg_systemStatus.SuspendLayout();
             this.gb_friends.SuspendLayout();
             this.gb_ip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortExt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortInt)).BeginInit();
-            this.gb_files.SuspendLayout();
             this.SuspendLayout();
             // 
             // bt_connect
@@ -103,10 +100,10 @@
             // 
             // tb_out
             // 
-            this.tb_out.Location = new System.Drawing.Point(12, 303);
+            this.tb_out.Location = new System.Drawing.Point(720, 188);
             this.tb_out.Multiline = true;
             this.tb_out.Name = "tb_out";
-            this.tb_out.Size = new System.Drawing.Size(184, 38);
+            this.tb_out.Size = new System.Drawing.Size(155, 57);
             this.tb_out.TabIndex = 2;
             // 
             // tb_user
@@ -207,26 +204,6 @@
             this.l_ip.TabIndex = 0;
             this.l_ip.Text = "(IP) Address";
             // 
-            // bt_test
-            // 
-            this.bt_test.Location = new System.Drawing.Point(109, 84);
-            this.bt_test.Name = "bt_test";
-            this.bt_test.Size = new System.Drawing.Size(111, 73);
-            this.bt_test.TabIndex = 10;
-            this.bt_test.Text = "DO NOT PRESS";
-            this.bt_test.UseVisualStyleBackColor = true;
-            this.bt_test.Click += new System.EventHandler(this.bt_test_Click);
-            // 
-            // bt_receive
-            // 
-            this.bt_receive.Location = new System.Drawing.Point(109, 162);
-            this.bt_receive.Name = "bt_receive";
-            this.bt_receive.Size = new System.Drawing.Size(111, 23);
-            this.bt_receive.TabIndex = 11;
-            this.bt_receive.Text = "receive";
-            this.bt_receive.UseVisualStyleBackColor = true;
-            this.bt_receive.Click += new System.EventHandler(this.bt_receive_Click);
-            // 
             // bg_systemStatus
             // 
             this.bg_systemStatus.Controls.Add(this.l_peers);
@@ -298,7 +275,7 @@
             // 
             // t_tick
             // 
-            this.t_tick.Interval = 30000;
+            this.t_tick.Interval = 1000;
             this.t_tick.Tick += new System.EventHandler(this.t_tick_Tick);
             // 
             // lb_friends
@@ -503,23 +480,22 @@
             this.l_peerLocationID.TabIndex = 18;
             this.l_peerLocationID.Text = "Location ID";
             // 
-            // gb_files
+            // bt_test
             // 
-            this.gb_files.Controls.Add(this.bt_test);
-            this.gb_files.Controls.Add(this.bt_receive);
-            this.gb_files.Location = new System.Drawing.Point(568, 12);
-            this.gb_files.Name = "gb_files";
-            this.gb_files.Size = new System.Drawing.Size(404, 328);
-            this.gb_files.TabIndex = 15;
-            this.gb_files.TabStop = false;
-            this.gb_files.Text = "Files";
+            this.bt_test.Location = new System.Drawing.Point(720, 145);
+            this.bt_test.Name = "bt_test";
+            this.bt_test.Size = new System.Drawing.Size(155, 31);
+            this.bt_test.TabIndex = 11;
+            this.bt_test.Text = "Test";
+            this.bt_test.UseVisualStyleBackColor = true;
+            this.bt_test.Click += new System.EventHandler(this.bt_test_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(984, 352);
-            this.Controls.Add(this.gb_files);
+            this.Controls.Add(this.bt_test);
             this.Controls.Add(this.gb_friends);
             this.Controls.Add(this.bg_systemStatus);
             this.Controls.Add(this.gb_connection);
@@ -537,7 +513,6 @@
             this.gb_ip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortExt)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortInt)).EndInit();
-            this.gb_files.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -558,8 +533,6 @@
         private System.Windows.Forms.Label l_user;
         private System.Windows.Forms.Label l_port;
         private System.Windows.Forms.Label l_ip;
-        private System.Windows.Forms.Button bt_test;
-        private System.Windows.Forms.Button bt_receive;
         private System.Windows.Forms.GroupBox bg_systemStatus;
         private System.Windows.Forms.Timer t_tick;
         private System.Windows.Forms.Label l_bwDown;
@@ -586,8 +559,8 @@
         private System.Windows.Forms.Label l_peerLocation;
         private System.Windows.Forms.Label l_peerLocationID;
         private System.Windows.Forms.TextBox tb_dyndns;
-        private System.Windows.Forms.GroupBox gb_files;
         private System.Windows.Forms.Button bt_peerNew;
+        private System.Windows.Forms.Button bt_test;
     }
 }
 
