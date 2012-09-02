@@ -83,7 +83,7 @@
             this.bt_connect.Location = new System.Drawing.Point(9, 126);
             this.bt_connect.Name = "bt_connect";
             this.bt_connect.Size = new System.Drawing.Size(77, 23);
-            this.bt_connect.TabIndex = 0;
+            this.bt_connect.TabIndex = 5;
             this.bt_connect.Text = "connect";
             this.bt_connect.UseVisualStyleBackColor = true;
             this.bt_connect.Click += new System.EventHandler(this.bt_connect_Click);
@@ -127,15 +127,14 @@
             this.tb_host.Location = new System.Drawing.Point(76, 19);
             this.tb_host.Name = "tb_host";
             this.tb_host.Size = new System.Drawing.Size(102, 20);
-            this.tb_host.TabIndex = 7;
+            this.tb_host.TabIndex = 1;
             // 
             // tb_port
             // 
             this.tb_port.Location = new System.Drawing.Point(76, 45);
             this.tb_port.Name = "tb_port";
             this.tb_port.Size = new System.Drawing.Size(102, 20);
-            this.tb_port.TabIndex = 8;
-            this.tb_port.Text = "7022";
+            this.tb_port.TabIndex = 2;
             // 
             // gb_connection
             // 

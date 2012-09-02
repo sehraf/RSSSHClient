@@ -397,9 +397,15 @@ namespace RetroShareSSHClient
             if (_rpc.IsConnected)
             {
                 uint regID;
+
                 regID = _rpc.GetSystemStatus();
-                regID = _rpc.GetFriendList(RequestPeers.SetOption.FRIENDS);
-                _pendingPeerRequests.Add(regID, RequestPeers.SetOption.FRIENDS);
+
+                if (_tickCounter % 30 == 0)
+                {
+                    regID = _rpc.GetFriendList(RequestPeers.SetOption.FRIENDS);
+                    _pendingPeerRequests.Add(regID, RequestPeers.SetOption.FRIENDS);
+                }
+                _tickCounter++;
             }
         }
 
