@@ -15,11 +15,9 @@ using rsctrl.system;
 
 namespace Sehraf.RetroShareSSH
 {
-    //delegate void RSCallback(CallbackType type, RSProtoBuffSSHMsg msg);
     enum CallbackType
     {
-        Disconnect = 0,
-        ProcessMsg = 1
+        Disconnect = 0
     }
 
     class RSRPC
@@ -55,7 +53,6 @@ namespace Sehraf.RetroShareSSH
                 _rsConnector = new RSSSHConnector(host, port, user, pw);
                 if (_rsConnector.Connect())
                 {
-                    //_rsProtoBuf = new RSProtoBuf(_rsConnector.StreamIn, _rsConnector.StreamOut, _sendQueue, this);
                     _rsProtoBuf = new RSProtoBuf(_rsConnector.Stream, _sendQueue, this);
                     _connected = true;
                     return true;
@@ -72,19 +69,14 @@ namespace Sehraf.RetroShareSSH
                 if (_connected)
                 {
                     _rsProtoBuf.Stop();
-                    _connected = false;
+                    System.Threading.Thread.Sleep(250);
+                    _rsProtoBuf.BreakConnection();
+                    _rsProtoBuf = null;
                     _rsConnector.Disconnect();
                     _rsConnector = null;
-                    _rsProtoBuf = null;
+                    _connected = false;
                 }
         }
-
-        //internal void Reconnect()
-        //{
-        //    _rsConnector.Reconnect();
-        //    //_rsProtoBuf.Reset();
-        //    System.Threading.Thread.Sleep(500);
-        //}
 
         internal bool ProcessMsg(RSProtoBuffSSHMsg msg)
         {
@@ -92,14 +84,13 @@ namespace Sehraf.RetroShareSSH
             return true;
         }
 
-        // ---------- sende ----------
+        // ---------- send ----------
         // ---------- generic send<T> ----------
         public uint Send<T>(T pbMsg, uint inMsgID)
         {
             RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg();
             msg.MsgID = inMsgID;
             msg.ReqID = _rsProtoBuf.GetReqID();
-            //msg.IsImportant = important;
             msg.ProtoBuffMsg = new MemoryStream();
             Serializer.Serialize<T>(msg.ProtoBuffMsg, pbMsg);
             msg.ProtoBuffMsg.Position = 0;
@@ -112,10 +103,8 @@ namespace Sehraf.RetroShareSSH
         }
 
         #region chat
-        public uint GetChatLobbies(RequestChatLobbies.LobbyType type)
+        public uint GetChatLobbies(RequestChatLobbies.LobbySet type)
         {
-            throw new NotImplementedException();
-
             uint msgID = RSProtoBuf.ConstructMsgId(
                     (byte)ExtensionId.CORE,
                     (ushort)PackageId.CHAT,
@@ -124,14 +113,12 @@ namespace Sehraf.RetroShareSSH
                 );
 
             RequestChatLobbies request = new RequestChatLobbies();
-            request.lobby_type = type;
+            request.lobby_set = type;
             return Send<RequestChatLobbies>(request, msgID);
         }
 
         public uint CreateLobby(string name, string topic, LobbyPrivacyLevel privacy)
         {
-            throw new NotImplementedException();
-
             uint msgID = RSProtoBuf.ConstructMsgId(
                     (byte)ExtensionId.CORE,
                     (ushort)PackageId.CHAT,
@@ -147,10 +134,8 @@ namespace Sehraf.RetroShareSSH
             return Send<RequestCreateLobby>(request, msgID);
         }
 
-        public uint CreateLobby(RequestJoinOrLeaveLobby.LobbyAction action, string lobbyID)
+        public uint JoinLeaveLobby(RequestJoinOrLeaveLobby.LobbyAction action, string lobbyID)
         {
-            throw new NotImplementedException();
-
             uint msgID = RSProtoBuf.ConstructMsgId(
                     (byte)ExtensionId.CORE,
                     (ushort)PackageId.CHAT,
@@ -164,10 +149,8 @@ namespace Sehraf.RetroShareSSH
             return Send<RequestJoinOrLeaveLobby>(request, msgID);
         }
 
-        public uint CreateLobby(RequestRegisterEvents.RegisterAction action)
+        public uint RegisterEvent(RequestRegisterEvents.RegisterAction action)
         {
-            throw new NotImplementedException();
-
             uint msgID = RSProtoBuf.ConstructMsgId(
                     (byte)ExtensionId.CORE,
                     (ushort)PackageId.CHAT,
@@ -182,8 +165,6 @@ namespace Sehraf.RetroShareSSH
 
         public uint SendMsg(ChatMessage msg)
         {
-            throw new NotImplementedException();
-
             uint msgID = RSProtoBuf.ConstructMsgId(
                     (byte)ExtensionId.CORE,
                     (ushort)PackageId.CHAT,
@@ -198,8 +179,6 @@ namespace Sehraf.RetroShareSSH
 
         public uint SetLobbyNickname(string name, List<string> lobbyIDs = null)
         {
-            throw new NotImplementedException();
-
             uint msgID = RSProtoBuf.ConstructMsgId(
                     (byte)ExtensionId.CORE,
                     (ushort)PackageId.CHAT,
@@ -208,7 +187,7 @@ namespace Sehraf.RetroShareSSH
                 );
 
             RequestSetLobbyNickname request = new RequestSetLobbyNickname();
-            //request.lobby_ids = lobbyIDs; - read only
+            request.lobby_ids.AddRange(lobbyIDs);
             request.nickname = name;
             return Send<RequestSetLobbyNickname>(request, msgID);
         }

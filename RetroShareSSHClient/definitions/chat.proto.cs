@@ -86,25 +86,25 @@ namespace rsctrl.chat
       get { return _participating_friends; }
     }
   
-    private readonly global::System.Collections.Generic.List<string> _nick_names = new global::System.Collections.Generic.List<string>();
-    [global::ProtoBuf.ProtoMember(11, Name=@"nick_names", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<string> nick_names
+    private readonly global::System.Collections.Generic.List<string> _nicknames = new global::System.Collections.Generic.List<string>();
+    [global::ProtoBuf.ProtoMember(11, Name=@"nicknames", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<string> nicknames
     {
-      get { return _nick_names; }
+      get { return _nicknames; }
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"LobbyState")]
     public enum LobbyState
     {
             
-      [global::ProtoBuf.ProtoEnum(Name=@"JOINED", Value=1)]
-      JOINED = 1,
+      [global::ProtoBuf.ProtoEnum(Name=@"LOBBYSTATE_JOINED", Value=1)]
+      LOBBYSTATE_JOINED = 1,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"INVITED", Value=2)]
-      INVITED = 2,
+      [global::ProtoBuf.ProtoEnum(Name=@"LOBBYSTATE_INVITED", Value=2)]
+      LOBBYSTATE_INVITED = 2,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"PUBLIC", Value=3)]
-      PUBLIC = 3
+      [global::ProtoBuf.ProtoEnum(Name=@"LOBBYSTATE_PUBLIC", Value=3)]
+      LOBBYSTATE_PUBLIC = 3
     }
   
     private global::ProtoBuf.IExtension extensionObject;
@@ -112,10 +112,10 @@ namespace rsctrl.chat
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ChatMessage")]
-  public partial class ChatMessage : global::ProtoBuf.IExtensible
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ChatId")]
+  public partial class ChatId : global::ProtoBuf.IExtensible
   {
-    public ChatMessage() {}
+    public ChatId() {}
     
     private rsctrl.chat.ChatType _chat_type;
     [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"chat_type", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
@@ -131,40 +131,65 @@ namespace rsctrl.chat
       get { return _chat_id; }
       set { _chat_id = value; }
     }
-    private string _peer_nickname;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"peer_nickname", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ChatMessage")]
+  public partial class ChatMessage : global::ProtoBuf.IExtensible
+  {
+    public ChatMessage() {}
+    
+    private rsctrl.chat.ChatId _id;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public rsctrl.chat.ChatId id
+    {
+      get { return _id; }
+      set { _id = value; }
+    }
+    private string _msg;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"msg", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string msg
+    {
+      get { return _msg; }
+      set { _msg = value; }
+    }
+
+    private string _peer_nickname = "";
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"peer_nickname", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
     public string peer_nickname
     {
       get { return _peer_nickname; }
       set { _peer_nickname = value; }
     }
-    private uint _chatflags;
-    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"chatflags", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public uint chatflags
+
+    private uint _chat_flags = default(uint);
+    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"chat_flags", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(uint))]
+    public uint chat_flags
     {
-      get { return _chatflags; }
-      set { _chatflags = value; }
+      get { return _chat_flags; }
+      set { _chat_flags = value; }
     }
-    private uint _sendTime;
-    [global::ProtoBuf.ProtoMember(5, IsRequired = true, Name=@"sendTime", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public uint sendTime
+
+    private uint _send_time = default(uint);
+    [global::ProtoBuf.ProtoMember(5, IsRequired = false, Name=@"send_time", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(uint))]
+    public uint send_time
     {
-      get { return _sendTime; }
-      set { _sendTime = value; }
+      get { return _send_time; }
+      set { _send_time = value; }
     }
-    private uint _recvTime;
-    [global::ProtoBuf.ProtoMember(6, IsRequired = true, Name=@"recvTime", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public uint recvTime
+
+    private uint _recv_time = default(uint);
+    [global::ProtoBuf.ProtoMember(6, IsRequired = false, Name=@"recv_time", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(uint))]
+    public uint recv_time
     {
-      get { return _recvTime; }
-      set { _recvTime = value; }
-    }
-    private string _msg;
-    [global::ProtoBuf.ProtoMember(7, IsRequired = true, Name=@"msg", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public string msg
-    {
-      get { return _msg; }
-      set { _msg = value; }
+      get { return _recv_time; }
+      set { _recv_time = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -200,31 +225,28 @@ namespace rsctrl.chat
   {
     public RequestChatLobbies() {}
     
-    private rsctrl.chat.RequestChatLobbies.LobbyType _lobby_type;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"lobby_type", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public rsctrl.chat.RequestChatLobbies.LobbyType lobby_type
+    private rsctrl.chat.RequestChatLobbies.LobbySet _lobby_set;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"lobby_set", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public rsctrl.chat.RequestChatLobbies.LobbySet lobby_set
     {
-      get { return _lobby_type; }
-      set { _lobby_type = value; }
+      get { return _lobby_set; }
+      set { _lobby_set = value; }
     }
-    [global::ProtoBuf.ProtoContract(Name=@"LobbyType")]
-    public enum LobbyType
+    [global::ProtoBuf.ProtoContract(Name=@"LobbySet")]
+    public enum LobbySet
     {
             
-      [global::ProtoBuf.ProtoEnum(Name=@"ALL", Value=1)]
-      ALL = 1,
+      [global::ProtoBuf.ProtoEnum(Name=@"LOBBYSET_ALL", Value=1)]
+      LOBBYSET_ALL = 1,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"NEW", Value=2)]
-      NEW = 2,
+      [global::ProtoBuf.ProtoEnum(Name=@"LOBBYSET_JOINED", Value=2)]
+      LOBBYSET_JOINED = 2,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"INVITED", Value=3)]
-      INVITED = 3,
+      [global::ProtoBuf.ProtoEnum(Name=@"LOBBYSET_INVITED", Value=3)]
+      LOBBYSET_INVITED = 3,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"PRIVATE", Value=4)]
-      PRIVATE = 4,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"PUBLIC", Value=5)]
-      PUBLIC = 5
+      [global::ProtoBuf.ProtoEnum(Name=@"LOBBYSET_PUBLIC", Value=4)]
+      LOBBYSET_PUBLIC = 4
     }
   
     private global::ProtoBuf.IExtension extensionObject;
@@ -329,6 +351,23 @@ namespace rsctrl.chat
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ResponseSetLobbyNickname")]
+  public partial class ResponseSetLobbyNickname : global::ProtoBuf.IExtensible
+  {
+    public ResponseSetLobbyNickname() {}
+    
+    private rsctrl.core.Status _status;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"status", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public rsctrl.core.Status status
+    {
+      get { return _status; }
+      set { _status = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RequestRegisterEvents")]
   public partial class RequestRegisterEvents : global::ProtoBuf.IExtensible
   {
@@ -348,8 +387,8 @@ namespace rsctrl.chat
       [global::ProtoBuf.ProtoEnum(Name=@"REGISTER", Value=1)]
       REGISTER = 1,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"DEREGISTER", Value=1)]
-      DEREGISTER = 1
+      [global::ProtoBuf.ProtoEnum(Name=@"DEREGISTER", Value=2)]
+      DEREGISTER = 2
     }
   
     private global::ProtoBuf.IExtension extensionObject;
@@ -414,7 +453,7 @@ namespace rsctrl.chat
     public RequestSendMessage() {}
     
     private rsctrl.chat.ChatMessage _msg;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"msg", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"msg", DataFormat = global::ProtoBuf.DataFormat.Default)]
     public rsctrl.chat.ChatMessage msg
     {
       get { return _msg; }
@@ -472,8 +511,11 @@ namespace rsctrl.chat
       [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseChatLobbies", Value=1)]
       MsgId_ResponseChatLobbies = 1,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseRegisterEvents", Value=2)]
-      MsgId_ResponseRegisterEvents = 2,
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseSetLobbyNickname", Value=4)]
+      MsgId_ResponseSetLobbyNickname = 4,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseRegisterEvents", Value=5)]
+      MsgId_ResponseRegisterEvents = 5,
             
       [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseSendMessage", Value=6)]
       MsgId_ResponseSendMessage = 6,
@@ -489,11 +531,11 @@ namespace rsctrl.chat
     public enum LobbyPrivacyLevel
     {
             
-      [global::ProtoBuf.ProtoEnum(Name=@"PRIVATE", Value=1)]
-      PRIVATE = 1,
+      [global::ProtoBuf.ProtoEnum(Name=@"PRIVACY_PRIVATE", Value=1)]
+      PRIVACY_PRIVATE = 1,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"PUBLIC", Value=2)]
-      PUBLIC = 2
+      [global::ProtoBuf.ProtoEnum(Name=@"PRIVACY_PUBLIC", Value=2)]
+      PRIVACY_PUBLIC = 2
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"ChatType")]

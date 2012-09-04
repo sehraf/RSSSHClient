@@ -65,8 +65,9 @@ namespace Sehraf.RetroShareSSH
 
         public void Disconnect()
         {
-            _stream.Close();
             _client.Disconnect();
+            _stream.Close();
+            _stream.Dispose();
         }
     }
 }

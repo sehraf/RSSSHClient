@@ -54,13 +54,11 @@ namespace Sehraf.RetroShareSSH
 
     class RSProtoBuf
     {
-        const bool DEBUG = true;
-        //MemoryStream _streamIn, _streamOut;
+        const bool DEBUG = false;
+
         ShellStream _stream;
         uint _nextReqID;
         uint _timeOut;
-        //long _streamOutPos;
-        //long _streamInPos;
         RSRPC _parent;
 
         Queue<RSProtoBuffSSHMsg> _sendQueue;
@@ -68,20 +66,14 @@ namespace Sehraf.RetroShareSSH
         Thread _t;
         bool _run;
 
-        //public RSProtoBuf(MemoryStream streamIn, MemoryStream streamOut, Queue<RSProtoBuffSSHMsg> queue, RSRPC parent, uint timeout = 1000, bool useThread = true)
         public RSProtoBuf(ShellStream stream, Queue<RSProtoBuffSSHMsg> queue, RSRPC parent, uint timeout = 1000, bool useThread = true)
         {
-            //_streamIn = streamIn;
-            //_streamOut = streamOut;
             _stream = stream;
 
             _nextReqID = 1;
             _timeOut = timeout;
             _sendQueue = queue;
             _parent = parent;
-
-            //_streamOutPos = 0;
-            //_streamInPos = 0;
 
             if (useThread)
             {
@@ -95,7 +87,7 @@ namespace Sehraf.RetroShareSSH
 
         public uint Send(RSProtoBuffSSHMsg msg)
         {
-            System.Diagnostics.Debug.WriteLine("send: sending packet " + msg.ReqID + " MsgID: " + msg.MsgID + " body size: " + msg.BodySize);
+            System.Diagnostics.Debug.WriteLineIf(DEBUG, "send: sending packet " + msg.ReqID + " MsgID: " + msg.MsgID + " body size: " + msg.BodySize);
             if(_stream.CanWrite)
             {
                 _stream.Write(CreatePacketFromMsg(msg), 0, 16 + (int)msg.BodySize);
@@ -110,7 +102,14 @@ namespace Sehraf.RetroShareSSH
 
             return msg.ReqID;
         }
-        
+
+        // temporary solution
+        public void BreakConnection()
+        {
+            _stream.Write("disconnect");
+            //_stream.Flush();
+        }
+
         public bool Receive(out RSProtoBuffSSHMsg msg, uint timeOut = 0)
         {
             msg = new RSProtoBuffSSHMsg();
@@ -128,7 +127,7 @@ namespace Sehraf.RetroShareSSH
                 return false;
             }
 
-            System.Diagnostics.Debug.WriteLine("rec: " + msg.ReqID + " body Length: " + msg.ProtoBuffMsg.Length);
+            System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: " + msg.ReqID + " body Length: " + msg.ProtoBuffMsg.Length);
             return true;
         }
         
@@ -168,15 +167,15 @@ namespace Sehraf.RetroShareSSH
             msg.ReqID = BitConverter.ToUInt32(input, 4);
             msg.MsgID = BitConverter.ToUInt32(input, 8);
             uint magicCode = BitConverter.ToUInt32(input, 12);
-            System.Diagnostics.Debug.WriteLine("rec: ReqID: " + msg.ReqID + " - MsgID: " + msg.MsgID + " - body size: " + msg.BodySize + " byte");
+            System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: ReqID: " + msg.ReqID + " - MsgID: " + msg.MsgID + " - body size: " + msg.BodySize + " byte");
 
             if (magicCode != msg.MagicCode)
             {
                 System.Diagnostics.Debug.WriteLine("rec: MagicCode mismatch -> returning");
                 return false;
             }
-            if (msg.BodySize > 1000)
-                Thread.Sleep(500);
+            //if (msg.BodySize > 1000)
+            //    Thread.Sleep(500);
 
             // get ProtoBufMsg
             timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
@@ -240,7 +239,11 @@ namespace Sehraf.RetroShareSSH
 
         public uint GetReqID()
         {
-            return _nextReqID++;
+            if (_nextReqID < UInt32.MaxValue)
+                return _nextReqID++;
+
+            _nextReqID = 0; // else
+            return _nextReqID;
         }
 
         // main loop
@@ -252,8 +255,8 @@ namespace Sehraf.RetroShareSSH
                 foundWork = false;
                 if (_sendQueue.Count > 0)
                 {
-                    System.Diagnostics.Debug.WriteLine("#######################################");
-                    System.Diagnostics.Debug.WriteLine("loop: sending req");
+                    System.Diagnostics.Debug.WriteLineIf(DEBUG, "#######################################");
+                    System.Diagnostics.Debug.WriteLineIf(DEBUG, "loop: sending req");
                     RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg();
                     lock (_sendQueue)
                         msg = _sendQueue.Dequeue();
@@ -263,8 +266,8 @@ namespace Sehraf.RetroShareSSH
 
                 if (_stream.DataAvailable)
                 {
-                    System.Diagnostics.Debug.WriteLine("#######################################");
-                    System.Diagnostics.Debug.WriteLine("loop: receiving");
+                    System.Diagnostics.Debug.WriteLineIf(DEBUG, "#######################################");
+                    System.Diagnostics.Debug.WriteLineIf(DEBUG, "loop: receiving");
                     RSProtoBuffSSHMsg newMsg = new RSProtoBuffSSHMsg();
                     if (Receive(out newMsg))
                         _parent.ProcessMsg(newMsg);
