@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Windows.Forms;
+using System.Reflection;
 
 using ProtoBuf;
 
@@ -13,31 +13,31 @@ using rsctrl.core;
 using rsctrl.peers;
 using rsctrl.system;
 
-namespace Sehraf.RetroShareSSH
+namespace Sehraf.RSRPC
 {
-    enum CallbackType
-    {
-        Disconnect = 0
-    }
+    //public enum CallbackType
+    //{
+    //    Disconnect = 0
+    //}
 
-    class RSRPC
+    public class RSRPC
     {
         public delegate void ReceivedMsgEvent(RSProtoBuffSSHMsg msg);
-        public delegate void GenericCallbackEvent(CallbackType type);
+        public delegate void ErrorOccurredEvent(Exception e);
 
         RSSSHConnector _rsConnector;
         RSProtoBuf _rsProtoBuf;
         bool _connected;
         
         event ReceivedMsgEvent _receivedMsg;
-        event GenericCallbackEvent _callback;
+        event ErrorOccurredEvent _error;
         Queue<RSProtoBuffSSHMsg> _sendQueue;
 
         public RSSSHConnector RSConnector { get { return _rsConnector; } }
         public RSProtoBuf RSProtoBuf { get { return _rsProtoBuf; } }
         public bool IsConnected { get { return _connected; } }
         public ReceivedMsgEvent ReceivedMsg { get { return _receivedMsg; } set { _receivedMsg = value; } }
-        public GenericCallbackEvent GenericCallback { get { return _callback; } set { _callback = value; } }
+        public ErrorOccurredEvent ErrorOccurred { get { return _error; } set { _error = value; } }
 
         public RSRPC()
         {
@@ -61,27 +61,28 @@ namespace Sehraf.RetroShareSSH
             return false;
         }
 
-        public void Disconnect(bool error = false)
+        public void Disconnect()
         {
-            if (error)            
-                _callback(CallbackType.Disconnect);            
-            else
-                if (_connected)
-                {
-                    _rsProtoBuf.Stop();
-                    System.Threading.Thread.Sleep(250);
-                    _rsProtoBuf.BreakConnection();
-                    _rsProtoBuf = null;
-                    _rsConnector.Disconnect();
-                    _rsConnector = null;
-                    _connected = false;
-                }
+            if (_connected)
+            {
+                _rsProtoBuf.Stop();
+                System.Threading.Thread.Sleep(250);
+                _rsProtoBuf.BreakConnection();
+                _rsProtoBuf = null;
+                _rsConnector.Disconnect();
+                _rsConnector = null;
+                _connected = false;
+            }
         }
 
-        internal bool ProcessMsg(RSProtoBuffSSHMsg msg)
+        internal void Error(Exception e)
+        {
+            _error(e);
+        }
+
+        internal void ProcessMsg(RSProtoBuffSSHMsg msg)
         {
             _receivedMsg(msg);
-            return true;
         }
 
         // ---------- send ----------

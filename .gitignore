@@ -9,6 +9,7 @@ deploy
 deploy/*
 *.suo
 *.cache
+.svn/
 
 # mstest test results
 TestResults

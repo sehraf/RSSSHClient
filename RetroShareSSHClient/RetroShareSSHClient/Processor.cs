@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 
-using Sehraf.RetroShareSSH;
+using Sehraf.RSRPC;
 
 using rsctrl.chat;
 using rsctrl.core;

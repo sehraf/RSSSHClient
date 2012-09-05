@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-using Sehraf.RetroShareSSH;
+using Sehraf.RSRPC;
 
 //using ProtoBuf;
 
@@ -16,12 +16,12 @@ namespace RetroShareSSHClient
 
     public partial class MainForm : Form
     {
-        const bool PINGSERVER = true;
         const bool DEBUG = true;
         const string GROUPCHAT = "%groupChat%";
 
         RSRPC _rpc;
         Processor _processor;
+        Settings _settings;
         Person _owner;
         List<Person> _friendList;
         List<ChatLobbyInfo> _chatLobbies;
@@ -37,135 +37,77 @@ namespace RetroShareSSHClient
             InitializeComponent();
             cb_con.CheckState = CheckState.Unchecked;
 
-            _rpc = new RSRPC();            
-            _rpc.GenericCallback += Callback;
+            _rpc = new RSRPC();
+            _rpc.ErrorOccurred += ErrorFromThread;
             _rpc.ReceivedMsg += ProcessMsgFromThread;
             _processor = new Processor(this);
+            _settings = new Settings();
             _owner = new Person();
             _friendList = new List<Person>();
             _chatLobbies = new List<ChatLobbyInfo>();
             _chatText = new List<string>();
             _chatUser = new List<List<string>>();
             _chatsJoined = 0;
-            _nick = "sehraf nogui (ssh)";
             _selectedFriend = new Person();
             _tickCounter = 0;
+
+            LoadForms();
         }
 
-        //private void TestMsgID()
-        //{
-        //    uint msgID = RSProtoBuf.ConstructMsgId(14, 1337, 11, true);
-        //    tb_out.Text = RSProtoBuf.GetHex(msgID) + "\n";
-        //    tb_out.AppendText("Ext : " + RSProtoBuf.GetRpcMsgIdExtension(msgID) + "\n");
-        //    tb_out.AppendText("Service : " + RSProtoBuf.GetRpcMsgIdService(msgID) + "\n");
-        //    tb_out.AppendText("subMsg : " + RSProtoBuf.GetRpcMsgIdSubMsg(msgID) + "\n");
-        //    tb_out.AppendText("respond : " + RSProtoBuf.IsRpcMsgIdResponse(msgID).ToString() + "\n");
-        //}
-        
-        //private void TestProcessPBMsg(RSProtoBuffSSHMsg msg)
-        //{
-        //    byte extension = RSProtoBuf.GetRpcMsgIdExtension(msg.MsgID);
-        //    ushort service = RSProtoBuf.GetRpcMsgIdService(msg.MsgID);
-        //    byte submsg = RSProtoBuf.GetRpcMsgIdSubMsg(msg.MsgID);
-
-        //    Status status = null;
-
-        //    switch (extension)
-        //    {
-        //        case (byte)rsctrl.core.ExtensionId.CORE:
-        //            switch (service)
-        //            {
-        //                case (ushort)rsctrl.core.PackageId.PEERS:
-        //                    List<Person> peers = new List<Person>();
-        //                    switch (submsg)
-        //                    {
-        //                        case (byte)rsctrl.peers.RequestMsgIds.MsgId_RequestAddPeer:
-        //                            tb_out.AppendText("AddPeer:" + "\n");
-        //                            ResponseAddPeer responseAdd = Serializer.Deserialize<ResponseAddPeer>(msg.ProtoBuffMsg);
-        //                            peers = responseAdd.peers;
-        //                            status = responseAdd.status;
-        //                            break;
-        //                        case (byte)rsctrl.peers.RequestMsgIds.MsgId_RequestModifyPeer:
-        //                            tb_out.AppendText("ModifyPeer:" + "\n");
-        //                            ResponseModifyPeer responseModify = Serializer.Deserialize<ResponseModifyPeer>(msg.ProtoBuffMsg);
-        //                            peers = responseModify.peers;
-        //                            status = responseModify.status;
-        //                            break;
-        //                        case (byte)rsctrl.peers.RequestMsgIds.MsgId_RequestPeers:
-        //                            tb_out.AppendText("Peers:" + "\n");
-        //                            ResponsePeerList responsePeers = Serializer.Deserialize<ResponsePeerList>(msg.ProtoBuffMsg);
-        //                            peers = responsePeers.peers;
-        //                            status = responsePeers.status;
-        //                            break;
-        //                        default:
-        //                            //...
-        //                            break;
-        //                    }
-
-        //                    foreach (Person p in peers)
-        //                    {
-        //                        tb_out.AppendText(p.name + ":" + "\n");
-        //                        List<Location> locs = p.locations;
-        //                        foreach (Location l in locs)
-        //                            tb_out.AppendText(" - " + l.location + ": SSLID: " + l.ssl_id + "\n");
-        //                    }
-
-        //                    break;
-        //                case (ushort)rsctrl.core.PackageId.SYSTEM:
-        //                    switch (submsg)
-        //                    {
-        //                        case (byte)rsctrl.system.ResponseMsgIds.MsgId_ResponseSystemStatus:
-        //                            ResponseSystemStatus responseSystem = Serializer.Deserialize<ResponseSystemStatus>(msg.ProtoBuffMsg);
-        //                            tb_out.AppendText("SystemStatus:" + "\n");
-        //                            tb_out.AppendText(responseSystem.bw_total.name + " -> up: " + responseSystem.bw_total.up + " - down: " + responseSystem.bw_total.down + "\n");
-        //                            tb_out.AppendText("net status: " + responseSystem.net_status + "\n");
-        //                            tb_out.AppendText("connected: " + responseSystem.no_connected + "\n");
-        //                            tb_out.AppendText("peers: " + responseSystem.no_peers + "\n");
-        //                            status = responseSystem.status;
-        //                            break;
-        //                        default:
-        //                            //...
-        //                            break;
-        //                    }
-        //                    break;
-        //                default:
-        //                    // HOW COULD THIS HAPPEN? - ok now that bad 
-        //                    break;
-        //            }
-        //            break;
-        //        default:
-        //            // HOW COULD THIS HAPPEN?
-        //            break;
-        //    }
-        //    if (status != null)
-        //    {
-        //        tb_out.AppendText("----- Satus ----- " + "\n");
-        //        tb_out.AppendText("- code: " + status.code + "\n");
-        //        tb_out.AppendText("- msg: " + status.msg + "\n");
-        //    }
-        //}
-
-        private void CallbackFromThread(CallbackType type)
+        private void LoadForms()
         {
-            this.Invoke((MethodInvoker)delegate { Callback(type); });
-        }
+            Options opt;
+            if(_settings.Load(out opt)) {
+                if (opt.SaveSettings)
+                {
+                    tb_host.Text = opt.Host;
+                    tb_port.Text = opt.Port;
+                    tb_user.Text = opt.User;
+                    tb_pw.Text = opt.Password;
+                    cb_settingsSave.Checked = true;
+                    cb_settingsSavePW.Checked = opt.SavePW;
 
-        private void Callback(CallbackType type)
-        {
-            switch (type)
-            {
-                case CallbackType.Disconnect:
-                    this.Invoke((MethodInvoker)delegate { Disconnect(); });
-                    break;
-                default:
-                    System.Diagnostics.Debug.WriteLineIf(DEBUG, "Callback: unknown type " + type);
-                    break;
+                    cb_chatAutoRespEnable.Checked = opt.EnableAutoResp;
+                }
             }
+        }
+
+        private void SaveForms()
+        {
+            Options opt = new Options();
+            if (cb_settingsSave.Checked)
+            {
+                opt.Host = tb_host.Text;
+                opt.Port = tb_port.Text;
+                opt.User = tb_user.Text;
+                opt.Password = cb_settingsSavePW.Checked ? tb_pw.Text : "";
+                opt.SaveSettings = true;
+                opt.SavePW = cb_settingsSavePW.Checked;
+
+                opt.EnableAutoResp = cb_chatAutoRespEnable.Checked;
+            }
+            else
+            {
+                opt.SaveSettings = false;
+            }
+            _settings.Save(opt);
+        }
+
+        private void ErrorFromThread(Exception e)
+        {
+            if (this != null)
+                this.Invoke((MethodInvoker)delegate { Error(e); });
+        }
+
+        private void Error(Exception e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.Message);
         }
 
         private void ProcessMsgFromThread(RSProtoBuffSSHMsg msg)
         {
-            this.Invoke((MethodInvoker)delegate { _processor.ProcessMsg(msg); });
+            if(this != null)
+                this.Invoke((MethodInvoker)delegate { _processor.ProcessMsg(msg); });
         }
         
         private void ConnectionEstablished()
@@ -176,14 +118,17 @@ namespace RetroShareSSHClient
             regID = _rpc.GetFriendList(RequestPeers.SetOption.OWNID);
             _processor.PendingPeerRequests.Add(regID, RequestPeers.SetOption.OWNID);
 
-            ChatLobbyInfo lobby = new ChatLobbyInfo();
-            lobby.lobby_name = "Group chat";
-            lobby.lobby_id = GROUPCHAT;
+            if (_chatLobbies.Count == 0)
+            {
+                ChatLobbyInfo lobby = new ChatLobbyInfo();
+                lobby.lobby_name = "Group chat";
+                lobby.lobby_id = GROUPCHAT;
 
-            _chatLobbies.Add(lobby);
-            _chatText.Add(DateTime.Now.ToShortDateString() + " - " + DateTime.Now.ToShortTimeString() + "\n");
-            _chatUser.Add(new List<string> { });
-            clb_chatLobbies.Items.Add("Group chat");
+                _chatLobbies.Add(lobby);
+                _chatText.Add(DateTime.Now.ToShortDateString() + " - " + DateTime.Now.ToShortTimeString() + "\n");
+                _chatUser.Add(new List<string> { });
+                clb_chatLobbies.Items.Add("Group chat");
+            }
         }
 
         private void Connect()
@@ -294,9 +239,7 @@ namespace RetroShareSSHClient
                     _chatText[index] += DateTime.Now.ToLongTimeString() + " - " + response.msg.peer_nickname + " > " + msg + "\n";
                     if (clb_chatLobbies.SelectedIndex == index)
                         SetChatText(index);
-
-                    if (msg == "ping" && PINGSERVER)
-                        SendChatMsg("pong");
+                    AutoAnswer(Processor.RemoteTags(response.msg.msg));
                 }
                 // else drop msg
             }
@@ -321,6 +264,7 @@ namespace RetroShareSSHClient
             _chatText[0] += DateTime.Now.ToShortTimeString() + " - " + response.msg.peer_nickname + " > " + Processor.RemoteTags(response.msg.msg) + "\n";
             if (clb_chatLobbies.SelectedIndex == 0)
                 SetChatText(0);
+            AutoAnswer(Processor.RemoteTags(response.msg.msg));
         }
 
         private void SetChatText(int index)
@@ -328,6 +272,17 @@ namespace RetroShareSSHClient
             rtb_chat.Clear();
             //rtb_chat.Rtf =@"{\rtf1\ansi " + _chatText[index] + "}";
             rtb_chat.Text = _chatText[index];
+            rtb_chat.SelectionStart = rtb_chat.Text.Length;
+            rtb_chat.ScrollToCaret();
+        }
+
+        private void AutoAnswer(string msg) 
+        {
+            if (cb_chatAutoRespEnable.Checked)
+            {
+               if(msg.ToLower().Contains(tb_chatAutoRespSearch.Text.ToLower()))
+                   SendChatMsg(tb_chatAutoRespAnswer.Text);
+            }                
         }
 
         // ---------- peers ----------
@@ -418,7 +373,8 @@ namespace RetroShareSSHClient
             _owner = msg.peers[0]; // i gues we just have one owner           
             this.Text = "RetroShare SSH Client - " + _owner.name + "(" + _owner.gpg_id + ") ";// +l.location + " (" + l.ssl_id + ")";
 
-            _nick = _owner.name + "(nogui/ssh)";
+            tb_chatAutoRespSearch.Text = _owner.name.Trim();
+            _nick = _owner.name.Trim() + " (nogui/ssh)";
             tb_chatNickname.Text = _nick;
             bt_setNickname_Click(null, null);
         }
@@ -496,6 +452,7 @@ namespace RetroShareSSHClient
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.Disconnect();
+            this.SaveForms();
         }
 
         private void tb_pw_Enter(object sender, EventArgs e)
@@ -633,9 +590,9 @@ namespace RetroShareSSHClient
             if (index >= 0)
             {                
                 SetChatText(index);
-                lb_chatUser.Items.Clear();
+                clb_chatUser.Items.Clear();
                 foreach (string s in _chatUser[index])                
-                    lb_chatUser.Items.Add(s);                
+                    clb_chatUser.Items.Add(s);                
             }
         }
 
@@ -658,6 +615,11 @@ namespace RetroShareSSHClient
 
                 _rpc.SetLobbyNickname(_nick, ids);
             }
+        }
+
+        private void cb_settingsSave_CheckedChanged(object sender, EventArgs e)
+        {
+            cb_settingsSavePW.Enabled = cb_settingsSave.Checked;
         }
     }
 }

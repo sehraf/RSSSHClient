@@ -5,9 +5,9 @@ using System.IO;
 
 using Renci.SshNet;
 
-namespace Sehraf.RetroShareSSH
+namespace Sehraf.RSRPC
 {
-    class RSSSHConnector
+    public class RSSSHConnector
     {
         MemoryStream _streamOut, _streamIn;
         ShellStream _stream;    

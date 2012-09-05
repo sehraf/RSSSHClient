@@ -24,9 +24,8 @@ using Renci.SshNet;
 
 //The Body will consist of a protobuf encoded message.
 
-namespace Sehraf.RetroShareSSH
+namespace Sehraf.RSRPC
 {
-
     public struct RSProtoBuffSSHMsg
     {
         private const uint _magicCode = 0x137f0001;
@@ -44,7 +43,7 @@ namespace Sehraf.RetroShareSSH
         //public bool IsImportant { get { return _important; } set { _important = value; } }
     }
 
-    class PersonComparer : IComparer<Person>
+    public class PersonComparer : IComparer<Person>
     {
         public int Compare(Person p1, Person p2)
         {
@@ -52,7 +51,7 @@ namespace Sehraf.RetroShareSSH
         }
     }
 
-    class RSProtoBuf
+    public class RSProtoBuf
     {
         const bool DEBUG = false;
 
@@ -88,16 +87,22 @@ namespace Sehraf.RetroShareSSH
         public uint Send(RSProtoBuffSSHMsg msg)
         {
             System.Diagnostics.Debug.WriteLineIf(DEBUG, "send: sending packet " + msg.ReqID + " MsgID: " + msg.MsgID + " body size: " + msg.BodySize);
-            if(_stream.CanWrite)
+            if (_stream.CanWrite)
             {
-                _stream.Write(CreatePacketFromMsg(msg), 0, 16 + (int)msg.BodySize);
-                _stream.Flush();
+                try
+                {
+                    _stream.Write(CreatePacketFromMsg(msg), 0, 16 + (int)msg.BodySize);
+                    _stream.Flush();
+                }
+                catch (Exception e)
+                {
+                    _parent.Error(e);
+                }
             }
-            else 
+            else
             {
                 System.Diagnostics.Debug.WriteLine("send: can't write stream");
-                System.Diagnostics.Debug.WriteLine("diconnecting ....");
-                _parent.Disconnect(true);
+                _parent.Error(new IOException("send: can't write stream"));
             }
 
             return msg.ReqID;
@@ -117,13 +122,12 @@ namespace Sehraf.RetroShareSSH
             if (!_stream.CanRead)
             {
                 System.Diagnostics.Debug.WriteLine("rec: cannot read stream!");
-                System.Diagnostics.Debug.WriteLine("disconnecting ....");
-                _parent.Disconnect(true);
+                _parent.Error(new IOException("send: can't read stream"));
                 return false;
             } 
             if (!ReadMsgFromStream(ref msg, timeOut))
             {
-                System.Diagnostics.Debug.WriteLine("rec: Error receiving data from stream");
+                System.Diagnostics.Debug.WriteLine("rec: Error receiving data from stream");                
                 return false;
             }
 
@@ -145,19 +149,26 @@ namespace Sehraf.RetroShareSSH
             {
                 if (_stream.DataAvailable)
                 {
-                    _stream.Read(input, 0, 16); 
-                    done = true;
-                    break;
+                    try
+                    {
+                        _stream.Read(input, 0, 16);
+                        done = true;
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        _parent.Error(e);
+                    }                    
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine("rec: Stream to short (head) ... waiting (" + (DateTime.Now - timeOutTime).Milliseconds + ")");
+                    System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: Stream to short (head) ... waiting (" + (DateTime.Now - timeOutTime).Milliseconds + ")");
                     System.Threading.Thread.Sleep(250);
                 }
             }
             if (!done)
             {
-                System.Diagnostics.Debug.WriteLine("rec: Could not get header");
+                System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: Could not get header");
                 return false;
             }
 
@@ -174,8 +185,6 @@ namespace Sehraf.RetroShareSSH
                 System.Diagnostics.Debug.WriteLine("rec: MagicCode mismatch -> returning");
                 return false;
             }
-            //if (msg.BodySize > 1000)
-            //    Thread.Sleep(500);
 
             // get ProtoBufMsg
             timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
@@ -185,19 +194,26 @@ namespace Sehraf.RetroShareSSH
             {
                 if (_stream.DataAvailable)
                 {
-                    _stream.Read(PbMsg, 0, (int)msg.BodySize);
-                    done = true;
-                    break;
+                    try
+                    {
+                        _stream.Read(PbMsg, 0, (int)msg.BodySize);
+                        done = true;
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        _parent.Error(e);
+                    }    
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine("rec: Stream to short (body) ... waiting");
+                    System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: Stream to short (body) ... waiting");
                     System.Threading.Thread.Sleep(100);
                 }
             }
             if (!done)
             {
-                System.Diagnostics.Debug.WriteLine("rec: Coudl not get body (" + msg.BodySize + ")");
+                System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: Coudl not get body (" + msg.BodySize + ")");
                 return false;
             }
 
@@ -337,77 +353,10 @@ namespace Sehraf.RetroShareSSH
                 return true;
             }
             catch
-            {
+            {                
                 msg = default(T);
                 return false;
             }
         }
-
-        // Legacy
-        //public uint Send<T>(T protoBufMsg, uint msgID)
-        //{
-        //    System.Diagnostics.Debug.WriteLine("sending packet MsgID: " + msgID);
-        //    RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg();
-        //    msg.MsgID = msgID;
-        //    msg.ReqID = GetReqID();
-        //    msg.ProtoBuffMsg = new MemoryStream();
-
-        //    using (Stream serialized = new MemoryStream())
-        //    {
-        //        Serializer.Serialize<T>(serialized, protoBufMsg);
-        //        msg.BodySize = (uint)serialized.Length;
-        //        serialized.Position = 0;
-        //        serialized.CopyTo(msg.ProtoBuffMsg);
-        //    }
-        //    msg.ProtoBuffMsg.Position = 0;
-
-        //    System.Diagnostics.Debug.WriteLine("body size: " + msg.BodySize);
-
-        //    if (_streamIn.CanWrite)
-        //    //if(_stream.CanWrite)
-        //    {
-        //        //_pendingCallback.Add(msg.ReqID);
-        //        _streamIn.Write(CreatePacketFromMsg(msg), 0, 16 + (int)msg.BodySize);
-        //        //_stream.Write(CreatePacketFromMsg(msg), 0, 16 + (int)msg.BodySize);
-        //    }
-        //    else
-        //        System.Diagnostics.Debug.WriteLine("kann nicht schreiben");
-
-        //    //_streamIn.Flush();
-        //    return msg.ReqID;
-        //}
-        
-        //public T Receive<T>(out uint msgID, uint timeOut = 0)
-        //{
-        //    msgID = 0;
-        //    //if (_pendingCallback.Count == 0)
-        //    //    return default(T);
-
-        //    RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg();
-        //    if (!ReadMsgFromStream(ref msg, timeOut))
-        //    {
-        //        System.Diagnostics.Debug.WriteLine("Error receiving data from stream");
-        //        return default(T);
-        //    }
-
-        //    //if (_pendingCallback.Contains(msg.ReqID))
-        //    //    _pendingCallback.Remove(msg.ReqID);
-        //    //else
-        //    //    System.Diagnostics.Debug.WriteLine("rec: unbekannte ReqID");
-
-        //    System.Diagnostics.Debug.WriteLine("rec: pbMsg Length: " + msg.ProtoBuffMsg.Length);
-
-        //    T PbMsg;
-        //    try
-        //    {
-        //        PbMsg = Serializer.Deserialize<T>(msg.ProtoBuffMsg);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        System.Diagnostics.Debug.WriteLine("Error decoding PbMsg: " + e.Message);
-        //        return default(T);
-        //    }
-        //    return PbMsg;
-        //}
     }
 }
