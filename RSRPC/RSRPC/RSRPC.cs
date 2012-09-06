@@ -65,13 +65,13 @@ namespace Sehraf.RSRPC
         {
             if (_connected)
             {
+                _connected = false;
                 _rsProtoBuf.Stop();
                 System.Threading.Thread.Sleep(250);
                 _rsProtoBuf.BreakConnection();
                 _rsProtoBuf = null;
                 _rsConnector.Disconnect();
                 _rsConnector = null;
-                _connected = false;
             }
         }
 
@@ -82,7 +82,8 @@ namespace Sehraf.RSRPC
 
         internal void ProcessMsg(RSProtoBuffSSHMsg msg)
         {
-            _receivedMsg(msg);
+            if(_connected)
+                _receivedMsg(msg);
         }
 
         // ---------- send ----------
@@ -188,7 +189,8 @@ namespace Sehraf.RSRPC
                 );
 
             RequestSetLobbyNickname request = new RequestSetLobbyNickname();
-            request.lobby_ids.AddRange(lobbyIDs);
+            if(lobbyIDs != null)
+                request.lobby_ids.AddRange(lobbyIDs);
             request.nickname = name;
             return Send<RequestSetLobbyNickname>(request, msgID);
         }
