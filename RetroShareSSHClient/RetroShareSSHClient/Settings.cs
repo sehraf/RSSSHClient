@@ -20,19 +20,24 @@ namespace RetroShareSSHClient
         public bool SaveSettings { get { return _saveSettings; } set { _saveSettings = value; } }
         public bool SavePW { get { return _savePW; } set { _savePW = value; } }
 
+        string _nickname;
+        string _chatAutoRespSearch;
+        string _chatAutoRespAnswer;
         bool _enableAutoResp;
+        bool _saveChat;
 
+        public string Nick { get { return _nickname; } set { _nickname = value; } }
+        public string AutoRespSearch { get { return _chatAutoRespSearch; } set { _chatAutoRespSearch = value; } }
+        public string AutoRespAnswer { get { return _chatAutoRespAnswer; } set { _chatAutoRespAnswer = value; } }
         public bool EnableAutoResp { get { return _enableAutoResp; } set { _enableAutoResp = value; } }
+        public bool SaveChat { get { return _saveChat; } set { _saveChat = value; } }
     }
 
     class Settings
     {
         string _filename = "settings.txt";
 
-        public Settings()
-        {
-
-        }
+        public Settings() { }
 
         public bool Load(out Options opt)
         {
@@ -51,7 +56,11 @@ namespace RetroShareSSHClient
                     opt.SaveSettings = (sr.ReadLine() == "1") ? true : false;
                     opt.SavePW = (sr.ReadLine() == "1") ? true : false;
 
+                    opt.Nick = sr.ReadLine();
+                    opt.AutoRespAnswer = sr.ReadLine();
+                    opt.AutoRespSearch = sr.ReadLine();
                     opt.EnableAutoResp = (sr.ReadLine() == "1") ? true : false;
+                    opt.SaveChat = (sr.ReadLine() == "1") ? true : false;
 
                     sr.Close();
                     sr.Dispose();
@@ -86,7 +95,11 @@ namespace RetroShareSSHClient
                 sw.WriteLine(opt.SaveSettings ? "1" : "0");
                 sw.WriteLine(opt.SavePW ? "1" : "0");
 
+                sw.WriteLine(opt.Nick);
+                sw.WriteLine(opt.AutoRespAnswer);
+                sw.WriteLine(opt.AutoRespSearch);
                 sw.WriteLine(opt.EnableAutoResp ? "1" : "0");
+                sw.WriteLine(opt.SaveChat ? "1" : "0");
 
                 sw.Flush();
                 sw.Close();

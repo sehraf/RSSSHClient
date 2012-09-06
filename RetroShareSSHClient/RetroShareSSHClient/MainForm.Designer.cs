@@ -93,8 +93,9 @@
             this.tb_optios = new System.Windows.Forms.TabControl();
             this.tb_connection = new System.Windows.Forms.TabPage();
             this.tb_options = new System.Windows.Forms.TabPage();
-            this.cb_settingsSave = new System.Windows.Forms.CheckBox();
             this.cb_settingsSavePW = new System.Windows.Forms.CheckBox();
+            this.cb_settingsSave = new System.Windows.Forms.CheckBox();
+            this.cb_settingsSaveChat = new System.Windows.Forms.CheckBox();
             this.bg_systemStatus.SuspendLayout();
             this.gb_ip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortExt)).BeginInit();
@@ -742,6 +743,7 @@
             // 
             // tb_options
             // 
+            this.tb_options.Controls.Add(this.cb_settingsSaveChat);
             this.tb_options.Controls.Add(this.cb_settingsSavePW);
             this.tb_options.Controls.Add(this.cb_settingsSave);
             this.tb_options.Location = new System.Drawing.Point(4, 22);
@@ -751,6 +753,16 @@
             this.tb_options.TabIndex = 1;
             this.tb_options.Text = "Settings";
             this.tb_options.UseVisualStyleBackColor = true;
+            // 
+            // cb_settingsSavePW
+            // 
+            this.cb_settingsSavePW.AutoSize = true;
+            this.cb_settingsSavePW.Location = new System.Drawing.Point(6, 31);
+            this.cb_settingsSavePW.Name = "cb_settingsSavePW";
+            this.cb_settingsSavePW.Size = new System.Drawing.Size(156, 17);
+            this.cb_settingsSavePW.TabIndex = 1;
+            this.cb_settingsSavePW.Text = "save password (as Base64)";
+            this.cb_settingsSavePW.UseVisualStyleBackColor = true;
             // 
             // cb_settingsSave
             // 
@@ -763,15 +775,15 @@
             this.cb_settingsSave.UseVisualStyleBackColor = true;
             this.cb_settingsSave.CheckedChanged += new System.EventHandler(this.cb_settingsSave_CheckedChanged);
             // 
-            // cb_settingsSavePW
+            // cb_settingsSaveChat
             // 
-            this.cb_settingsSavePW.AutoSize = true;
-            this.cb_settingsSavePW.Location = new System.Drawing.Point(6, 31);
-            this.cb_settingsSavePW.Name = "cb_settingsSavePW";
-            this.cb_settingsSavePW.Size = new System.Drawing.Size(156, 17);
-            this.cb_settingsSavePW.TabIndex = 1;
-            this.cb_settingsSavePW.Text = "save password (as Base64)";
-            this.cb_settingsSavePW.UseVisualStyleBackColor = true;
+            this.cb_settingsSaveChat.AutoSize = true;
+            this.cb_settingsSaveChat.Location = new System.Drawing.Point(6, 54);
+            this.cb_settingsSaveChat.Name = "cb_settingsSaveChat";
+            this.cb_settingsSaveChat.Size = new System.Drawing.Size(107, 17);
+            this.cb_settingsSaveChat.TabIndex = 2;
+            this.cb_settingsSaveChat.Text = "save chat setting";
+            this.cb_settingsSaveChat.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -882,6 +894,7 @@
         private System.Windows.Forms.TabPage tb_options;
         private System.Windows.Forms.CheckBox cb_settingsSave;
         private System.Windows.Forms.CheckBox cb_settingsSavePW;
+        private System.Windows.Forms.CheckBox cb_settingsSaveChat;
     }
 }
 
