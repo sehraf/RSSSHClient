@@ -128,10 +128,8 @@ namespace RetroShareSSHClient
         private void ProcessLobbyInvite(RSProtoBuffSSHMsg msg)
         {
             EventLobbyInvite response = new EventLobbyInvite();
-            if (RSProtoBuf.Deserialize<EventLobbyInvite>(out response, msg.ProtoBuffMsg))
-            {
-
-            }
+            if (RSProtoBuf.Deserialize<EventLobbyInvite>(out response, msg.ProtoBuffMsg))            
+                _gui.LobbyInvite(response);            
             else
                 System.Diagnostics.Debug.WriteLine("ProcessChatMsg: error deserializing");
         }
