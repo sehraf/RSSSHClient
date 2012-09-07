@@ -93,9 +93,9 @@
             this.tb_optios = new System.Windows.Forms.TabControl();
             this.tb_connection = new System.Windows.Forms.TabPage();
             this.tb_options = new System.Windows.Forms.TabPage();
+            this.cb_settingsSaveChat = new System.Windows.Forms.CheckBox();
             this.cb_settingsSavePW = new System.Windows.Forms.CheckBox();
             this.cb_settingsSave = new System.Windows.Forms.CheckBox();
-            this.cb_settingsSaveChat = new System.Windows.Forms.CheckBox();
             this.bg_systemStatus.SuspendLayout();
             this.gb_ip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortExt)).BeginInit();
@@ -308,12 +308,13 @@
             this.bt_peerNew.TabIndex = 25;
             this.bt_peerNew.Text = "New";
             this.bt_peerNew.UseVisualStyleBackColor = true;
+            this.bt_peerNew.Click += new System.EventHandler(this.bt_peerNew_Click);
             // 
             // bt_peerSave
             // 
             this.bt_peerSave.Location = new System.Drawing.Point(241, 122);
             this.bt_peerSave.Name = "bt_peerSave";
-            this.bt_peerSave.Size = new System.Drawing.Size(85, 23);
+            this.bt_peerSave.Size = new System.Drawing.Size(74, 23);
             this.bt_peerSave.TabIndex = 24;
             this.bt_peerSave.Text = "Save";
             this.bt_peerSave.UseVisualStyleBackColor = true;
@@ -547,12 +548,13 @@
             // 
             // bt_peerRemove
             // 
-            this.bt_peerRemove.Location = new System.Drawing.Point(334, 122);
+            this.bt_peerRemove.Location = new System.Drawing.Point(321, 122);
             this.bt_peerRemove.Name = "bt_peerRemove";
-            this.bt_peerRemove.Size = new System.Drawing.Size(85, 23);
+            this.bt_peerRemove.Size = new System.Drawing.Size(98, 23);
             this.bt_peerRemove.TabIndex = 25;
             this.bt_peerRemove.Text = "Block/Remove";
             this.bt_peerRemove.UseVisualStyleBackColor = true;
+            this.bt_peerRemove.Click += new System.EventHandler(this.bt_peerRemove_Click);
             // 
             // tp_chat
             // 
@@ -754,6 +756,16 @@
             this.tb_options.Text = "Settings";
             this.tb_options.UseVisualStyleBackColor = true;
             // 
+            // cb_settingsSaveChat
+            // 
+            this.cb_settingsSaveChat.AutoSize = true;
+            this.cb_settingsSaveChat.Location = new System.Drawing.Point(6, 54);
+            this.cb_settingsSaveChat.Name = "cb_settingsSaveChat";
+            this.cb_settingsSaveChat.Size = new System.Drawing.Size(107, 17);
+            this.cb_settingsSaveChat.TabIndex = 2;
+            this.cb_settingsSaveChat.Text = "save chat setting";
+            this.cb_settingsSaveChat.UseVisualStyleBackColor = true;
+            // 
             // cb_settingsSavePW
             // 
             this.cb_settingsSavePW.AutoSize = true;
@@ -774,16 +786,6 @@
             this.cb_settingsSave.Text = "save settings";
             this.cb_settingsSave.UseVisualStyleBackColor = true;
             this.cb_settingsSave.CheckedChanged += new System.EventHandler(this.cb_settingsSave_CheckedChanged);
-            // 
-            // cb_settingsSaveChat
-            // 
-            this.cb_settingsSaveChat.AutoSize = true;
-            this.cb_settingsSaveChat.Location = new System.Drawing.Point(6, 54);
-            this.cb_settingsSaveChat.Name = "cb_settingsSaveChat";
-            this.cb_settingsSaveChat.Size = new System.Drawing.Size(107, 17);
-            this.cb_settingsSaveChat.TabIndex = 2;
-            this.cb_settingsSaveChat.Text = "save chat setting";
-            this.cb_settingsSaveChat.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
