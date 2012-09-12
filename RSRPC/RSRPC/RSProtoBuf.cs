@@ -61,22 +61,27 @@ namespace Sehraf.RSRPC
         RSRPC _parent;
 
         Queue<RSProtoBuffSSHMsg> _sendQueue;
+        Queue<RSProtoBuffSSHMsg> _receiveQueue;
 
         Thread _t;
-        bool _run;
+        bool _run, _finishQueue;
 
-        public RSProtoBuf(ShellStream stream, Queue<RSProtoBuffSSHMsg> queue, RSRPC parent, uint timeout = 1000, bool useThread = true)
+        public bool ThreadRunning { get { return _t.IsAlive; } }
+
+        public RSProtoBuf(ShellStream stream, Queue<RSProtoBuffSSHMsg> sendQueue, Queue<RSProtoBuffSSHMsg> receiveQueue, RSRPC parent, uint timeout = 1000, bool useThread = true)
         {
             _stream = stream;
 
             _nextReqID = 1;
             _timeOut = timeout;
-            _sendQueue = queue;
+            _sendQueue = sendQueue;
+            _receiveQueue = receiveQueue;
             _parent = parent;
 
             if (useThread)
             {
                 _run = true;
+                _finishQueue = false;
                 _t = new Thread(new ThreadStart(mainLoop));
                 _t.Priority = ThreadPriority.AboveNormal;
                 _t.Name = "RS Send/Recieve loop";
@@ -140,37 +145,13 @@ namespace Sehraf.RSRPC
             if (timeOut == 0)
                 timeOut = _timeOut;
 
-            byte[] input = new byte[16];
+            byte[] input = new byte[16], buffer;
             bool done = false;
 
             // get Header
-            DateTime timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
-            while (DateTime.Now < timeOutTime)
-            {
-                if (_stream.DataAvailable)
-                {
-                    try
-                    {
-                        _stream.Read(input, 0, 16);
-                        done = true;
-                        break;
-                    }
-                    catch (Exception e)
-                    {
-                        _parent.Error(e);
-                    }                    
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: Stream to short (head) ... waiting (" + (DateTime.Now - timeOutTime).Milliseconds + ")");
-                    System.Threading.Thread.Sleep(250);
-                }
-            }
-            if (!done)
-            {
-                System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: Could not get header");
-                return false;
-            }
+            if (!ReadFromStream(timeOut, 16, out buffer))            
+                return false;            
+            buffer.CopyTo(input, 0);
 
             // read header
             Array.Reverse(input);
@@ -183,43 +164,121 @@ namespace Sehraf.RSRPC
             if (magicCode != msg.MagicCode)
             {
                 System.Diagnostics.Debug.WriteLine("rec: MagicCode mismatch -> returning");
+                _parent.Error(new Exception("MagicCode mismatch"));
                 return false;
             }
 
             // get ProtoBufMsg
-            timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
-            done = false;
+            //timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
+            //done = false;
+            //byte[] PbMsg = new byte[msg.BodySize], buffer = new byte[1024];
+            //uint read = 0;
+            //ushort toread;
+            //while (DateTime.Now < timeOutTime && !done)
+            //{
+            //    if (_stream.DataAvailable)
+            //    {
+            //        try
+            //        {
+            //            while (_stream.DataAvailable && msg.BodySize > read )
+            //            {
+            //                toread = (ushort)((msg.BodySize - read > 1024) ? 1024 : msg.BodySize - read);
+            //                _stream.Read(buffer, 0, toread);
+            //                Array.Copy(buffer, 0, PbMsg, read, toread);
+            //                read += toread;
+
+            //                Thread.Sleep(100);
+            //            }
+            //            if(read == msg.BodySize )
+            //                done = true;
+
+            //            // we got data 
+            //            timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
+            //        }
+            //        catch (Exception e)
+            //        {
+            //            _parent.Error(e);
+            //        }    
+            //    }
+            //    else
+            //    {
+            //        System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: Stream to short (body) ... waiting");
+            //        System.Threading.Thread.Sleep(100);
+            //    }
+            //}
+            //if (!done)
+            //{
+            //    System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: Coudl not get body (" + msg.BodySize + ")");
+            //    return false;
+            //}
             byte[] PbMsg = new byte[msg.BodySize];
-            while (DateTime.Now < timeOutTime)
-            {
-                if (_stream.DataAvailable)
-                {
-                    try
-                    {
-                        _stream.Read(PbMsg, 0, (int)msg.BodySize);
-                        done = true;
-                        break;
-                    }
-                    catch (Exception e)
-                    {
-                        _parent.Error(e);
-                    }    
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: Stream to short (body) ... waiting");
-                    System.Threading.Thread.Sleep(100);
-                }
-            }
-            if (!done)
-            {
-                System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: Coudl not get body (" + msg.BodySize + ")");
+            if (!ReadFromStream(timeOut, (int)msg.BodySize, out buffer))
                 return false;
-            }
+            buffer.CopyTo(PbMsg, 0);
 
             msg.ProtoBuffMsg = new MemoryStream();
             msg.ProtoBuffMsg.Write(PbMsg, 0, (int)msg.BodySize);
             msg.ProtoBuffMsg.Position = 0;
+            return true;
+        }
+
+        private bool ReadFromStream(uint timeOut, int length, out byte[] output)
+        {
+            bool done = false;
+            ushort bufferLength = 512;
+            uint read = 0;
+            ushort toRead;
+            byte[] buffer = new byte[bufferLength];
+            output = new byte[length];
+            
+            DateTime timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
+            while (DateTime.Now < timeOutTime && !done)
+            {
+                if (_stream.DataAvailable)
+                {
+                    //try
+                    //{
+                    //    _stream.Read(output, 0, length);
+                    //    done = true;
+                    //    break;
+                    //}
+                    //catch (Exception e)
+                    //{
+                    //    _parent.Error(e);
+                    //}
+                    try
+                    {
+                        while (_stream.DataAvailable && length > read)
+                        {
+                            toRead = (ushort)((length - read > bufferLength) ? bufferLength : length - read);
+                            _stream.Read(buffer, 0, toRead);
+                            Array.Copy(buffer, 0, output, read, toRead);
+                            read += toRead;
+
+                            Thread.Sleep(50);
+                        }
+                        if (read == length)
+                            done = true;
+
+                        // we got data 
+                        timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
+                    }
+                    catch (Exception e)
+                    {
+                        _parent.Error(e);
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: Stream to short (" + length + ") ... waiting (" + (DateTime.Now - timeOutTime).Milliseconds + ")");
+                    System.Threading.Thread.Sleep(250);
+                }
+            }
+            if (!done)
+            {
+                System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: Could not get header");
+                return false;
+            }
             return true;
         }
 
@@ -280,23 +339,34 @@ namespace Sehraf.RSRPC
                     foundWork = true;
                 }
 
-                if (_stream.DataAvailable)
+                if (_stream.DataAvailable && _run && !_finishQueue)
                 {
                     System.Diagnostics.Debug.WriteLineIf(DEBUG, "#######################################");
                     System.Diagnostics.Debug.WriteLineIf(DEBUG, "loop: receiving");
                     RSProtoBuffSSHMsg newMsg = new RSProtoBuffSSHMsg();
                     if (Receive(out newMsg))
-                        _parent.ProcessMsg(newMsg);
+                        lock (_receiveQueue)
+                            _receiveQueue.Enqueue(newMsg);
                     foundWork = true;
                 }
-                
-                if(!foundWork)
+
+                if (!foundWork && _run && !_finishQueue)
                     System.Threading.Thread.Sleep(250);
+
+                if (_finishQueue && _sendQueue.Count == 0)
+                    _run = false;
             }
         }
 
-        public void Stop() {         
+        public void FinishQueue()
+        {
+            _finishQueue = true;
+        }
+
+        public void StopThread()
+        {
             _run = false;
+            _t.Abort();
         }
 
         // MsgID functions
@@ -345,15 +415,17 @@ namespace Sehraf.RSRPC
             return Convert.ToString(msgID, 16);
         }
 
-        public static bool Deserialize<T>(out T msg, Stream body)
+        public static bool Deserialize<T>(Stream body, out T msg, out Exception e)
         {
             try
             {
                 msg = Serializer.Deserialize<T>(body);
+                e = null;
                 return true;
             }
-            catch
-            {                
+            catch (Exception exc)
+            {
+                e = exc;
                 msg = default(T);
                 return false;
             }

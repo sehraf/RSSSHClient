@@ -44,11 +44,14 @@ namespace rsctrl.core
       [global::ProtoBuf.ProtoEnum(Name=@"INVALID_QUERY", Value=2)]
       INVALID_QUERY = 2,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"SUCCESS", Value=3)]
-      SUCCESS = 3,
+      [global::ProtoBuf.ProtoEnum(Name=@"PARTIAL_SUCCESS", Value=3)]
+      PARTIAL_SUCCESS = 3,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"READMSG", Value=4)]
-      READMSG = 4
+      [global::ProtoBuf.ProtoEnum(Name=@"SUCCESS", Value=4)]
+      SUCCESS = 4,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"READMSG", Value=5)]
+      READMSG = 5
     }
   
     private global::ProtoBuf.IExtension extensionObject;
@@ -213,30 +216,12 @@ namespace rsctrl.core
       get { return _hash; }
       set { _hash = value; }
     }
-    private long _size;
+    private ulong _size;
     [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"size", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public long size
+    public ulong size
     {
       get { return _size; }
       set { _size = value; }
-    }
-
-    private string _path = "";
-    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"path", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string path
-    {
-      get { return _path; }
-      set { _path = value; }
-    }
-
-    private string _avail = "";
-    [global::ProtoBuf.ProtoMember(5, IsRequired = false, Name=@"avail", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string avail
-    {
-      get { return _avail; }
-      set { _avail = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -409,6 +394,12 @@ namespace rsctrl.core
             
       [global::ProtoBuf.ProtoEnum(Name=@"CHAT", Value=3)]
       CHAT = 3,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SEARCH", Value=4)]
+      SEARCH = 4,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"FILES", Value=5)]
+      FILES = 5,
             
       [global::ProtoBuf.ProtoEnum(Name=@"GXS", Value=1000)]
       GXS = 1000

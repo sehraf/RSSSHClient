@@ -98,12 +98,60 @@ namespace rsctrl.system
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RequestSystemQuit")]
+  public partial class RequestSystemQuit : global::ProtoBuf.IExtensible
+  {
+    public RequestSystemQuit() {}
+    
+    private rsctrl.system.RequestSystemQuit.QuitCode _quit_code;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"quit_code", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public rsctrl.system.RequestSystemQuit.QuitCode quit_code
+    {
+      get { return _quit_code; }
+      set { _quit_code = value; }
+    }
+    [global::ProtoBuf.ProtoContract(Name=@"QuitCode")]
+    public enum QuitCode
+    {
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CLOSE_CHANNEL", Value=1)]
+      CLOSE_CHANNEL = 1,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SHUTDOWN_RS", Value=2)]
+      SHUTDOWN_RS = 2
+    }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ResponseSystemQuit")]
+  public partial class ResponseSystemQuit : global::ProtoBuf.IExtensible
+  {
+    public ResponseSystemQuit() {}
+    
+    private rsctrl.core.Status _status;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"status", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public rsctrl.core.Status status
+    {
+      get { return _status; }
+      set { _status = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
     [global::ProtoBuf.ProtoContract(Name=@"RequestMsgIds")]
     public enum RequestMsgIds
     {
             
       [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestSystemStatus", Value=1)]
-      MsgId_RequestSystemStatus = 1
+      MsgId_RequestSystemStatus = 1,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestSystemQuit", Value=2)]
+      MsgId_RequestSystemQuit = 2
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"ResponseMsgIds")]
@@ -111,7 +159,10 @@ namespace rsctrl.system
     {
             
       [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseSystemStatus", Value=1)]
-      MsgId_ResponseSystemStatus = 1
+      MsgId_ResponseSystemStatus = 1,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseSystemQuit", Value=2)]
+      MsgId_ResponseSystemQuit = 2
     }
   
 }

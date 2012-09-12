@@ -11,103 +11,10 @@
 // Note: requires additional types generated from: core.proto
 namespace rsctrl.files
 {
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RequestBasicSearch")]
-  public partial class RequestBasicSearch : global::ProtoBuf.IExtensible
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"FileTransfer")]
+  public partial class FileTransfer : global::ProtoBuf.IExtensible
   {
-    public RequestBasicSearch() {}
-    
-    private readonly global::System.Collections.Generic.List<string> _terms = new global::System.Collections.Generic.List<string>();
-    [global::ProtoBuf.ProtoMember(1, Name=@"terms", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<string> terms
-    {
-      get { return _terms; }
-    }
-  
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RequestAdvSearch")]
-  public partial class RequestAdvSearch : global::ProtoBuf.IExtensible
-  {
-    public RequestAdvSearch() {}
-    
-    private readonly global::System.Collections.Generic.List<string> _terms = new global::System.Collections.Generic.List<string>();
-    [global::ProtoBuf.ProtoMember(1, Name=@"terms", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<string> terms
-    {
-      get { return _terms; }
-    }
-  
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ResponseSearchId")]
-  public partial class ResponseSearchId : global::ProtoBuf.IExtensible
-  {
-    public ResponseSearchId() {}
-    
-    private rsctrl.core.Status _status;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"status", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public rsctrl.core.Status status
-    {
-      get { return _status; }
-      set { _status = value; }
-    }
-    private string _search_id;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"search_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public string search_id
-    {
-      get { return _search_id; }
-      set { _search_id = value; }
-    }
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RequestSearchResults")]
-  public partial class RequestSearchResults : global::ProtoBuf.IExtensible
-  {
-    public RequestSearchResults() {}
-    
-    private rsctrl.files.RequestSearchResults.SetCmd _set;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"set", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public rsctrl.files.RequestSearchResults.SetCmd set
-    {
-      get { return _set; }
-      set { _set = value; }
-    }
-    private readonly global::System.Collections.Generic.List<string> _search_ids = new global::System.Collections.Generic.List<string>();
-    [global::ProtoBuf.ProtoMember(2, Name=@"search_ids", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<string> search_ids
-    {
-      get { return _search_ids; }
-    }
-  
-    [global::ProtoBuf.ProtoContract(Name=@"SetCmd")]
-    public enum SetCmd
-    {
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"ALLIDS", Value=1)]
-      ALLIDS = 1,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"LISTED", Value=2)]
-      LISTED = 2
-    }
-  
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"SearchHit")]
-  public partial class SearchHit : global::ProtoBuf.IExtensible
-  {
-    public SearchHit() {}
+    public FileTransfer() {}
     
     private rsctrl.core.File _file;
     [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"file", DataFormat = global::ProtoBuf.DataFormat.Default)]
@@ -116,103 +23,53 @@ namespace rsctrl.files
       get { return _file; }
       set { _file = value; }
     }
-    private uint _no_hits;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"no_hits", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public uint no_hits
+    private rsctrl.files.Direction _direction;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"direction", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public rsctrl.files.Direction direction
     {
-      get { return _no_hits; }
-      set { _no_hits = value; }
+      get { return _direction; }
+      set { _direction = value; }
     }
-    private rsctrl.files.SearchHit.LocFlag _loc;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"loc", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public rsctrl.files.SearchHit.LocFlag loc
+    private float _fraction;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"fraction", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public float fraction
     {
-      get { return _loc; }
-      set { _loc = value; }
+      get { return _fraction; }
+      set { _fraction = value; }
     }
-    [global::ProtoBuf.ProtoContract(Name=@"LocFlag")]
-    public enum LocFlag
+    private float _rate_kBs;
+    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"rate_kBs", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public float rate_kBs
     {
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"LOCAL", Value=1)]
-      LOCAL = 1,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"FRIEND", Value=2)]
-      FRIEND = 2,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"NETWORK", Value=4)]
-      NETWORK = 4
+      get { return _rate_kBs; }
+      set { _rate_kBs = value; }
     }
-  
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"SearchSet")]
-  public partial class SearchSet : global::ProtoBuf.IExtensible
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RequestTransferList")]
+  public partial class RequestTransferList : global::ProtoBuf.IExtensible
   {
-    public SearchSet() {}
+    public RequestTransferList() {}
     
-    private string _search_id;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"search_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public string search_id
+    private rsctrl.files.Direction _direction;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"direction", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public rsctrl.files.Direction direction
     {
-      get { return _search_id; }
-      set { _search_id = value; }
+      get { return _direction; }
+      set { _direction = value; }
     }
-    private rsctrl.files.SearchSet.SearchType _search_type;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"search_type", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public rsctrl.files.SearchSet.SearchType search_type
-    {
-      get { return _search_type; }
-      set { _search_type = value; }
-    }
-
-    private rsctrl.files.RequestBasicSearch _basic_req = null;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"basic_req", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    [global::System.ComponentModel.DefaultValue(null)]
-    public rsctrl.files.RequestBasicSearch basic_req
-    {
-      get { return _basic_req; }
-      set { _basic_req = value; }
-    }
-
-    private rsctrl.files.RequestAdvSearch _adv_req = null;
-    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"adv_req", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    [global::System.ComponentModel.DefaultValue(null)]
-    public rsctrl.files.RequestAdvSearch adv_req
-    {
-      get { return _adv_req; }
-      set { _adv_req = value; }
-    }
-    private readonly global::System.Collections.Generic.List<rsctrl.files.SearchHit> _hits = new global::System.Collections.Generic.List<rsctrl.files.SearchHit>();
-    [global::ProtoBuf.ProtoMember(5, Name=@"hits", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<rsctrl.files.SearchHit> hits
-    {
-      get { return _hits; }
-    }
-  
-    [global::ProtoBuf.ProtoContract(Name=@"SearchType")]
-    public enum SearchType
-    {
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"BASIC", Value=1)]
-      BASIC = 1,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"ADVANCED", Value=2)]
-      ADVANCED = 2
-    }
-  
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ResponseSearchResults")]
-  public partial class ResponseSearchResults : global::ProtoBuf.IExtensible
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ResponseTransferList")]
+  public partial class ResponseTransferList : global::ProtoBuf.IExtensible
   {
-    public ResponseSearchResults() {}
+    public ResponseTransferList() {}
     
     private rsctrl.core.Status _status;
     [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"status", DataFormat = global::ProtoBuf.DataFormat.Default)]
@@ -221,11 +78,11 @@ namespace rsctrl.files
       get { return _status; }
       set { _status = value; }
     }
-    private readonly global::System.Collections.Generic.List<rsctrl.files.SearchSet> _searches = new global::System.Collections.Generic.List<rsctrl.files.SearchSet>();
-    [global::ProtoBuf.ProtoMember(2, Name=@"searches", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<rsctrl.files.SearchSet> searches
+    private readonly global::System.Collections.Generic.List<rsctrl.files.FileTransfer> _transfers = new global::System.Collections.Generic.List<rsctrl.files.FileTransfer>();
+    [global::ProtoBuf.ProtoMember(2, Name=@"transfers", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<rsctrl.files.FileTransfer> transfers
     {
-      get { return _searches; }
+      get { return _transfers; }
     }
   
     private global::ProtoBuf.IExtension extensionObject;
@@ -233,117 +90,49 @@ namespace rsctrl.files
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RequestCloseSearch")]
-  public partial class RequestCloseSearch : global::ProtoBuf.IExtensible
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RequestControlDownload")]
+  public partial class RequestControlDownload : global::ProtoBuf.IExtensible
   {
-    public RequestCloseSearch() {}
+    public RequestControlDownload() {}
     
-    private string _search_id;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"search_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public string search_id
+    private rsctrl.core.File _file;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"file", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public rsctrl.core.File file
     {
-      get { return _search_id; }
-      set { _search_id = value; }
+      get { return _file; }
+      set { _file = value; }
     }
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RequestListShares")]
-  public partial class RequestListShares : global::ProtoBuf.IExtensible
-  {
-    public RequestListShares() {}
-    
-    private uint _depth;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"depth", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public uint depth
+    private rsctrl.files.RequestControlDownload.Action _action;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"action", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public rsctrl.files.RequestControlDownload.Action action
     {
-      get { return _depth; }
-      set { _depth = value; }
+      get { return _action; }
+      set { _action = value; }
     }
-    private readonly global::System.Collections.Generic.List<string> _ShareLocation = new global::System.Collections.Generic.List<string>();
-    [global::ProtoBuf.ProtoMember(2, Name=@"ShareLocation", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<string> ShareLocation
-    {
-      get { return _ShareLocation; }
-    }
-  
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ShareLocation")]
-  public partial class ShareLocation : global::ProtoBuf.IExtensible
-  {
-    public ShareLocation() {}
-    
-    private string _ssl_id;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"ssl_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public string ssl_id
-    {
-      get { return _ssl_id; }
-      set { _ssl_id = value; }
-    }
-    private string _path;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"path", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public string path
-    {
-      get { return _path; }
-      set { _path = value; }
-    }
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RequestAddPeer")]
-  public partial class RequestAddPeer : global::ProtoBuf.IExtensible
-  {
-    public RequestAddPeer() {}
-    
-    private string _gpg_id;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"gpg_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public string gpg_id
-    {
-      get { return _gpg_id; }
-      set { _gpg_id = value; }
-    }
-    private rsctrl.files.RequestAddPeer.AddCmd _cmd;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"cmd", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public rsctrl.files.RequestAddPeer.AddCmd cmd
-    {
-      get { return _cmd; }
-      set { _cmd = value; }
-    }
-
-    private string _cert = "";
-    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"cert", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string cert
-    {
-      get { return _cert; }
-      set { _cert = value; }
-    }
-    [global::ProtoBuf.ProtoContract(Name=@"AddCmd")]
-    public enum AddCmd
+    [global::ProtoBuf.ProtoContract(Name=@"Action")]
+    public enum Action
     {
             
-      [global::ProtoBuf.ProtoEnum(Name=@"NOOP", Value=0)]
-      NOOP = 0,
+      [global::ProtoBuf.ProtoEnum(Name=@"ACTION_START", Value=1)]
+      ACTION_START = 1,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"ADD", Value=1)]
-      ADD = 1,
+      [global::ProtoBuf.ProtoEnum(Name=@"ACTION_CONTINUE", Value=2)]
+      ACTION_CONTINUE = 2,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"REMOVE", Value=2)]
-      REMOVE = 2,
+      [global::ProtoBuf.ProtoEnum(Name=@"ACTION_WAIT", Value=3)]
+      ACTION_WAIT = 3,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"IMPORT", Value=3)]
-      IMPORT = 3,
+      [global::ProtoBuf.ProtoEnum(Name=@"ACTION_PAUSE", Value=4)]
+      ACTION_PAUSE = 4,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"EXAMINE", Value=4)]
-      EXAMINE = 4
+      [global::ProtoBuf.ProtoEnum(Name=@"ACTION_RESTART", Value=5)]
+      ACTION_RESTART = 5,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"ACTION_CHECK", Value=6)]
+      ACTION_CHECK = 6,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"ACTION_CANCEL", Value=7)]
+      ACTION_CANCEL = 7
     }
   
     private global::ProtoBuf.IExtension extensionObject;
@@ -351,10 +140,10 @@ namespace rsctrl.files
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ResponseAddPeer")]
-  public partial class ResponseAddPeer : global::ProtoBuf.IExtensible
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ResponseControlDownload")]
+  public partial class ResponseControlDownload : global::ProtoBuf.IExtensible
   {
-    public ResponseAddPeer() {}
+    public ResponseControlDownload() {}
     
     private rsctrl.core.Status _status;
     [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"status", DataFormat = global::ProtoBuf.DataFormat.Default)]
@@ -363,75 +152,6 @@ namespace rsctrl.files
       get { return _status; }
       set { _status = value; }
     }
-    private readonly global::System.Collections.Generic.List<rsctrl.core.Person> _peers = new global::System.Collections.Generic.List<rsctrl.core.Person>();
-    [global::ProtoBuf.ProtoMember(2, Name=@"peers", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<rsctrl.core.Person> peers
-    {
-      get { return _peers; }
-    }
-  
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RequestModifyPeer")]
-  public partial class RequestModifyPeer : global::ProtoBuf.IExtensible
-  {
-    public RequestModifyPeer() {}
-    
-    private rsctrl.files.RequestModifyPeer.ModCmd _cmd;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"cmd", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public rsctrl.files.RequestModifyPeer.ModCmd cmd
-    {
-      get { return _cmd; }
-      set { _cmd = value; }
-    }
-    private readonly global::System.Collections.Generic.List<rsctrl.core.Person> _peers = new global::System.Collections.Generic.List<rsctrl.core.Person>();
-    [global::ProtoBuf.ProtoMember(2, Name=@"peers", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<rsctrl.core.Person> peers
-    {
-      get { return _peers; }
-    }
-  
-    [global::ProtoBuf.ProtoContract(Name=@"ModCmd")]
-    public enum ModCmd
-    {
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"NOOP", Value=0)]
-      NOOP = 0,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"ADDRESS", Value=1)]
-      ADDRESS = 1,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"DYNDNS", Value=2)]
-      DYNDNS = 2
-    }
-  
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ResponseModifyPeer")]
-  public partial class ResponseModifyPeer : global::ProtoBuf.IExtensible
-  {
-    public ResponseModifyPeer() {}
-    
-    private rsctrl.core.Status _status;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"status", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public rsctrl.core.Status status
-    {
-      get { return _status; }
-      set { _status = value; }
-    }
-    private readonly global::System.Collections.Generic.List<rsctrl.core.Person> _peers = new global::System.Collections.Generic.List<rsctrl.core.Person>();
-    [global::ProtoBuf.ProtoMember(2, Name=@"peers", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<rsctrl.core.Person> peers
-    {
-      get { return _peers; }
-    }
-  
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -441,28 +161,33 @@ namespace rsctrl.files
     public enum RequestMsgIds
     {
             
-      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestPeers", Value=1)]
-      MsgId_RequestPeers = 1,
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestTransferList", Value=1)]
+      MsgId_RequestTransferList = 1,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestAddPeer", Value=2)]
-      MsgId_RequestAddPeer = 2,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestModifyPeer", Value=3)]
-      MsgId_RequestModifyPeer = 3
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestControlDownload", Value=2)]
+      MsgId_RequestControlDownload = 2
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"ResponseMsgIds")]
     public enum ResponseMsgIds
     {
             
-      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponsePeerList", Value=1)]
-      MsgId_ResponsePeerList = 1,
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseTransferList", Value=1)]
+      MsgId_ResponseTransferList = 1,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseAddPeer", Value=2)]
-      MsgId_ResponseAddPeer = 2,
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseControlDownload", Value=2)]
+      MsgId_ResponseControlDownload = 2
+    }
+  
+    [global::ProtoBuf.ProtoContract(Name=@"Direction")]
+    public enum Direction
+    {
             
-      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseModifyPeer", Value=3)]
-      MsgId_ResponseModifyPeer = 3
+      [global::ProtoBuf.ProtoEnum(Name=@"DIRECTION_UPLOAD", Value=1)]
+      DIRECTION_UPLOAD = 1,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DIRECTION_DOWNLOAD", Value=2)]
+      DIRECTION_DOWNLOAD = 2
     }
   
 }
