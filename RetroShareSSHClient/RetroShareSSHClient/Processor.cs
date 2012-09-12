@@ -7,10 +7,11 @@ using Sehraf.RSRPC;
 
 using rsctrl.chat;
 using rsctrl.core;
-//using rsctrl.files;
+using rsctrl.files;
 //using rsctrl.gxs;
 //using rsctrl.msgs;
 using rsctrl.peers;
+using rsctrl.search;
 using rsctrl.system;
 
 namespace RetroShareSSHClient
@@ -38,7 +39,7 @@ namespace RetroShareSSHClient
             return Regex.Replace
               (inputString, pattern, string.Empty);
         }
-        
+
         public void ProcessMsg(RSProtoBuffSSHMsg msg)
         {
             byte extension = RSProtoBuf.GetRpcMsgIdExtension(msg.MsgID);
@@ -51,15 +52,22 @@ namespace RetroShareSSHClient
                 case (byte)rsctrl.core.ExtensionId.CORE:
                     switch (service)
                     {
+                        case (ushort)PackageId.CHAT:
+                            ProcessChat(msg);
+                            break;
+                        case (ushort)PackageId.FILES:
+                            ProcessFiles(msg);
+                            break;
                         case (ushort)PackageId.PEERS:
                             ProcessPeer(msg);
+                            break;
+                        case (ushort)PackageId.SEARCH:
+                            ProcessSearch(msg);
                             break;
                         case (ushort)PackageId.SYSTEM:
                             ProcessSystem(msg);
                             break;
-                        case (ushort)PackageId.CHAT:
-                            ProcessChat(msg);
-                            break;
+
                         default:
                             System.Diagnostics.Debug.WriteLineIf(DEBUG, "ProcessMsg: unknown service " + service);
                             break;
@@ -73,7 +81,6 @@ namespace RetroShareSSHClient
         }
 
         // ---------- chat ----------
-
         private void ProcessChat(RSProtoBuffSSHMsg msg)
         {
             byte submsg = RSProtoBuf.GetRpcMsgIdSubMsg(msg.MsgID);
@@ -103,7 +110,8 @@ namespace RetroShareSSHClient
         private void ProcessChatMsg(RSProtoBuffSSHMsg msg)
         {
             EventChatMessage response = new EventChatMessage();
-            if (RSProtoBuf.Deserialize<EventChatMessage>(out response, msg.ProtoBuffMsg))
+            Exception e;
+            if (RSProtoBuf.Deserialize<EventChatMessage>(msg.ProtoBuffMsg, out response, out e))
             {
                 switch (response.msg.id.chat_type)
                 {
@@ -119,7 +127,7 @@ namespace RetroShareSSHClient
                         // :S
                         break;
                 }
-                
+
             }
             else
                 System.Diagnostics.Debug.WriteLine("ProcessChatMsg: error deserializing");
@@ -128,8 +136,9 @@ namespace RetroShareSSHClient
         private void ProcessLobbyInvite(RSProtoBuffSSHMsg msg)
         {
             EventLobbyInvite response = new EventLobbyInvite();
-            if (RSProtoBuf.Deserialize<EventLobbyInvite>(out response, msg.ProtoBuffMsg))            
-                _gui.LobbyInvite(response);            
+            Exception e; 
+            if (RSProtoBuf.Deserialize<EventLobbyInvite>(msg.ProtoBuffMsg, out response, out e))
+                _gui.LobbyInvite(response);
             else
                 System.Diagnostics.Debug.WriteLine("ProcessChatMsg: error deserializing");
         }
@@ -137,9 +146,11 @@ namespace RetroShareSSHClient
         private void ProcessChatLobbies(RSProtoBuffSSHMsg msg)
         {
             ResponseChatLobbies response = new ResponseChatLobbies();
-            if (RSProtoBuf.Deserialize<ResponseChatLobbies>(out response, msg.ProtoBuffMsg))
+            Exception e; 
+            if (RSProtoBuf.Deserialize<ResponseChatLobbies>(msg.ProtoBuffMsg, out response, out e))
             {
-                _gui.UpdateChatLobbies(response);
+                if (response.status.code == Status.StatusCode.SUCCESS)
+                    _gui.UpdateChatLobbies(response);
             }
             else
                 System.Diagnostics.Debug.WriteLine("ProcessChatMsg: error deserializing");
@@ -148,7 +159,8 @@ namespace RetroShareSSHClient
         private void ProcessRegisterEvents(RSProtoBuffSSHMsg msg)
         {
             ResponseRegisterEvents response = new ResponseRegisterEvents();
-            if (RSProtoBuf.Deserialize<ResponseRegisterEvents>(out response, msg.ProtoBuffMsg))
+            Exception e; 
+            if (RSProtoBuf.Deserialize<ResponseRegisterEvents>(msg.ProtoBuffMsg, out response, out e))
             {
                 _gui.tb_out.AppendText("ReqRegisterEvents response: " + response.status.code + "\n");
             }
@@ -159,12 +171,56 @@ namespace RetroShareSSHClient
         private void ProcessSendMsg(RSProtoBuffSSHMsg msg)
         {
             ResponseSendMessage response = new ResponseSendMessage();
-            if (RSProtoBuf.Deserialize<ResponseSendMessage>(out response, msg.ProtoBuffMsg))
+            Exception e; 
+            if (RSProtoBuf.Deserialize<ResponseSendMessage>(msg.ProtoBuffMsg, out response, out e))
             {
                 _gui.tb_out.AppendText("ReqSendMsg response:" + response.status.code + "\n");
             }
             else
                 System.Diagnostics.Debug.WriteLine("ProcessChatMsg: error deserializing");
+        }
+
+        // ---------- files ----------
+        private void ProcessFiles(RSProtoBuffSSHMsg msg)
+        {
+            byte submsg = RSProtoBuf.GetRpcMsgIdSubMsg(msg.MsgID);
+            switch (submsg)
+            {
+                case (byte)rsctrl.files.ResponseMsgIds.MsgId_ResponseControlDownload:
+                    ProcessControllDownload(msg);
+                    break;
+                case (byte)rsctrl.files.ResponseMsgIds.MsgId_ResponseTransferList:
+                    ProcessTransferlist(msg);
+                    break;
+                default:
+                    System.Diagnostics.Debug.WriteLineIf(DEBUG, "ProcessFiles: unknown submsg " + submsg);
+                    break;
+            }
+        }
+
+        private void ProcessControllDownload(RSProtoBuffSSHMsg msg)
+        {
+            ResponseControlDownload response = new ResponseControlDownload();
+            Exception e; 
+            if (RSProtoBuf.Deserialize<ResponseControlDownload>(msg.ProtoBuffMsg, out response, out e))
+            {
+                _gui.tb_out.AppendText("ReqContrDL response:" + response.status.code + "\n");
+            }
+            else
+                System.Diagnostics.Debug.WriteLine("ProcessControllDownload: error deserializing");
+        }
+
+        private void ProcessTransferlist(RSProtoBuffSSHMsg msg)
+        {
+            ResponseTransferList response = new ResponseTransferList();
+            Exception e; 
+            if (RSProtoBuf.Deserialize<ResponseTransferList>(msg.ProtoBuffMsg, out response, out e))
+            {
+                if (response.status.code == Status.StatusCode.SUCCESS)
+                    _gui.UpdateFileTransfers(response);
+            }
+            else
+                System.Diagnostics.Debug.WriteLine("ProcessTransferlist: error deserializing");
         }
 
         // ---------- peers ----------
@@ -191,7 +247,8 @@ namespace RetroShareSSHClient
         private void ProcessAddPeer(RSProtoBuffSSHMsg msg)
         {
             ResponseAddPeer response = new ResponseAddPeer();
-            if (RSProtoBuf.Deserialize<ResponseAddPeer>(out response, msg.ProtoBuffMsg))
+            Exception e; 
+            if (RSProtoBuf.Deserialize<ResponseAddPeer>(msg.ProtoBuffMsg, out response, out e))
                 _gui.tb_out.AppendText("AddPeer response: " + response.status.code + "\n");
             else
                 System.Diagnostics.Debug.WriteLine("ProcessAddPeer: error deserializing");
@@ -200,7 +257,8 @@ namespace RetroShareSSHClient
         private void ProcessModifyPeer(RSProtoBuffSSHMsg msg)
         {
             ResponseModifyPeer response = new ResponseModifyPeer();
-            if (RSProtoBuf.Deserialize<ResponseModifyPeer>(out response, msg.ProtoBuffMsg))
+            Exception e; 
+            if (RSProtoBuf.Deserialize<ResponseModifyPeer>(msg.ProtoBuffMsg, out response, out e))
                 _gui.tb_out.AppendText("AddPeer response: " + response.status.code + "\n");
             else
                 System.Diagnostics.Debug.WriteLine("ProcessModifyPeer: error deserializing");
@@ -209,29 +267,77 @@ namespace RetroShareSSHClient
         private void ProcessPeerList(RSProtoBuffSSHMsg msg)
         {
             ResponsePeerList response = new ResponsePeerList();
-            if (RSProtoBuf.Deserialize<ResponsePeerList>(out response, msg.ProtoBuffMsg))
+            Exception e; 
+            if (RSProtoBuf.Deserialize<ResponsePeerList>(msg.ProtoBuffMsg, out response, out e))
             {
                 RequestPeers.SetOption opt;
-                if (_pendingPeerRequests.TryGetValue(msg.ReqID, out opt))
-                    switch (opt)
-                    {
-                        case RequestPeers.SetOption.OWNID:
-                            _gui.SetOwnID(response);
-                            break;
-                        case RequestPeers.SetOption.FRIENDS:
-                            _gui.UpdatePeerList(response);
-                            break;
-                        default:                           
-                            // all other cases 
-                            break;
-                    }
-                else
+                if (response.status.code == Status.StatusCode.SUCCESS)
                 {
-                    // peer list but no clue what is in it
+                    if (_pendingPeerRequests.TryGetValue(msg.ReqID, out opt))
+                        switch (opt)
+                        {
+                            case RequestPeers.SetOption.OWNID:
+                                _gui.SetOwnID(response);
+                                break;
+                            case RequestPeers.SetOption.FRIENDS:
+                                _gui.UpdatePeerList(response);
+                                break;
+                            default:
+                                // all other cases 
+                                break;
+                        }
+                    else
+                    {
+                        // peer list but no clue what is in it
+                    }
                 }
             }
             else
                 System.Diagnostics.Debug.WriteLine("ProcessPeerList: error deserializing");
+        }
+
+        // ---------- search ----------
+        private void ProcessSearch(RSProtoBuffSSHMsg msg)
+        {
+            byte submsg = RSProtoBuf.GetRpcMsgIdSubMsg(msg.MsgID);
+            switch (submsg)
+            {
+                case (byte)rsctrl.search.ResponseMsgIds.MsgId_ResponseSearchIds:
+                    ProcessSearchIDs(msg);
+                    break;
+                case (byte)rsctrl.search.ResponseMsgIds.MsgId_ResponseSearchResults:
+                    ProcessSearchResults(msg);
+                    break;
+                default:
+                    System.Diagnostics.Debug.WriteLineIf(DEBUG, "ProcessSearch: unknown submsg " + submsg);
+                    break;
+            }
+        }
+
+        private void ProcessSearchIDs(RSProtoBuffSSHMsg msg)
+        {
+            ResponseSearchIds response = new ResponseSearchIds();
+            Exception e; 
+            if (RSProtoBuf.Deserialize<ResponseSearchIds>(msg.ProtoBuffMsg, out response, out e))
+                if (response.status.code == Status.StatusCode.SUCCESS)
+                    _gui.RegisterSearchIDs(msg.ReqID, response);
+                else
+                    _gui.tb_out.AppendText("SearchIDs response: " + response.status.code + "\n");
+            else
+                System.Diagnostics.Debug.WriteLine("ProcessSearchIDs: error deserializing");
+        }
+
+        private void ProcessSearchResults(RSProtoBuffSSHMsg msg)
+        {
+            ResponseSearchResults response = new ResponseSearchResults();
+            Exception e; 
+            if (RSProtoBuf.Deserialize<ResponseSearchResults>(msg.ProtoBuffMsg, out response, out e))
+                if (response.status.code == Status.StatusCode.SUCCESS)
+                    _gui.ProcessSearchResults(response);
+                else
+                    _gui.tb_out.AppendText("SearchResults response: " + response.status.code + "\n");
+            else
+                System.Diagnostics.Debug.WriteLine("ProcessSearchResults: error deserializing");
         }
 
         // ---------- system ----------
@@ -252,7 +358,8 @@ namespace RetroShareSSHClient
         private void ProcessSystemstatus(RSProtoBuffSSHMsg msg)
         {
             ResponseSystemStatus response = new ResponseSystemStatus();
-            if (RSProtoBuf.Deserialize<ResponseSystemStatus>(out response, msg.ProtoBuffMsg))
+            Exception e; 
+            if (RSProtoBuf.Deserialize<ResponseSystemStatus>(msg.ProtoBuffMsg, out response, out e))
                 _gui.UpdateSystemStatus(response);
             else
                 System.Diagnostics.Debug.WriteLine("ProcessSystemstatus: error deserializing");

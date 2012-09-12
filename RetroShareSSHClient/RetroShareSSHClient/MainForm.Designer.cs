@@ -41,11 +41,10 @@
             this.l_user = new System.Windows.Forms.Label();
             this.l_port = new System.Windows.Forms.Label();
             this.l_ip = new System.Windows.Forms.Label();
-            this.bg_systemStatus = new System.Windows.Forms.GroupBox();
+            this.gb_systemStatus = new System.Windows.Forms.GroupBox();
             this.l_peers = new System.Windows.Forms.Label();
             this.l_connected = new System.Windows.Forms.Label();
             this.l_network = new System.Windows.Forms.Label();
-            this.l_systemstatus = new System.Windows.Forms.Label();
             this.l_bwDown = new System.Windows.Forms.Label();
             this.l_bwUp = new System.Windows.Forms.Label();
             this.t_tick = new System.Windows.Forms.Timer(this.components);
@@ -53,6 +52,9 @@
             this.bt_peerNew = new System.Windows.Forms.Button();
             this.bt_peerSave = new System.Windows.Forms.Button();
             this.gb_ip = new System.Windows.Forms.GroupBox();
+            this.l_peerIPExt = new System.Windows.Forms.Label();
+            this.l_peerDynDns = new System.Windows.Forms.Label();
+            this.l_peerIPInt = new System.Windows.Forms.Label();
             this.tb_dyndns = new System.Windows.Forms.TextBox();
             this.tb_peerIPInt = new System.Windows.Forms.TextBox();
             this.tb_peerIPExt = new System.Windows.Forms.TextBox();
@@ -90,13 +92,32 @@
             this.bt_chatSend = new System.Windows.Forms.Button();
             this.tb_chatMsg = new System.Windows.Forms.TextBox();
             this.tp_files = new System.Windows.Forms.TabPage();
+            this.bt_filesWait = new System.Windows.Forms.Button();
+            this.bt_filesRestart = new System.Windows.Forms.Button();
+            this.bt_filesForceCheck = new System.Windows.Forms.Button();
+            this.bt_filesContinue = new System.Windows.Forms.Button();
+            this.bt_filesCancel = new System.Windows.Forms.Button();
+            this.bt_filesPause = new System.Windows.Forms.Button();
+            this.l_filesUL = new System.Windows.Forms.Label();
+            this.l_filesDL = new System.Windows.Forms.Label();
+            this.lb_filesUploads = new System.Windows.Forms.ListBox();
+            this.lb_filesDownloads = new System.Windows.Forms.ListBox();
+            this.tb_search = new System.Windows.Forms.TabPage();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.lb_searches = new System.Windows.Forms.ListBox();
+            this.lb_searchResults = new System.Windows.Forms.ListBox();
+            this.tb_searchKeyWords = new System.Windows.Forms.TextBox();
+            this.bt_searchSearch = new System.Windows.Forms.Button();
+            this.l_searchKeyWords = new System.Windows.Forms.Label();
             this.tb_optios = new System.Windows.Forms.TabControl();
             this.tb_connection = new System.Windows.Forms.TabPage();
+            this.bt_shutdown = new System.Windows.Forms.Button();
             this.tb_options = new System.Windows.Forms.TabPage();
             this.cb_settingsSaveChat = new System.Windows.Forms.CheckBox();
             this.cb_settingsSavePW = new System.Windows.Forms.CheckBox();
             this.cb_settingsSave = new System.Windows.Forms.CheckBox();
-            this.bg_systemStatus.SuspendLayout();
+            this.gb_systemStatus.SuspendLayout();
             this.gb_ip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortExt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortInt)).BeginInit();
@@ -107,6 +128,8 @@
             this.tp_chat.SuspendLayout();
             this.gb_autoResp.SuspendLayout();
             this.gb_nickname.SuspendLayout();
+            this.tp_files.SuspendLayout();
+            this.tb_search.SuspendLayout();
             this.tb_optios.SuspendLayout();
             this.tb_connection.SuspendLayout();
             this.tb_options.SuspendLayout();
@@ -134,10 +157,10 @@
             // 
             // tb_out
             // 
-            this.tb_out.Location = new System.Drawing.Point(12, 355);
+            this.tb_out.Location = new System.Drawing.Point(12, 364);
             this.tb_out.Multiline = true;
             this.tb_out.Name = "tb_out";
-            this.tb_out.Size = new System.Drawing.Size(155, 195);
+            this.tb_out.Size = new System.Drawing.Size(155, 184);
             this.tb_out.TabIndex = 2;
             // 
             // tb_user
@@ -173,7 +196,7 @@
             // cb_con
             // 
             this.cb_con.AutoSize = true;
-            this.cb_con.Location = new System.Drawing.Point(9, 145);
+            this.cb_con.Location = new System.Drawing.Point(103, 146);
             this.cb_con.Name = "cb_con";
             this.cb_con.Size = new System.Drawing.Size(77, 17);
             this.cb_con.TabIndex = 10;
@@ -217,25 +240,24 @@
             this.l_ip.TabIndex = 0;
             this.l_ip.Text = "(IP) Address";
             // 
-            // bg_systemStatus
+            // gb_systemStatus
             // 
-            this.bg_systemStatus.Controls.Add(this.l_peers);
-            this.bg_systemStatus.Controls.Add(this.l_connected);
-            this.bg_systemStatus.Controls.Add(this.l_network);
-            this.bg_systemStatus.Controls.Add(this.l_systemstatus);
-            this.bg_systemStatus.Controls.Add(this.l_bwDown);
-            this.bg_systemStatus.Controls.Add(this.l_bwUp);
-            this.bg_systemStatus.Location = new System.Drawing.Point(12, 212);
-            this.bg_systemStatus.Name = "bg_systemStatus";
-            this.bg_systemStatus.Size = new System.Drawing.Size(194, 100);
-            this.bg_systemStatus.TabIndex = 12;
-            this.bg_systemStatus.TabStop = false;
-            this.bg_systemStatus.Text = "System Status";
+            this.gb_systemStatus.Controls.Add(this.l_peers);
+            this.gb_systemStatus.Controls.Add(this.l_connected);
+            this.gb_systemStatus.Controls.Add(this.l_network);
+            this.gb_systemStatus.Controls.Add(this.l_bwDown);
+            this.gb_systemStatus.Controls.Add(this.l_bwUp);
+            this.gb_systemStatus.Location = new System.Drawing.Point(12, 221);
+            this.gb_systemStatus.Name = "gb_systemStatus";
+            this.gb_systemStatus.Size = new System.Drawing.Size(194, 100);
+            this.gb_systemStatus.TabIndex = 12;
+            this.gb_systemStatus.TabStop = false;
+            this.gb_systemStatus.Text = "System Status";
             // 
             // l_peers
             // 
             this.l_peers.AutoSize = true;
-            this.l_peers.Location = new System.Drawing.Point(104, 48);
+            this.l_peers.Location = new System.Drawing.Point(6, 48);
             this.l_peers.Name = "l_peers";
             this.l_peers.Size = new System.Drawing.Size(33, 13);
             this.l_peers.TabIndex = 5;
@@ -244,7 +266,7 @@
             // l_connected
             // 
             this.l_connected.AutoSize = true;
-            this.l_connected.Location = new System.Drawing.Point(6, 48);
+            this.l_connected.Location = new System.Drawing.Point(104, 48);
             this.l_connected.Name = "l_connected";
             this.l_connected.Size = new System.Drawing.Size(58, 13);
             this.l_connected.TabIndex = 4;
@@ -253,20 +275,11 @@
             // l_network
             // 
             this.l_network.AutoSize = true;
-            this.l_network.Location = new System.Drawing.Point(104, 22);
+            this.l_network.Location = new System.Drawing.Point(6, 22);
             this.l_network.Name = "l_network";
             this.l_network.Size = new System.Drawing.Size(45, 13);
             this.l_network.TabIndex = 3;
             this.l_network.Text = "network";
-            // 
-            // l_systemstatus
-            // 
-            this.l_systemstatus.AutoSize = true;
-            this.l_systemstatus.Location = new System.Drawing.Point(6, 22);
-            this.l_systemstatus.Name = "l_systemstatus";
-            this.l_systemstatus.Size = new System.Drawing.Size(70, 13);
-            this.l_systemstatus.TabIndex = 2;
-            this.l_systemstatus.Text = "system status";
             // 
             // l_bwDown
             // 
@@ -302,7 +315,7 @@
             // 
             // bt_peerNew
             // 
-            this.bt_peerNew.Location = new System.Drawing.Point(350, 272);
+            this.bt_peerNew.Location = new System.Drawing.Point(347, 211);
             this.bt_peerNew.Name = "bt_peerNew";
             this.bt_peerNew.Size = new System.Drawing.Size(72, 23);
             this.bt_peerNew.TabIndex = 25;
@@ -312,7 +325,7 @@
             // 
             // bt_peerSave
             // 
-            this.bt_peerSave.Location = new System.Drawing.Point(241, 122);
+            this.bt_peerSave.Location = new System.Drawing.Point(241, 18);
             this.bt_peerSave.Name = "bt_peerSave";
             this.bt_peerSave.Size = new System.Drawing.Size(74, 23);
             this.bt_peerSave.TabIndex = 24;
@@ -322,42 +335,72 @@
             // 
             // gb_ip
             // 
+            this.gb_ip.Controls.Add(this.l_peerIPExt);
+            this.gb_ip.Controls.Add(this.l_peerDynDns);
+            this.gb_ip.Controls.Add(this.l_peerIPInt);
             this.gb_ip.Controls.Add(this.tb_dyndns);
             this.gb_ip.Controls.Add(this.tb_peerIPInt);
             this.gb_ip.Controls.Add(this.tb_peerIPExt);
             this.gb_ip.Controls.Add(this.nud_peerPortExt);
             this.gb_ip.Controls.Add(this.nud_peerPortInt);
-            this.gb_ip.Location = new System.Drawing.Point(241, 16);
+            this.gb_ip.Location = new System.Drawing.Point(241, 46);
             this.gb_ip.Name = "gb_ip";
-            this.gb_ip.Size = new System.Drawing.Size(178, 100);
+            this.gb_ip.Size = new System.Drawing.Size(178, 140);
             this.gb_ip.TabIndex = 23;
             this.gb_ip.TabStop = false;
             this.gb_ip.Text = "IPs/Ports";
             // 
+            // l_peerIPExt
+            // 
+            this.l_peerIPExt.AutoSize = true;
+            this.l_peerIPExt.Location = new System.Drawing.Point(6, 55);
+            this.l_peerIPExt.Name = "l_peerIPExt";
+            this.l_peerIPExt.Size = new System.Drawing.Size(44, 13);
+            this.l_peerIPExt.TabIndex = 24;
+            this.l_peerIPExt.Text = "external";
+            // 
+            // l_peerDynDns
+            // 
+            this.l_peerDynDns.AutoSize = true;
+            this.l_peerDynDns.Location = new System.Drawing.Point(6, 94);
+            this.l_peerDynDns.Name = "l_peerDynDns";
+            this.l_peerDynDns.Size = new System.Drawing.Size(45, 13);
+            this.l_peerDynDns.TabIndex = 23;
+            this.l_peerDynDns.Text = "DynDns";
+            // 
+            // l_peerIPInt
+            // 
+            this.l_peerIPInt.AutoSize = true;
+            this.l_peerIPInt.Location = new System.Drawing.Point(6, 16);
+            this.l_peerIPInt.Name = "l_peerIPInt";
+            this.l_peerIPInt.Size = new System.Drawing.Size(41, 13);
+            this.l_peerIPInt.TabIndex = 22;
+            this.l_peerIPInt.Text = "internal";
+            // 
             // tb_dyndns
             // 
-            this.tb_dyndns.Location = new System.Drawing.Point(6, 71);
+            this.tb_dyndns.Location = new System.Drawing.Point(6, 110);
             this.tb_dyndns.Name = "tb_dyndns";
             this.tb_dyndns.Size = new System.Drawing.Size(163, 20);
             this.tb_dyndns.TabIndex = 21;
             // 
             // tb_peerIPInt
             // 
-            this.tb_peerIPInt.Location = new System.Drawing.Point(6, 19);
+            this.tb_peerIPInt.Location = new System.Drawing.Point(6, 32);
             this.tb_peerIPInt.Name = "tb_peerIPInt";
             this.tb_peerIPInt.Size = new System.Drawing.Size(97, 20);
             this.tb_peerIPInt.TabIndex = 18;
             // 
             // tb_peerIPExt
             // 
-            this.tb_peerIPExt.Location = new System.Drawing.Point(6, 45);
+            this.tb_peerIPExt.Location = new System.Drawing.Point(6, 71);
             this.tb_peerIPExt.Name = "tb_peerIPExt";
             this.tb_peerIPExt.Size = new System.Drawing.Size(97, 20);
             this.tb_peerIPExt.TabIndex = 17;
             // 
             // nud_peerPortExt
             // 
-            this.nud_peerPortExt.Location = new System.Drawing.Point(109, 45);
+            this.nud_peerPortExt.Location = new System.Drawing.Point(109, 71);
             this.nud_peerPortExt.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -379,7 +422,7 @@
             // 
             // nud_peerPortInt
             // 
-            this.nud_peerPortInt.Location = new System.Drawing.Point(109, 19);
+            this.nud_peerPortInt.Location = new System.Drawing.Point(109, 32);
             this.nud_peerPortInt.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -409,7 +452,7 @@
             // lb_locations
             // 
             this.lb_locations.FormattingEnabled = true;
-            this.lb_locations.Location = new System.Drawing.Point(6, 22);
+            this.lb_locations.Location = new System.Drawing.Point(6, 72);
             this.lb_locations.Name = "lb_locations";
             this.lb_locations.Size = new System.Drawing.Size(229, 56);
             this.lb_locations.TabIndex = 14;
@@ -424,14 +467,14 @@
             // 
             // tb_peerName
             // 
-            this.tb_peerName.Location = new System.Drawing.Point(71, 84);
+            this.tb_peerName.Location = new System.Drawing.Point(71, 20);
             this.tb_peerName.Name = "tb_peerName";
             this.tb_peerName.Size = new System.Drawing.Size(164, 20);
             this.tb_peerName.TabIndex = 19;
             // 
             // tb_peerID
             // 
-            this.tb_peerID.Location = new System.Drawing.Point(71, 110);
+            this.tb_peerID.Location = new System.Drawing.Point(71, 46);
             this.tb_peerID.Name = "tb_peerID";
             this.tb_peerID.Size = new System.Drawing.Size(164, 20);
             this.tb_peerID.TabIndex = 20;
@@ -439,7 +482,7 @@
             // l_peerName
             // 
             this.l_peerName.AutoSize = true;
-            this.l_peerName.Location = new System.Drawing.Point(3, 87);
+            this.l_peerName.Location = new System.Drawing.Point(6, 23);
             this.l_peerName.Name = "l_peerName";
             this.l_peerName.Size = new System.Drawing.Size(35, 13);
             this.l_peerName.TabIndex = 15;
@@ -448,7 +491,7 @@
             // l_peerID
             // 
             this.l_peerID.AutoSize = true;
-            this.l_peerID.Location = new System.Drawing.Point(3, 113);
+            this.l_peerID.Location = new System.Drawing.Point(6, 49);
             this.l_peerID.Name = "l_peerID";
             this.l_peerID.Size = new System.Drawing.Size(18, 13);
             this.l_peerID.TabIndex = 16;
@@ -474,7 +517,7 @@
             // 
             // bt_test
             // 
-            this.bt_test.Location = new System.Drawing.Point(12, 318);
+            this.bt_test.Location = new System.Drawing.Point(12, 327);
             this.bt_test.Name = "bt_test";
             this.bt_test.Size = new System.Drawing.Size(155, 31);
             this.bt_test.TabIndex = 11;
@@ -487,6 +530,7 @@
             this.tc_main.Controls.Add(this.tp_friends);
             this.tc_main.Controls.Add(this.tp_chat);
             this.tc_main.Controls.Add(this.tp_files);
+            this.tc_main.Controls.Add(this.tb_search);
             this.tc_main.Location = new System.Drawing.Point(216, 12);
             this.tc_main.Name = "tc_main";
             this.tc_main.SelectedIndex = 0;
@@ -510,19 +554,19 @@
             // 
             this.gb_peerNew.Controls.Add(this.tb_peedNew);
             this.gb_peerNew.Controls.Add(this.bt_peerNew);
-            this.gb_peerNew.Location = new System.Drawing.Point(207, 204);
+            this.gb_peerNew.Location = new System.Drawing.Point(207, 207);
             this.gb_peerNew.Name = "gb_peerNew";
-            this.gb_peerNew.Size = new System.Drawing.Size(428, 301);
+            this.gb_peerNew.Size = new System.Drawing.Size(428, 298);
             this.gb_peerNew.TabIndex = 28;
             this.gb_peerNew.TabStop = false;
             this.gb_peerNew.Text = "Add a new friend";
             // 
             // tb_peedNew
             // 
-            this.tb_peedNew.Location = new System.Drawing.Point(6, 22);
+            this.tb_peedNew.Location = new System.Drawing.Point(6, 19);
             this.tb_peedNew.Multiline = true;
             this.tb_peedNew.Name = "tb_peedNew";
-            this.tb_peedNew.Size = new System.Drawing.Size(413, 244);
+            this.tb_peedNew.Size = new System.Drawing.Size(413, 186);
             this.tb_peedNew.TabIndex = 26;
             // 
             // gb_peerInfo
@@ -530,6 +574,7 @@
             this.gb_peerInfo.Controls.Add(this.bt_peerRemove);
             this.gb_peerInfo.Controls.Add(this.lb_locations);
             this.gb_peerInfo.Controls.Add(this.tb_peerName);
+            this.gb_peerInfo.Controls.Add(this.gb_ip);
             this.gb_peerInfo.Controls.Add(this.tb_peerID);
             this.gb_peerInfo.Controls.Add(this.tb_peerLocation);
             this.gb_peerInfo.Controls.Add(this.l_peerName);
@@ -537,18 +582,17 @@
             this.gb_peerInfo.Controls.Add(this.l_peerID);
             this.gb_peerInfo.Controls.Add(this.l_peerLocationID);
             this.gb_peerInfo.Controls.Add(this.tb_peerLocationID);
-            this.gb_peerInfo.Controls.Add(this.gb_ip);
             this.gb_peerInfo.Controls.Add(this.l_peerLocation);
             this.gb_peerInfo.Location = new System.Drawing.Point(207, 7);
             this.gb_peerInfo.Name = "gb_peerInfo";
-            this.gb_peerInfo.Size = new System.Drawing.Size(428, 191);
+            this.gb_peerInfo.Size = new System.Drawing.Size(428, 194);
             this.gb_peerInfo.TabIndex = 27;
             this.gb_peerInfo.TabStop = false;
             this.gb_peerInfo.Text = "Information";
             // 
             // bt_peerRemove
             // 
-            this.bt_peerRemove.Location = new System.Drawing.Point(321, 122);
+            this.bt_peerRemove.Location = new System.Drawing.Point(321, 18);
             this.bt_peerRemove.Name = "bt_peerRemove";
             this.bt_peerRemove.Size = new System.Drawing.Size(98, 23);
             this.bt_peerRemove.TabIndex = 25;
@@ -705,12 +749,200 @@
             // 
             // tp_files
             // 
+            this.tp_files.Controls.Add(this.bt_filesWait);
+            this.tp_files.Controls.Add(this.bt_filesRestart);
+            this.tp_files.Controls.Add(this.bt_filesForceCheck);
+            this.tp_files.Controls.Add(this.bt_filesContinue);
+            this.tp_files.Controls.Add(this.bt_filesCancel);
+            this.tp_files.Controls.Add(this.bt_filesPause);
+            this.tp_files.Controls.Add(this.l_filesUL);
+            this.tp_files.Controls.Add(this.l_filesDL);
+            this.tp_files.Controls.Add(this.lb_filesUploads);
+            this.tp_files.Controls.Add(this.lb_filesDownloads);
+            this.tp_files.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tp_files.Location = new System.Drawing.Point(4, 22);
             this.tp_files.Name = "tp_files";
             this.tp_files.Size = new System.Drawing.Size(641, 512);
             this.tp_files.TabIndex = 2;
             this.tp_files.Text = "Files";
             this.tp_files.UseVisualStyleBackColor = true;
+            // 
+            // bt_filesWait
+            // 
+            this.bt_filesWait.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_filesWait.Location = new System.Drawing.Point(563, 83);
+            this.bt_filesWait.Name = "bt_filesWait";
+            this.bt_filesWait.Size = new System.Drawing.Size(75, 23);
+            this.bt_filesWait.TabIndex = 9;
+            this.bt_filesWait.Text = "queue bottom";
+            this.bt_filesWait.UseVisualStyleBackColor = true;
+            this.bt_filesWait.Click += new System.EventHandler(this.bt_filesWait_Click);
+            // 
+            // bt_filesRestart
+            // 
+            this.bt_filesRestart.Location = new System.Drawing.Point(563, 54);
+            this.bt_filesRestart.Name = "bt_filesRestart";
+            this.bt_filesRestart.Size = new System.Drawing.Size(75, 23);
+            this.bt_filesRestart.TabIndex = 8;
+            this.bt_filesRestart.Text = "restart";
+            this.bt_filesRestart.UseVisualStyleBackColor = true;
+            this.bt_filesRestart.Click += new System.EventHandler(this.bt_filesRestart_Click);
+            // 
+            // bt_filesForceCheck
+            // 
+            this.bt_filesForceCheck.Location = new System.Drawing.Point(563, 142);
+            this.bt_filesForceCheck.Name = "bt_filesForceCheck";
+            this.bt_filesForceCheck.Size = new System.Drawing.Size(75, 23);
+            this.bt_filesForceCheck.TabIndex = 7;
+            this.bt_filesForceCheck.Text = "force check";
+            this.bt_filesForceCheck.UseVisualStyleBackColor = true;
+            this.bt_filesForceCheck.Click += new System.EventHandler(this.bt_filesForceCheck_Click);
+            // 
+            // bt_filesContinue
+            // 
+            this.bt_filesContinue.Location = new System.Drawing.Point(563, 112);
+            this.bt_filesContinue.Name = "bt_filesContinue";
+            this.bt_filesContinue.Size = new System.Drawing.Size(75, 23);
+            this.bt_filesContinue.TabIndex = 6;
+            this.bt_filesContinue.Text = "queue top";
+            this.bt_filesContinue.UseVisualStyleBackColor = true;
+            this.bt_filesContinue.Click += new System.EventHandler(this.bt_filesContinue_Click);
+            // 
+            // bt_filesCancel
+            // 
+            this.bt_filesCancel.Location = new System.Drawing.Point(563, 171);
+            this.bt_filesCancel.Name = "bt_filesCancel";
+            this.bt_filesCancel.Size = new System.Drawing.Size(75, 23);
+            this.bt_filesCancel.TabIndex = 5;
+            this.bt_filesCancel.Text = "cancel";
+            this.bt_filesCancel.UseVisualStyleBackColor = true;
+            this.bt_filesCancel.Click += new System.EventHandler(this.bt_filesCancel_Click);
+            // 
+            // bt_filesPause
+            // 
+            this.bt_filesPause.Location = new System.Drawing.Point(563, 25);
+            this.bt_filesPause.Name = "bt_filesPause";
+            this.bt_filesPause.Size = new System.Drawing.Size(75, 23);
+            this.bt_filesPause.TabIndex = 4;
+            this.bt_filesPause.Text = "pause";
+            this.bt_filesPause.UseVisualStyleBackColor = true;
+            this.bt_filesPause.Click += new System.EventHandler(this.bt_filesPause_Click);
+            // 
+            // l_filesUL
+            // 
+            this.l_filesUL.AutoSize = true;
+            this.l_filesUL.Location = new System.Drawing.Point(3, 240);
+            this.l_filesUL.Name = "l_filesUL";
+            this.l_filesUL.Size = new System.Drawing.Size(46, 13);
+            this.l_filesUL.TabIndex = 3;
+            this.l_filesUL.Text = "Uploads";
+            // 
+            // l_filesDL
+            // 
+            this.l_filesDL.AutoSize = true;
+            this.l_filesDL.Location = new System.Drawing.Point(3, 9);
+            this.l_filesDL.Name = "l_filesDL";
+            this.l_filesDL.Size = new System.Drawing.Size(60, 13);
+            this.l_filesDL.TabIndex = 2;
+            this.l_filesDL.Text = "Downloads";
+            // 
+            // lb_filesUploads
+            // 
+            this.lb_filesUploads.FormattingEnabled = true;
+            this.lb_filesUploads.Location = new System.Drawing.Point(3, 256);
+            this.lb_filesUploads.Name = "lb_filesUploads";
+            this.lb_filesUploads.Size = new System.Drawing.Size(554, 251);
+            this.lb_filesUploads.TabIndex = 1;
+            this.lb_filesUploads.SelectedIndexChanged += new System.EventHandler(this.lb_filesUploads_SelectedIndexChanged);
+            // 
+            // lb_filesDownloads
+            // 
+            this.lb_filesDownloads.FormattingEnabled = true;
+            this.lb_filesDownloads.Location = new System.Drawing.Point(3, 25);
+            this.lb_filesDownloads.Name = "lb_filesDownloads";
+            this.lb_filesDownloads.Size = new System.Drawing.Size(554, 212);
+            this.lb_filesDownloads.TabIndex = 0;
+            this.lb_filesDownloads.SelectedIndexChanged += new System.EventHandler(this.lb_filesDownloads_SelectedIndexChanged);
+            // 
+            // tb_search
+            // 
+            this.tb_search.Controls.Add(this.button2);
+            this.tb_search.Controls.Add(this.button1);
+            this.tb_search.Controls.Add(this.lb_searches);
+            this.tb_search.Controls.Add(this.lb_searchResults);
+            this.tb_search.Controls.Add(this.tb_searchKeyWords);
+            this.tb_search.Controls.Add(this.bt_searchSearch);
+            this.tb_search.Controls.Add(this.l_searchKeyWords);
+            this.tb_search.Location = new System.Drawing.Point(4, 22);
+            this.tb_search.Name = "tb_search";
+            this.tb_search.Size = new System.Drawing.Size(641, 512);
+            this.tb_search.TabIndex = 3;
+            this.tb_search.Text = "Search";
+            this.tb_search.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(538, 458);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(100, 23);
+            this.button2.TabIndex = 6;
+            this.button2.Text = "add to downloads";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(3, 458);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(143, 23);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "remove selected search";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // lb_searches
+            // 
+            this.lb_searches.FormattingEnabled = true;
+            this.lb_searches.Location = new System.Drawing.Point(3, 32);
+            this.lb_searches.Name = "lb_searches";
+            this.lb_searches.Size = new System.Drawing.Size(143, 420);
+            this.lb_searches.TabIndex = 4;
+            this.lb_searches.SelectedIndexChanged += new System.EventHandler(this.lb_searches_SelectedIndexChanged);
+            // 
+            // lb_searchResults
+            // 
+            this.lb_searchResults.FormattingEnabled = true;
+            this.lb_searchResults.Location = new System.Drawing.Point(152, 32);
+            this.lb_searchResults.Name = "lb_searchResults";
+            this.lb_searchResults.Size = new System.Drawing.Size(486, 420);
+            this.lb_searchResults.TabIndex = 3;
+            // 
+            // tb_searchKeyWords
+            // 
+            this.tb_searchKeyWords.Location = new System.Drawing.Point(64, 5);
+            this.tb_searchKeyWords.Name = "tb_searchKeyWords";
+            this.tb_searchKeyWords.Size = new System.Drawing.Size(493, 20);
+            this.tb_searchKeyWords.TabIndex = 2;
+            this.tb_searchKeyWords.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tb_searchKeyWords_KeyUp);
+            // 
+            // bt_searchSearch
+            // 
+            this.bt_searchSearch.Location = new System.Drawing.Point(563, 3);
+            this.bt_searchSearch.Name = "bt_searchSearch";
+            this.bt_searchSearch.Size = new System.Drawing.Size(75, 23);
+            this.bt_searchSearch.TabIndex = 1;
+            this.bt_searchSearch.Text = "search";
+            this.bt_searchSearch.UseVisualStyleBackColor = false;
+            this.bt_searchSearch.Click += new System.EventHandler(this.bt_searchSearch_Click);
+            // 
+            // l_searchKeyWords
+            // 
+            this.l_searchKeyWords.AutoSize = true;
+            this.l_searchKeyWords.Location = new System.Drawing.Point(3, 8);
+            this.l_searchKeyWords.Name = "l_searchKeyWords";
+            this.l_searchKeyWords.Size = new System.Drawing.Size(55, 13);
+            this.l_searchKeyWords.TabIndex = 0;
+            this.l_searchKeyWords.Text = "key words";
             // 
             // tb_optios
             // 
@@ -719,11 +951,12 @@
             this.tb_optios.Location = new System.Drawing.Point(12, 12);
             this.tb_optios.Name = "tb_optios";
             this.tb_optios.SelectedIndex = 0;
-            this.tb_optios.Size = new System.Drawing.Size(198, 194);
+            this.tb_optios.Size = new System.Drawing.Size(198, 203);
             this.tb_optios.TabIndex = 16;
             // 
             // tb_connection
             // 
+            this.tb_connection.Controls.Add(this.bt_shutdown);
             this.tb_connection.Controls.Add(this.cb_con);
             this.tb_connection.Controls.Add(this.l_ip);
             this.tb_connection.Controls.Add(this.l_pw);
@@ -738,10 +971,20 @@
             this.tb_connection.Location = new System.Drawing.Point(4, 22);
             this.tb_connection.Name = "tb_connection";
             this.tb_connection.Padding = new System.Windows.Forms.Padding(3);
-            this.tb_connection.Size = new System.Drawing.Size(190, 168);
+            this.tb_connection.Size = new System.Drawing.Size(190, 177);
             this.tb_connection.TabIndex = 0;
             this.tb_connection.Text = "Connection";
             this.tb_connection.UseVisualStyleBackColor = true;
+            // 
+            // bt_shutdown
+            // 
+            this.bt_shutdown.Location = new System.Drawing.Point(9, 142);
+            this.bt_shutdown.Name = "bt_shutdown";
+            this.bt_shutdown.Size = new System.Drawing.Size(77, 23);
+            this.bt_shutdown.TabIndex = 12;
+            this.bt_shutdown.Text = "shutdown";
+            this.bt_shutdown.UseVisualStyleBackColor = true;
+            this.bt_shutdown.Click += new System.EventHandler(this.bt_shutdown_Click);
             // 
             // tb_options
             // 
@@ -751,7 +994,7 @@
             this.tb_options.Location = new System.Drawing.Point(4, 22);
             this.tb_options.Name = "tb_options";
             this.tb_options.Padding = new System.Windows.Forms.Padding(3);
-            this.tb_options.Size = new System.Drawing.Size(190, 168);
+            this.tb_options.Size = new System.Drawing.Size(190, 177);
             this.tb_options.TabIndex = 1;
             this.tb_options.Text = "Settings";
             this.tb_options.UseVisualStyleBackColor = true;
@@ -795,13 +1038,13 @@
             this.Controls.Add(this.tb_optios);
             this.Controls.Add(this.tc_main);
             this.Controls.Add(this.bt_test);
-            this.Controls.Add(this.bg_systemStatus);
+            this.Controls.Add(this.gb_systemStatus);
             this.Controls.Add(this.tb_out);
             this.Name = "MainForm";
-            this.Text = "Form1";
+            this.Text = "RetroShare SSH Client by sehraf";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            this.bg_systemStatus.ResumeLayout(false);
-            this.bg_systemStatus.PerformLayout();
+            this.gb_systemStatus.ResumeLayout(false);
+            this.gb_systemStatus.PerformLayout();
             this.gb_ip.ResumeLayout(false);
             this.gb_ip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortExt)).EndInit();
@@ -818,6 +1061,10 @@
             this.gb_autoResp.PerformLayout();
             this.gb_nickname.ResumeLayout(false);
             this.gb_nickname.PerformLayout();
+            this.tp_files.ResumeLayout(false);
+            this.tp_files.PerformLayout();
+            this.tb_search.ResumeLayout(false);
+            this.tb_search.PerformLayout();
             this.tb_optios.ResumeLayout(false);
             this.tb_connection.ResumeLayout(false);
             this.tb_connection.PerformLayout();
@@ -842,11 +1089,10 @@
         private System.Windows.Forms.Label l_user;
         private System.Windows.Forms.Label l_port;
         private System.Windows.Forms.Label l_ip;
-        private System.Windows.Forms.GroupBox bg_systemStatus;
+        private System.Windows.Forms.GroupBox gb_systemStatus;
         private System.Windows.Forms.Timer t_tick;
         private System.Windows.Forms.Label l_bwDown;
         private System.Windows.Forms.Label l_bwUp;
-        private System.Windows.Forms.Label l_systemstatus;
         private System.Windows.Forms.Label l_network;
         private System.Windows.Forms.Label l_peers;
         private System.Windows.Forms.Label l_connected;
@@ -897,6 +1143,28 @@
         private System.Windows.Forms.CheckBox cb_settingsSave;
         private System.Windows.Forms.CheckBox cb_settingsSavePW;
         private System.Windows.Forms.CheckBox cb_settingsSaveChat;
+        private System.Windows.Forms.Label l_peerIPExt;
+        private System.Windows.Forms.Label l_peerDynDns;
+        private System.Windows.Forms.Label l_peerIPInt;
+        private System.Windows.Forms.Button bt_shutdown;
+        private System.Windows.Forms.ListBox lb_filesUploads;
+        private System.Windows.Forms.ListBox lb_filesDownloads;
+        private System.Windows.Forms.TabPage tb_search;
+        private System.Windows.Forms.Label l_filesDL;
+        private System.Windows.Forms.Label l_filesUL;
+        private System.Windows.Forms.Button bt_filesContinue;
+        private System.Windows.Forms.Button bt_filesCancel;
+        private System.Windows.Forms.Button bt_filesPause;
+        private System.Windows.Forms.Button bt_filesRestart;
+        private System.Windows.Forms.Button bt_filesForceCheck;
+        private System.Windows.Forms.Button bt_filesWait;
+        private System.Windows.Forms.TextBox tb_searchKeyWords;
+        private System.Windows.Forms.Button bt_searchSearch;
+        private System.Windows.Forms.Label l_searchKeyWords;
+        private System.Windows.Forms.ListBox lb_searchResults;
+        private System.Windows.Forms.ListBox lb_searches;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
     }
 }
 
