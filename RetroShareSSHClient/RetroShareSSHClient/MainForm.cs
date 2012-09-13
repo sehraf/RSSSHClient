@@ -201,6 +201,7 @@ namespace RetroShareSSHClient
         private void Error(Exception e)
         {
             System.Diagnostics.Debug.WriteLine(e.Message);
+            tb_out.AppendText(e.Message + "\n");
         }
 
         private void ProcessMsgFromThread(RSProtoBuffSSHMsg msg)
@@ -791,7 +792,47 @@ namespace RetroShareSSHClient
 
         private string BuildFileTransferString(FileTransfer ft)
         {
-            return String.Format("{0:0,0.00}", ft.rate_kBs) + "kBs - " + ((ft.direction == Direction.DIRECTION_DOWNLOAD) ? (String.Format("{0:0,0.00}", ft.fraction * 100) + "% - ") : "") + ft.file.name;
+            return String.Format("{0:0,0.00}", ft.rate_kBs) + "kBs - " +
+                ((ft.direction == Direction.DIRECTION_DOWNLOAD) ? (String.Format("{0:0,0.00}", ft.fraction * 100) + "% - ") : "") +
+                BuildSizeString(ft.file.size) + " - " +
+                ft.file.name;
+        }
+
+        private string BuildSizeString(ulong size)
+        {
+            byte counter = 0;
+            float sizef = size;
+            while (sizef > 1024)
+            {
+                counter++;
+                sizef /= 1024;
+            }
+            string s = "";
+            switch (counter)
+            {
+                case 0:
+                    s = "B";
+                    break;
+                case 1:
+                    s = "KiB";
+                    break;
+                case 2:
+                    s = "MiB";
+                    break;
+                case 3:
+                    s = "GiB";
+                    break;
+                case 4:
+                    s = "TiB";
+                    break;
+                case 5:
+                    s = "PiB";
+                    break;
+                default:
+                    s = "too damn high";
+                    break;
+            }
+            return String.Format("{0:0.00}", sizef) + s;
         }
 
         private bool GetFileTransferBySelection(out GuiFileTransfer gft)
@@ -1062,7 +1103,7 @@ namespace RetroShareSSHClient
                 switch (msg.net_status)
                 {
                     case ResponseSystemStatus.NetCode.BAD_NATSYM:
-                        l_network.Text = "BAD: natsyn (?)";
+                        l_network.Text = "BAD: symmetric NAT";
                         break;
                     case ResponseSystemStatus.NetCode.BAD_NODHT_NAT:
                         l_network.Text = "BAD: natted/no DHT";

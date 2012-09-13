@@ -160,7 +160,7 @@
             this.tb_out.Location = new System.Drawing.Point(12, 364);
             this.tb_out.Multiline = true;
             this.tb_out.Name = "tb_out";
-            this.tb_out.Size = new System.Drawing.Size(155, 184);
+            this.tb_out.Size = new System.Drawing.Size(194, 184);
             this.tb_out.TabIndex = 2;
             // 
             // tb_user
@@ -517,9 +517,10 @@
             // 
             // bt_test
             // 
+            this.bt_test.Enabled = false;
             this.bt_test.Location = new System.Drawing.Point(12, 327);
             this.bt_test.Name = "bt_test";
-            this.bt_test.Size = new System.Drawing.Size(155, 31);
+            this.bt_test.Size = new System.Drawing.Size(194, 31);
             this.bt_test.TabIndex = 11;
             this.bt_test.Text = "Test";
             this.bt_test.UseVisualStyleBackColor = true;
@@ -978,6 +979,7 @@
             // 
             // bt_shutdown
             // 
+            this.bt_shutdown.Enabled = false;
             this.bt_shutdown.Location = new System.Drawing.Point(9, 142);
             this.bt_shutdown.Name = "bt_shutdown";
             this.bt_shutdown.Size = new System.Drawing.Size(77, 23);

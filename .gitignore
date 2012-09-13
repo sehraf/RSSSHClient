@@ -10,6 +10,8 @@ deploy/*
 *.suo
 *.cache
 .svn/
+settings.txt
+protogen.bat
 
 # mstest test results
 TestResults
