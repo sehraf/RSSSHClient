@@ -65,6 +65,7 @@ namespace Sehraf.RSRPC
             if (!_connected)
             {
                 _sendQueue.Clear();
+                _receiveQueue.Clear();
                 _rsConnector = new RSSSHConnector(host, port, user, pw);
                 if (_rsConnector.Connect())
                 {
@@ -86,8 +87,7 @@ namespace Sehraf.RSRPC
         public void Disconnect(bool shutdown = false)
         {
             if (_connected)
-            {
-                _connected = false;
+            {                
                 _run = false;
                 if (_useProperDisconnect)
                 {
@@ -107,11 +107,11 @@ namespace Sehraf.RSRPC
             _error(e);
         }
 
-        internal void ProcessMsg(RSProtoBuffSSHMsg msg)
-        {
-            if(_connected)
-                _receivedMsg(msg);
-        }
+        //internal void ProcessMsg(RSProtoBuffSSHMsg msg)
+        //{
+        //    if(_connected)
+        //        _receivedMsg(msg);
+        //}
 
         private void ProcessNewMsgLoop()
         {
@@ -146,6 +146,7 @@ namespace Sehraf.RSRPC
             _rsProtoBuf = null;
             _rsConnector.Disconnect();
             _rsConnector = null;
+            _connected = false;
         }
 
         // ---------- send ----------

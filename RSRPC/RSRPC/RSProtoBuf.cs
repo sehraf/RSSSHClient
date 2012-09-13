@@ -146,7 +146,7 @@ namespace Sehraf.RSRPC
                 timeOut = _timeOut;
 
             byte[] input = new byte[16], buffer;
-            bool done = false;
+            //bool done = false;
 
             // get Header
             if (!ReadFromStream(timeOut, 16, out buffer))            

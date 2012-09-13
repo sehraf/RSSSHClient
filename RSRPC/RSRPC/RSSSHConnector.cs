@@ -55,6 +55,7 @@ namespace Sehraf.RSRPC
             _stream.Close();
             _stream.Dispose();
             _client.Disconnect();
+            _client = null;
         }
     }
 }
