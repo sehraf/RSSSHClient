@@ -103,8 +103,8 @@
             this.lb_filesUploads = new System.Windows.Forms.ListBox();
             this.lb_filesDownloads = new System.Windows.Forms.ListBox();
             this.tb_search = new System.Windows.Forms.TabPage();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.bt_searchAddToDL = new System.Windows.Forms.Button();
+            this.bt_searchRemove = new System.Windows.Forms.Button();
             this.lb_searches = new System.Windows.Forms.ListBox();
             this.lb_searchResults = new System.Windows.Forms.ListBox();
             this.tb_searchKeyWords = new System.Windows.Forms.TextBox();
@@ -379,6 +379,7 @@
             // 
             // tb_dyndns
             // 
+            this.tb_dyndns.Enabled = false;
             this.tb_dyndns.Location = new System.Drawing.Point(6, 110);
             this.tb_dyndns.Name = "tb_dyndns";
             this.tb_dyndns.Size = new System.Drawing.Size(163, 20);
@@ -867,8 +868,8 @@
             // 
             // tb_search
             // 
-            this.tb_search.Controls.Add(this.button2);
-            this.tb_search.Controls.Add(this.button1);
+            this.tb_search.Controls.Add(this.bt_searchAddToDL);
+            this.tb_search.Controls.Add(this.bt_searchRemove);
             this.tb_search.Controls.Add(this.lb_searches);
             this.tb_search.Controls.Add(this.lb_searchResults);
             this.tb_search.Controls.Add(this.tb_searchKeyWords);
@@ -881,25 +882,25 @@
             this.tb_search.Text = "Search";
             this.tb_search.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // bt_searchAddToDL
             // 
-            this.button2.Location = new System.Drawing.Point(538, 458);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(100, 23);
-            this.button2.TabIndex = 6;
-            this.button2.Text = "add to downloads";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.bt_searchAddToDL.Location = new System.Drawing.Point(538, 458);
+            this.bt_searchAddToDL.Name = "bt_searchAddToDL";
+            this.bt_searchAddToDL.Size = new System.Drawing.Size(100, 23);
+            this.bt_searchAddToDL.TabIndex = 6;
+            this.bt_searchAddToDL.Text = "add to downloads";
+            this.bt_searchAddToDL.UseVisualStyleBackColor = true;
+            this.bt_searchAddToDL.Click += new System.EventHandler(this.bt_searchAddToDL_Click);
             // 
-            // button1
+            // bt_searchRemove
             // 
-            this.button1.Location = new System.Drawing.Point(3, 458);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(143, 23);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "remove selected search";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.bt_searchRemove.Location = new System.Drawing.Point(3, 458);
+            this.bt_searchRemove.Name = "bt_searchRemove";
+            this.bt_searchRemove.Size = new System.Drawing.Size(143, 23);
+            this.bt_searchRemove.TabIndex = 5;
+            this.bt_searchRemove.Text = "remove selected search";
+            this.bt_searchRemove.UseVisualStyleBackColor = true;
+            this.bt_searchRemove.Click += new System.EventHandler(this.bt_searchRemove_Click);
             // 
             // lb_searches
             // 
@@ -1098,23 +1099,23 @@
         private System.Windows.Forms.Label l_network;
         private System.Windows.Forms.Label l_peers;
         private System.Windows.Forms.Label l_connected;
-        private System.Windows.Forms.ListBox lb_friends;
+        internal System.Windows.Forms.ListBox lb_friends;
         private System.Windows.Forms.Button bt_peerSave;
         private System.Windows.Forms.GroupBox gb_ip;
-        private System.Windows.Forms.TextBox tb_peerIPInt;
-        private System.Windows.Forms.TextBox tb_peerIPExt;
-        private System.Windows.Forms.NumericUpDown nud_peerPortExt;
-        private System.Windows.Forms.NumericUpDown nud_peerPortInt;
-        private System.Windows.Forms.TextBox tb_peerLocationID;
-        private System.Windows.Forms.ListBox lb_locations;
-        private System.Windows.Forms.TextBox tb_peerLocation;
-        private System.Windows.Forms.TextBox tb_peerName;
-        private System.Windows.Forms.TextBox tb_peerID;
+        internal System.Windows.Forms.TextBox tb_peerIPInt;
+        internal System.Windows.Forms.TextBox tb_peerIPExt;
+        internal System.Windows.Forms.NumericUpDown nud_peerPortExt;
+        internal System.Windows.Forms.NumericUpDown nud_peerPortInt;
+        internal System.Windows.Forms.TextBox tb_peerLocationID;
+        internal System.Windows.Forms.ListBox lb_locations;
+        internal System.Windows.Forms.TextBox tb_peerLocation;
+        internal System.Windows.Forms.TextBox tb_peerName;
+        internal System.Windows.Forms.TextBox tb_peerID;
         private System.Windows.Forms.Label l_peerName;
         private System.Windows.Forms.Label l_peerID;
         private System.Windows.Forms.Label l_peerLocation;
         private System.Windows.Forms.Label l_peerLocationID;
-        private System.Windows.Forms.TextBox tb_dyndns;
+        internal System.Windows.Forms.TextBox tb_dyndns;
         private System.Windows.Forms.Button bt_peerNew;
         private System.Windows.Forms.Button bt_test;
         private System.Windows.Forms.TabControl tc_main;
@@ -1122,23 +1123,23 @@
         private System.Windows.Forms.TabPage tp_chat;
         private System.Windows.Forms.TabPage tp_files;
         private System.Windows.Forms.GroupBox gb_peerNew;
-        private System.Windows.Forms.TextBox tb_peedNew;
+        internal System.Windows.Forms.TextBox tb_peedNew;
         private System.Windows.Forms.GroupBox gb_peerInfo;
         private System.Windows.Forms.Button bt_chatSend;
-        private System.Windows.Forms.TextBox tb_chatMsg;
-        private System.Windows.Forms.CheckedListBox clb_chatLobbies;
-        private System.Windows.Forms.RichTextBox rtb_chat;
-        private System.Windows.Forms.GroupBox gb_nickname;
-        private System.Windows.Forms.TextBox tb_chatNickname;
+        internal System.Windows.Forms.TextBox tb_chatMsg;
+        internal System.Windows.Forms.CheckedListBox clb_chatLobbies;
+        internal System.Windows.Forms.RichTextBox rtb_chat;
+        internal System.Windows.Forms.GroupBox gb_nickname;
+        internal System.Windows.Forms.TextBox tb_chatNickname;
         private System.Windows.Forms.Button bt_setNickname;
         private System.Windows.Forms.Button bt_peerRemove;
-        private System.Windows.Forms.GroupBox gb_autoResp;
-        private System.Windows.Forms.TextBox tb_chatAutoRespAnswer;
+        internal System.Windows.Forms.GroupBox gb_autoResp;
+        internal System.Windows.Forms.TextBox tb_chatAutoRespAnswer;
         private System.Windows.Forms.Label l_chatAutoRespSearch;
-        private System.Windows.Forms.TextBox tb_chatAutoRespSearch;
-        private System.Windows.Forms.CheckBox cb_chatAutoRespEnable;
+        internal System.Windows.Forms.TextBox tb_chatAutoRespSearch;
+        internal System.Windows.Forms.CheckBox cb_chatAutoRespEnable;
         private System.Windows.Forms.Label l_chatAutoRespAnswer;
-        private System.Windows.Forms.CheckedListBox clb_chatUser;
+        internal System.Windows.Forms.CheckedListBox clb_chatUser;
         private System.Windows.Forms.TabControl tb_optios;
         private System.Windows.Forms.TabPage tb_connection;
         private System.Windows.Forms.TabPage tb_options;
@@ -1149,8 +1150,8 @@
         private System.Windows.Forms.Label l_peerDynDns;
         private System.Windows.Forms.Label l_peerIPInt;
         private System.Windows.Forms.Button bt_shutdown;
-        private System.Windows.Forms.ListBox lb_filesUploads;
-        private System.Windows.Forms.ListBox lb_filesDownloads;
+        internal System.Windows.Forms.ListBox lb_filesUploads;
+        internal System.Windows.Forms.ListBox lb_filesDownloads;
         private System.Windows.Forms.TabPage tb_search;
         private System.Windows.Forms.Label l_filesDL;
         private System.Windows.Forms.Label l_filesUL;
@@ -1160,13 +1161,13 @@
         private System.Windows.Forms.Button bt_filesRestart;
         private System.Windows.Forms.Button bt_filesForceCheck;
         private System.Windows.Forms.Button bt_filesWait;
-        private System.Windows.Forms.TextBox tb_searchKeyWords;
+        internal System.Windows.Forms.TextBox tb_searchKeyWords;
         private System.Windows.Forms.Button bt_searchSearch;
         private System.Windows.Forms.Label l_searchKeyWords;
-        private System.Windows.Forms.ListBox lb_searchResults;
-        private System.Windows.Forms.ListBox lb_searches;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        internal System.Windows.Forms.ListBox lb_searchResults;
+        internal System.Windows.Forms.ListBox lb_searches;
+        private System.Windows.Forms.Button bt_searchAddToDL;
+        private System.Windows.Forms.Button bt_searchRemove;
     }
 }
 
