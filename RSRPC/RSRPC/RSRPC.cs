@@ -139,6 +139,7 @@ namespace Sehraf.RSRPC
                 counter++;
             }
             _rsProtoBuf.StopThread();
+            Thread.Sleep(100);
             if (!_useProperDisconnect)
             {
                 _rsProtoBuf.BreakConnection();

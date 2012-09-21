@@ -39,6 +39,13 @@ namespace RetroShareSSHClient
             _searches = new Dictionary<uint, GuiSearch>();
         }
 
+        public void Reset()
+        {
+            _pendingSearchReq.Clear();            
+            _searches.Clear();
+            _b.GUI.lb_searches.Items.Clear();
+            _b.GUI.lb_searchResults.Items.Clear();
+        }
 
         public void RegisterSearchIDs(uint ReqID, ResponseSearchIds response)
         {
@@ -171,7 +178,7 @@ namespace RetroShareSSHClient
             _b.GUI.lb_searchResults.Items.Clear();
             foreach (SearchHit sh in gs.Results)
             {
-                _b.GUI.lb_searchResults.Items.Add(sh.no_hits + " hits - " + sh.file.name);
+                _b.GUI.lb_searchResults.Items.Add(sh.no_hits + " hits - " + Processor.BuildSizeString(sh.file.size) + " - " + sh.file.name);
             }
 
             if (index < _b.GUI.lb_searchResults.Items.Count)

@@ -34,10 +34,52 @@ namespace RetroShareSSHClient
             _pendingPeerRequests = new Dictionary<uint, RequestPeers.SetOption>();
         }
 
+        public void Reset()
+        {
+            _pendingPeerRequests.Clear();
+        }
+
         public static string RemoteTags(string inputString)
         {
             return Regex.Replace
               (inputString, pattern, string.Empty);
+        }
+
+        public static string BuildSizeString(ulong size)
+        {
+            byte counter = 0;
+            float sizef = size;
+            while (sizef > 1024)
+            {
+                counter++;
+                sizef /= 1024;
+            }
+            string s = "";
+            switch (counter)
+            {
+                case 0:
+                    s = "B";
+                    break;
+                case 1:
+                    s = "KiB";
+                    break;
+                case 2:
+                    s = "MiB";
+                    break;
+                case 3:
+                    s = "GiB";
+                    break;
+                case 4:
+                    s = "TiB";
+                    break;
+                case 5:
+                    s = "PiB";
+                    break;
+                default:
+                    s = "too damn high";
+                    break;
+            }
+            return String.Format("{0:0.00}", sizef) + s;
         }
 
         public void ProcessMsg(RSProtoBuffSSHMsg msg)

@@ -51,7 +51,7 @@ namespace Sehraf.RSRPC
         }
 
         public void Disconnect()
-        {            
+        {
             _stream.Close();
             _stream.Dispose();
             _client.Disconnect();

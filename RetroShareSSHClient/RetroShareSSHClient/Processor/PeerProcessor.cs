@@ -25,6 +25,15 @@ namespace RetroShareSSHClient
             _selectedFriend = new Person();
         }
 
+        public void Reset()
+        {
+            //_owner = null; needed?
+            _friendList.Clear();
+            _b.GUI.lb_friends.Items.Clear();
+            _b.GUI.lb_locations.Items.Clear();
+            _selectedFriend = null;
+        }
+
         public void UpdatePeerList(ResponsePeerList msg)
         {
             int index1 = _b.GUI.lb_friends.SelectedIndex, index2 = _b.GUI.lb_locations.SelectedIndex;

@@ -153,10 +153,8 @@ namespace RetroShareSSHClient
             t_tick.Stop();
 
             _b.SearchProcessor.CloseAllSearches();
-            System.Threading.Thread.Sleep(250);           
-
             _b.RPC.Disconnect(shutdown);
-            //tb_out.Text = "disconnected!";
+            _b.Reset();
             cb_con.CheckState = CheckState.Unchecked;
         }
 
@@ -217,29 +215,38 @@ namespace RetroShareSSHClient
         {
             if (_b.RPC.IsConnected)
             {
+                // tick
                 _b.RPC.SystemGetStatus();
                 _b.ChatProcessor.ToggleCheckboxes();
-
-                if (_tickCounter % 2 == 0)
+                
+                // DL/UL
+                if (_tickCounter % 30 == 0 || (tc_main.SelectedTab == tp_files && _tickCounter % 2 == 0))
                 {
                     _b.RPC.FilesGetTransferList(rsctrl.files.Direction.DIRECTION_DOWNLOAD);
-                    _b.RPC.FilesGetTransferList(rsctrl.files.Direction.DIRECTION_UPLOAD);                    
+                    _b.RPC.FilesGetTransferList(rsctrl.files.Direction.DIRECTION_UPLOAD);
                 }
 
+                // every 10 sec - not to often!
                 if (_tickCounter % 10 == 0)
                 {
                     _b.SearchProcessor.GetSearchResults();
                 }
 
-                if (_tickCounter % 30 == 0)
+                // friends
+                if (_tickCounter % 30 == 0 || (tc_main.SelectedTab == tp_friends && _tickCounter % 2 == 0))
                 {
                     uint regID;
-                    //regID = _bridge.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_JOINED);
-                    //regID = _bridge.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_INVITED);
-                    //regID = _bridge.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_PUBLIC);
-                    regID = _b.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_ALL);
                     regID = _b.RPC.PeersGetFriendList(RequestPeers.SetOption.FRIENDS);
                     _b.Processor.PendingPeerRequests.Add(regID, RequestPeers.SetOption.FRIENDS);
+                }
+
+                //chat lobbies
+                if (_tickCounter % 30 == 0 || (_tickCounter < 30 && _tickCounter % 10 == 0))
+                {
+                    //_bridge.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_JOINED);
+                    //_bridge.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_INVITED);
+                    //_bridge.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_PUBLIC);
+                    _b.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_ALL);
                 }
 
                 if (_tickCounter == uint.MaxValue)
@@ -505,6 +512,15 @@ namespace RetroShareSSHClient
             _peer = new PeerProcessor(this);
             _search = new SearchProcessor(this);
             _file = new FileProcessor(this);
+        }
+
+        public void Reset()
+        {
+            _processor.Reset();
+            _chat.Reset();
+            _peer.Reset();
+            _search.Reset();
+            _file.Reset();
         }
     }
 }

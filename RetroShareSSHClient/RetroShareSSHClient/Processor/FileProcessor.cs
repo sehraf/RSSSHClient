@@ -48,6 +48,13 @@ namespace RetroShareSSHClient
             _fileTransfers = new Dictionary<string, GuiFileTransfer>();
         }
 
+        public void Reset()
+        {
+            _fileTransfers.Clear();
+            _b.GUI.lb_filesDownloads.Items.Clear();
+            _b.GUI.lb_filesUploads.Items.Clear();
+        }
+
         public void UpdateFileTransfers(ResponseTransferList list)
         {
             if (list.transfers.Count == 0)
@@ -172,45 +179,8 @@ namespace RetroShareSSHClient
         {
             return String.Format("{0:0,0.00}", ft.rate_kBs) + "kBs - " +
                 ((ft.direction == Direction.DIRECTION_DOWNLOAD) ? (String.Format("{0:0,0.00}", ft.fraction * 100) + "% - ") : "") +
-                BuildSizeString(ft.file.size) + " - " +
+                Processor.BuildSizeString(ft.file.size) + " - " +
                 ft.file.name;
-        }
-
-        private string BuildSizeString(ulong size)
-        {
-            byte counter = 0;
-            float sizef = size;
-            while (sizef > 1024)
-            {
-                counter++;
-                sizef /= 1024;
-            }
-            string s = "";
-            switch (counter)
-            {
-                case 0:
-                    s = "B";
-                    break;
-                case 1:
-                    s = "KiB";
-                    break;
-                case 2:
-                    s = "MiB";
-                    break;
-                case 3:
-                    s = "GiB";
-                    break;
-                case 4:
-                    s = "TiB";
-                    break;
-                case 5:
-                    s = "PiB";
-                    break;
-                default:
-                    s = "too damn high";
-                    break;
-            }
-            return String.Format("{0:0.00}", sizef) + s;
         }
 
         public bool GetFileTransferBySelection(out GuiFileTransfer gft)

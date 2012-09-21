@@ -13,22 +13,24 @@ namespace RetroShareSSHClient
         bool _joined;
         bool _unread;
         ushort _listIndex;
+        string _chatText;
+        List<string> _chatUser;
 
         public ChatLobbyInfo Lobby { get { return _lobby; } set { _lobby = value; } }
         public string ID { get { return _lobby.lobby_id; } }
         public bool Joined { get { return _joined; } set { _joined = value; } }
         public bool Unread { get { return _unread; } set { _unread = value; } }
         public ushort Index { get { return _listIndex; } set { _listIndex = value; } }
+        public string ChatText { get { return _chatText; } set { _chatText = value; } }
+        public List<string> ChatUser { get { return _chatUser; } set { _chatUser = value; } }
     }
 
     internal class ChatProcessor
     {
-        const bool DEBUG = false;
+        const bool DEBUG = true;
         const string GROUPCHAT = "%groupChat%";
 
         Dictionary<string, GuiChatLobby> _chatLobbies;
-        Dictionary<string, string> _chatText;
-        Dictionary<string, List<string>> _chatUser;
         bool _isRegistered;
         string _nick;
 
@@ -41,11 +43,17 @@ namespace RetroShareSSHClient
             _b = bridge;
 
             _chatLobbies = new Dictionary<string, GuiChatLobby>();
-            _chatText = new Dictionary<string, string>();
-            _chatUser = new Dictionary<string, List<string>>();
             _isRegistered = false;
         }
 
+        public void Reset()
+        {
+            _chatLobbies.Clear();
+            _b.GUI.clb_chatLobbies.Items.Clear();
+            _b.GUI.clb_chatUser.Items.Clear();
+            _isRegistered = false;
+        }
+        
         public void UpdateChatLobbies(ResponseChatLobbies msg)
         {
             System.Diagnostics.Debug.WriteLineIf(DEBUG, "lobbyList "+ msg.lobbies.Count);
@@ -72,12 +80,12 @@ namespace RetroShareSSHClient
                 System.Diagnostics.Debug.WriteLineIf(DEBUG, "user: " + lobby.no_peers + " - names: " + lobby.nicknames.Count + " - friends: " + lobby.participating_friends.Count);
                 cl = _chatLobbies[ID];
                 cl.Lobby = lobby;
+                cl.ChatUser = lobby.participating_friends;
                 _chatLobbies[ID] = cl;
-                _chatUser[ID] = lobby.participating_friends;
                 _b.GUI.clb_chatLobbies.Items[cl.Index] = "(" + lobby.no_peers + ") " + lobby.lobby_name + " - " + lobby.lobby_topic;
 
                 if (lobby.lobby_state == ChatLobbyInfo.LobbyState.LOBBYSTATE_INVITED && !cl.Joined)
-                    _b.GUI.clb_chatLobbies.SetItemCheckState(cl.Index, CheckState.Indeterminate);                
+                    _b.GUI.clb_chatLobbies.SetItemCheckState(cl.Index, CheckState.Indeterminate);
             }
             else //new 
             {
@@ -93,9 +101,9 @@ namespace RetroShareSSHClient
                         _b.GUI.clb_chatLobbies.SetItemCheckState(cl.Index, CheckState.Indeterminate);
                 }
                 cl.Unread = false;
+                cl.ChatText = "======= " + DateTime.Now.ToLongDateString() + " - " + lobby.lobby_name + " =======\n";
+                cl.ChatUser = lobby.participating_friends;
                 _chatLobbies.Add(cl.ID, cl);
-                _chatText.Add(cl.ID, "======= " + DateTime.Now.ToLongDateString() + " - " + lobby.lobby_name + " =======\n");
-                _chatUser.Add(cl.ID, lobby.participating_friends);
             }
         }
 
@@ -106,6 +114,9 @@ namespace RetroShareSSHClient
              * AddGroupChat() will call this function before we requested the lobby list.
              * after 2 minutes ( +5 secs for answer) we should have every reachable lobby
              */
+
+            //System.Diagnostics.Debug.WriteLine("CheckChat " + _chatLobbies.Count + " - " + _b.GUI.TickCounter);
+
             if (_chatLobbies.Count <= 1 && _b.GUI.TickCounter < 125)
                 return;
 
@@ -179,7 +190,8 @@ namespace RetroShareSSHClient
                     msg.send_time = (uint)DateTime.Now.Second;
 
                     _b.RPC.ChatSendMsg(msg);
-                    PrintMsgToLobby(cl.ID, DateTime.Now.ToLongTimeString() + " - " + _nick + " > " + text + "\n");
+                    if(cl.ID != GROUPCHAT) // needed ?!
+                        PrintMsgToLobby(cl.ID, DateTime.Now.ToLongTimeString() + " - " + _nick + " > " + text + "\n");
                     if (inMsg == "")
                         _b.GUI.tb_chatMsg.Clear();
                 }
@@ -194,9 +206,12 @@ namespace RetroShareSSHClient
 
             GuiChatLobby cl = _chatLobbies[ID];
             string msg = Processor.RemoteTags(response.msg.msg);
-            _chatText[ID] += DateTime.Now.ToLongTimeString() + " - " + response.msg.peer_nickname + " > " + msg + "\n";
+            cl.ChatText += DateTime.Now.ToLongTimeString() + " - " + response.msg.peer_nickname + " > " + msg + "\n";
             if (_b.GUI.clb_chatLobbies.SelectedIndex == cl.Index)
+            {
+                _chatLobbies[ID] = cl;
                 SetChatText(ID);
+            }
             else
                 if (!cl.Unread)
                 {
@@ -211,25 +226,30 @@ namespace RetroShareSSHClient
         public void PrintMsgToLobby(string ID, string msg)
         {
             GuiChatLobby cl = _chatLobbies[ID];
-            _chatText[ID] += msg;
+            cl.ChatText += msg;
+            _chatLobbies[ID] = cl;
             if (_b.GUI.clb_chatLobbies.SelectedIndex == cl.Index)
                 SetChatText(ID);
         }
 
         public void PrintMsgToGroupChat(EventChatMessage response)
         {
-            _chatText[GROUPCHAT] += DateTime.Now.ToShortTimeString() + " - " + response.msg.peer_nickname + " > " + Processor.RemoteTags(response.msg.msg) + "\n";
+            GuiChatLobby cl = _chatLobbies[GROUPCHAT];
+            cl.ChatText += DateTime.Now.ToShortTimeString() + " - " + response.msg.peer_nickname + " > " + Processor.RemoteTags(response.msg.msg) + "\n";
+
             if (_b.GUI.clb_chatLobbies.SelectedIndex == 0)
+            {
+                _chatLobbies[GROUPCHAT] = cl;
                 SetChatText(GROUPCHAT);
+            }
             else
             {
-                GuiChatLobby cl = _chatLobbies[GROUPCHAT];
                 if (!cl.Unread)
                 {
                     cl.Unread = true;
                     _b.GUI.clb_chatLobbies.SetItemCheckState(cl.Index, CheckState.Indeterminate);
-                    _chatLobbies[GROUPCHAT] = cl;
                 }
+                _chatLobbies[GROUPCHAT] = cl;
             }
             AutoAnswer(Processor.RemoteTags(response.msg.msg));
         }
@@ -238,7 +258,7 @@ namespace RetroShareSSHClient
         {
             //rtb_chat.Clear();
             //rtb_chat.Rtf =@"{\rtf1\ansi " + _chatText[index] + "}";
-            _b.GUI.rtb_chat.Text = _chatText[ID];
+            _b.GUI.rtb_chat.Text = _chatLobbies[ID].ChatText;
             _b.GUI.rtb_chat.SelectionStart = _b.GUI.rtb_chat.Text.Length;
             _b.GUI.rtb_chat.ScrollToCaret();
 
@@ -295,9 +315,9 @@ namespace RetroShareSSHClient
                     _b.GUI.clb_chatLobbies.Items.Add(cl.Lobby.lobby_name, true);
                     cl.Index = (ushort)_b.GUI.clb_chatLobbies.Items.IndexOf(cl.Lobby.lobby_name);
                 }
+                cl.ChatText= DateTime.Now.ToShortDateString() + " - " + DateTime.Now.ToShortTimeString() + "\n";
+                cl.ChatUser = new List<string> { };
                 _chatLobbies.Add(cl.ID, cl);
-                _chatText.Add(cl.ID, DateTime.Now.ToShortDateString() + " - " + DateTime.Now.ToShortTimeString() + "\n");
-                _chatUser.Add(cl.ID, new List<string> { });
                 CheckChatRegistration();
             }
         }
@@ -336,7 +356,7 @@ namespace RetroShareSSHClient
                 {
                     SetChatText(cl.ID);
                     _b.GUI.clb_chatUser.Items.Clear();
-                    foreach (string s in _chatUser[cl.ID])
+                    foreach (string s in cl.ChatUser)
                         _b.GUI.clb_chatUser.Items.Add(s);
                 }
             }
