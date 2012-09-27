@@ -9,6 +9,7 @@ namespace Sehraf.RSRPC
 {
     public class RSSSHConnector
     {
+        const bool DEBUG = false;
         ShellStream _stream;    
         SshClient _client;
 
@@ -33,17 +34,19 @@ namespace Sehraf.RSRPC
 
         public bool Connect()
         {
-            System.Diagnostics.Debug.WriteLine("connecting...");
+            System.Diagnostics.Debug.WriteLineIf(DEBUG, "ssh: connecting ....");
             try
             {
                 ConnectionInfo info = new PasswordConnectionInfo(_host,_port, _user, _pw);
                 _client = new SshClient(info);
                 _client.Connect();
                 _stream = _client.CreateShellStream("xterm", 80, 24, 800, 600, 1024);
+                System.Diagnostics.Debug.WriteLineIf(DEBUG, "ssh: connected");
                 return true;
             }
             catch (System.Exception e)
             {
+                System.Diagnostics.Debug.WriteLineIf(DEBUG, "ssh: error while connecting:");
                 System.Diagnostics.Debug.WriteLine(e.Message);
                 System.Diagnostics.Debug.WriteLine(e.InnerException);
                 return false;
@@ -52,10 +55,28 @@ namespace Sehraf.RSRPC
 
         public void Disconnect()
         {
+            System.Diagnostics.Debug.WriteLineIf(DEBUG, "ssh: disconnecting ....");
             _stream.Close();
             _stream.Dispose();
             _client.Disconnect();
             _client = null;
+        }
+
+        public bool Reconnect(out ShellStream stream)
+        {
+            System.Diagnostics.Debug.WriteLineIf(DEBUG, "ssh: reconnecting ....");
+            Disconnect();
+            System.Threading.Thread.Sleep(500);
+            if (Connect())
+            {
+                stream = _stream;
+                return true;
+            }
+            else
+            {
+                stream = null;
+                return false;
+            }
         }
     }
 }

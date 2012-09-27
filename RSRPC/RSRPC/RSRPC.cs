@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 
+using Renci.SshNet;
+
 using ProtoBuf;
 
 using rsctrl.chat;
@@ -21,17 +23,23 @@ namespace Sehraf.RSRPC
 {
     public class RSRPC
     {
+        public enum EventType
+        {
+            Error,
+            Reconnect
+        }
+
         public delegate void ReceivedMsgEvent(RSProtoBuffSSHMsg msg);
-        public delegate void ErrorOccurredEvent(Exception e);
+        public delegate void EventOccurredEvent(EventType type, object obj); // nice name :D
 
         RSSSHConnector _rsConnector;
         RSProtoBuf _rsProtoBuf;
-        bool _connected;
+        bool _connected, _disconnecting;
 
         bool _useProperDisconnect; 
 
         event ReceivedMsgEvent _receivedMsg;
-        event ErrorOccurredEvent _error;
+        event EventOccurredEvent _event;
         Queue<RSProtoBuffSSHMsg> _sendQueue;
         Queue<RSProtoBuffSSHMsg> _receiveQueue;
 
@@ -42,27 +50,20 @@ namespace Sehraf.RSRPC
         public RSProtoBuf RSProtoBuf { get { return _rsProtoBuf; } }
         public bool IsConnected { get { return _connected; } }
         public ReceivedMsgEvent ReceivedMsg { get { return _receivedMsg; } set { _receivedMsg = value; } }
-        public ErrorOccurredEvent ErrorOccurred { get { return _error; } set { _error = value; } }
+        public EventOccurredEvent EventOccurred { get { return _event; } set { _event = value; } }
 
         public RSRPC(bool diconnect = true)
         {
             _connected = false;
+            _disconnecting = false;
             _useProperDisconnect = diconnect;
             _sendQueue = new Queue<RSProtoBuffSSHMsg>();
             _receiveQueue = new Queue<RSProtoBuffSSHMsg>();
-
-            //_t = new Thread(new ThreadStart(ProcessNewMsgLoop));
-            //_t.Name = "Process new msg loop";
-            //_t.Priority = ThreadPriority.Normal;
-
-            //_shutdownThread = new Thread(new ThreadStart(ShutDownThread));
-            //_shutdownThread.Name = "Shutdown Thread";
-            //_shutdownThread.Priority = ThreadPriority.Normal;
         }
 
         public bool Connect(string host, ushort port, string user, string pw)
         {
-            if (!_connected)
+            if (!_connected && !_disconnecting)
             {
                 _sendQueue.Clear();
                 _receiveQueue.Clear();
@@ -86,8 +87,9 @@ namespace Sehraf.RSRPC
 
         public void Disconnect(bool shutdown = false)
         {
-            if (_connected)
-            {                
+            if (_connected && !_disconnecting)
+            {
+                _disconnecting = true;
                 _run = false;
                 if (_useProperDisconnect)
                 {
@@ -102,16 +104,18 @@ namespace Sehraf.RSRPC
             }
         }
 
-        internal void Error(Exception e)
+        public bool Reconnect(out ShellStream stream)
         {
-            _error(e);
+            _event(EventType.Reconnect, null);
+            Thread.Sleep(500);
+            _rsProtoBuf.BreakConnection();
+            return _rsConnector.Reconnect(out stream);
         }
 
-        //internal void ProcessMsg(RSProtoBuffSSHMsg msg)
-        //{
-        //    if(_connected)
-        //        _receivedMsg(msg);
-        //}
+        internal void Error(Exception e)
+        {
+            _event(EventType.Error, e);
+        }
 
         private void ProcessNewMsgLoop()
         {
@@ -148,6 +152,7 @@ namespace Sehraf.RSRPC
             _rsConnector.Disconnect();
             _rsConnector = null;
             _connected = false;
+            _disconnecting = false;
         }
 
         // ---------- send ----------
