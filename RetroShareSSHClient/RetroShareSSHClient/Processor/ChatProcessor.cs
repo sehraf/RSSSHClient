@@ -27,7 +27,7 @@ namespace RetroShareSSHClient
 
     internal class ChatProcessor
     {
-        const bool DEBUG = true;
+        const bool DEBUG = false;
         const string GROUPCHAT = "%groupChat%";
 
         Dictionary<string, GuiChatLobby> _chatLobbies;
@@ -46,11 +46,14 @@ namespace RetroShareSSHClient
             _isRegistered = false;
         }
 
-        public void Reset()
+        public void Reset(bool justResetChatRegistration = false)
         {
-            _chatLobbies.Clear();
-            _b.GUI.clb_chatLobbies.Items.Clear();
-            _b.GUI.clb_chatUser.Items.Clear();
+            if (!justResetChatRegistration)
+            {
+                _chatLobbies.Clear();
+                _b.GUI.clb_chatLobbies.Items.Clear();
+                _b.GUI.clb_chatUser.Items.Clear();
+            }
             _isRegistered = false;
         }
         
@@ -110,12 +113,11 @@ namespace RetroShareSSHClient
         private void CheckChatRegistration()
         {
             /*
-             * if we register to early the server may send us messages from lobbies we don't know yet.
+             * If we register to early the server may send us messages from lobbies we don't know yet.
              * AddGroupChat() will call this function before we requested the lobby list.
-             * after 2 minutes ( +5 secs for answer) we should have every reachable lobby
+             * If we don't get any lobby after 2 minutes ( +5 secs for answer) then we don't reach any other lobby -> we can register
+             * otherwise the server will send the lobbies after the first request ( if participating ) or a bit later
              */
-
-            //System.Diagnostics.Debug.WriteLine("CheckChat " + _chatLobbies.Count + " - " + _b.GUI.TickCounter);
 
             if (_chatLobbies.Count <= 1 && _b.GUI.TickCounter < 125)
                 return;

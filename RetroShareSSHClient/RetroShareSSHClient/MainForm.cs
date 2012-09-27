@@ -33,7 +33,7 @@ namespace RetroShareSSHClient
             cb_con.CheckState = CheckState.Unchecked;
 
             _b = new Bridge(this);
-            _b.RPC.ErrorOccurred += ErrorFromThread;
+            _b.RPC.EventOccurred += EventFromThread;
             _b.RPC.ReceivedMsg += ProcessMsgFromThread;
 
             _settings = new Settings();
@@ -91,15 +91,36 @@ namespace RetroShareSSHClient
             _settings.Save(opt);
         }
 
-        private void ErrorFromThread(Exception e)
+        private void EventFromThread(RSRPC.EventType type, object obj)
         {
-            this.Invoke((MethodInvoker)delegate { Error(e); });
+            switch (type)
+            {
+                case RSRPC.EventType.Error:
+                    Exception e = (Exception)obj;
+                    this.Invoke((MethodInvoker)delegate { Error(e); });
+                    break;
+                case RSRPC.EventType.Reconnect:
+                    this.Invoke((MethodInvoker)delegate { ReconnectOccurred(); });
+                    break;
+            }
         }
 
         private void Error(Exception e)
         {
             System.Diagnostics.Debug.WriteLine(e.Message);
             tb_out.AppendText(e.Message + "\n");
+        }
+
+        private void ReconnectOccurred()
+        {
+            /*
+             * Reconnecting causes a server-side clean-up
+             * -> Searches are removed
+             * -> Events are removed
+             */
+
+            _b.SearchProcessor.Reset();     // should work for now (you have to add a search request again if needed)
+            _b.ChatProcessor.Reset(true);   // will register again with next LobbyRequest
         }
 
         private void ProcessMsgFromThread(RSProtoBuffSSHMsg msg)
@@ -486,7 +507,6 @@ namespace RetroShareSSHClient
     public class Bridge
     {
         MainForm _gui;
-        //RSProtoBuf _protobuf;
         RSRPC _rpc;
         Processor _processor;
         ChatProcessor _chat;
@@ -495,7 +515,6 @@ namespace RetroShareSSHClient
         FileProcessor _file;
 
         internal MainForm GUI { get { return _gui; } set { _gui = value; } }
-        //public RSProtoBuf ProtoBuf { get { return _protobuf; } set { _protobuf = value; } }
         public RSRPC RPC { get { return _rpc; } set { _rpc = value; } }        
         internal Processor Processor { get { return _processor; } set { _processor = value; } }
         internal ChatProcessor ChatProcessor { get { return _chat; } set { _chat = value; } }

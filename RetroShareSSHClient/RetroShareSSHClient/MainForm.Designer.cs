@@ -529,8 +529,8 @@
             // 
             // tc_main
             // 
-            this.tc_main.Controls.Add(this.tp_friends);
             this.tc_main.Controls.Add(this.tp_chat);
+            this.tc_main.Controls.Add(this.tp_friends);
             this.tc_main.Controls.Add(this.tp_files);
             this.tc_main.Controls.Add(this.tb_search);
             this.tc_main.Location = new System.Drawing.Point(216, 12);
@@ -556,6 +556,7 @@
             // 
             this.gb_peerNew.Controls.Add(this.tb_peedNew);
             this.gb_peerNew.Controls.Add(this.bt_peerNew);
+            this.gb_peerNew.Enabled = false;
             this.gb_peerNew.Location = new System.Drawing.Point(207, 207);
             this.gb_peerNew.Name = "gb_peerNew";
             this.gb_peerNew.Size = new System.Drawing.Size(428, 298);
@@ -594,6 +595,7 @@
             // 
             // bt_peerRemove
             // 
+            this.bt_peerRemove.Enabled = false;
             this.bt_peerRemove.Location = new System.Drawing.Point(321, 18);
             this.bt_peerRemove.Name = "bt_peerRemove";
             this.bt_peerRemove.Size = new System.Drawing.Size(98, 23);
@@ -679,6 +681,7 @@
             // 
             // clb_chatUser
             // 
+            this.clb_chatUser.Enabled = false;
             this.clb_chatUser.FormattingEnabled = true;
             this.clb_chatUser.Location = new System.Drawing.Point(4, 152);
             this.clb_chatUser.Name = "clb_chatUser";

@@ -22,9 +22,40 @@ namespace RetroShareSSHClient
         public ushort Index { get { return _listIndex; } set { _listIndex = value; } }
     }
 
+    class GuiSearchComparer : IComparer<GuiSearch>
+    {
+        public enum CompareType
+        {
+            KeyWords = 0,
+            Results = 1,
+            RequestTime = 2
+        }
+
+        CompareType _whatToCompare;
+        
+        public GuiSearchComparer(CompareType what = CompareType.KeyWords)
+        {
+            _whatToCompare = what;
+        }
+
+        public int Compare(GuiSearch gs1, GuiSearch gs2)
+        {
+            switch (_whatToCompare)
+            {
+                case CompareType.Results:
+                    return gs1.Results.Count.CompareTo(gs2.Results.Count);
+                case CompareType.RequestTime:
+                    return gs1.RequestTime.CompareTo(gs2.RequestTime);
+                case CompareType.KeyWords:
+                default:
+                    return gs1.KeyWords.CompareTo(gs2.KeyWords);
+            }
+        }
+    }
+
     class SearchProcessor
     {
-        const bool DEBUG = true;
+        const bool DEBUG = false;
 
         Dictionary<uint, string> _pendingSearchReq;
         Dictionary<uint, GuiSearch> _searches;
@@ -54,6 +85,7 @@ namespace RetroShareSSHClient
                 GuiSearch gs = new GuiSearch();
                 gs.KeyWords = _pendingSearchReq[ReqID];
                 gs.RequestTime = DateTime.Now;
+                gs.Results = new List<SearchHit>();
                 gs.ID = response.search_id[0]; // for now we only support one ID
 
                 System.Diagnostics.Debug.WriteLineIf(DEBUG, "Search: Adding ID " + gs.ID);
@@ -77,7 +109,7 @@ namespace RetroShareSSHClient
                     gs = _searches[ss.search_id];
                     System.Diagnostics.Debug.WriteLineIf(DEBUG, "Search: Updating results (ID " + gs.ID + ")");
                     if (ss.hits.Count > 0)
-                        gs.Results = new List<SearchHit>();
+                        gs.Results.Clear();
                     foreach (SearchHit sh in ss.hits)
                     {
                         updated = false;
@@ -104,14 +136,32 @@ namespace RetroShareSSHClient
 
         public void Search(string keyWords)
         {
+            keyWords = keyWords.Trim();
+            if (keyWords == "")
+                return;
+
+            string newKeywords = "";
             string[] strings = keyWords.Split(' ');
             List<string> list = new List<string>();
-            uint reqID;
-
             list.AddRange(strings);
+
+            ushort length = (ushort)list.Count;
+            for (ushort i = 0; i < length; i++)
+            {
+                if (list[i] != "")
+                    newKeywords += list[i] + " ";
+                else
+                {
+                    list.RemoveAt(i);
+                    i--;
+                    length--;
+                }
+            }
+            
+            uint reqID;
             reqID = _b.RPC.SearchBasic(list);
 
-            _pendingSearchReq.Add(reqID, keyWords);
+            _pendingSearchReq.Add(reqID, newKeywords.Trim());
         }
 
         public void GetSearchResults()
@@ -128,7 +178,7 @@ namespace RetroShareSSHClient
                 }
             }
             if (searchIDs.Count > 0)
-                //_bridge.RPC.SearchResult(searchIDs);
+                //_bridge.RPC.SearchResult(searchIDs); sending IDs doens't work at the moment
                 _b.RPC.SearchResult(new List<uint>() { });
         }
 
@@ -145,6 +195,7 @@ namespace RetroShareSSHClient
 
             GuiSearch[] values = new GuiSearch[_searches.Values.Count];
             _searches.Values.CopyTo(values, 0);
+            Array.Sort(values, new GuiSearchComparer(GuiSearchComparer.CompareType.RequestTime));
             _b.GUI.lb_searches.Items.Clear();
             foreach (GuiSearch gs in values)
             {
@@ -157,7 +208,7 @@ namespace RetroShareSSHClient
                     selectedIndex = gs.Index;
             }
 
-            if (selectedIndex < ushort.MaxValue)
+            if (selectedIndex < _b.GUI.lb_searchResults.Items.Count)
                 _b.GUI.lb_searches.SelectedIndex = selectedIndex;
         }
 
@@ -181,8 +232,8 @@ namespace RetroShareSSHClient
                 _b.GUI.lb_searchResults.Items.Add(sh.no_hits + " hits - " + Processor.BuildSizeString(sh.file.size) + " - " + sh.file.name);
             }
 
-            if (index < _b.GUI.lb_searchResults.Items.Count)
-                _b.GUI.lb_searchResults.SelectedIndex = index;
+            //if (index < _b.GUI.lb_searchResults.Items.Count)
+            //    _b.GUI.lb_searchResults.SelectedIndex = index;
         }
 
         public bool GetSearchByIndex(ushort index, out GuiSearch gs)
