@@ -20,3 +20,6 @@ __Both (RSRPC and RetroShareSSHClient) are using:__
 
 For more information on the RetroShare RPC system check out the git repository of its developer: 
 https://github.com/drbob/pyrs#readme
+
+##Requirements##
+.NET Framework 4.0
