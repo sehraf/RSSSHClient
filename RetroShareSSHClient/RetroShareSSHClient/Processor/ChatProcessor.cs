@@ -202,26 +202,35 @@ namespace RetroShareSSHClient
 
         public void PrintMsgToLobby(string ID, EventChatMessage response)
         {
+            System.Diagnostics.Debug.WriteLineIf(DEBUG, "Chat: PrintMsgToLobby ID: " + response.msg.id);
             if (!_chatLobbies.ContainsKey(ID))
+            {
                 // we don't know this lobby :S
+                System.Diagnostics.Debug.WriteLineIf(DEBUG, "Chat: ID (" + response.msg.id + ") is unknown");
                 return;
+            }
 
             GuiChatLobby cl = _chatLobbies[ID];
             string msg = Processor.RemoteTags(response.msg.msg);
+
+            System.Diagnostics.Debug.WriteLineIf(DEBUG, "Chat: lobby: " + cl.Lobby.lobby_name);
+            System.Diagnostics.Debug.WriteLineIf(DEBUG, "Chat: msg: " + msg + " from " + response.msg.peer_nickname);
+            System.Diagnostics.Debug.WriteLineIf(DEBUG, "Chat: rec: " + response.msg.recv_time + " send: " + response.msg.send_time);
+
             cl.ChatText += DateTime.Now.ToLongTimeString() + " - " + response.msg.peer_nickname + " > " + msg + "\n";
+
+            _chatLobbies[ID] = cl;
             if (_b.GUI.clb_chatLobbies.SelectedIndex == cl.Index)
-            {
-                _chatLobbies[ID] = cl;
                 SetChatText(ID);
-            }
             else
+            {
                 if (!cl.Unread)
                 {
                     cl.Unread = true;
                     _b.GUI.clb_chatLobbies.SetItemCheckState(cl.Index, CheckState.Indeterminate);
                     _chatLobbies[ID] = cl;
                 }
-
+            }
             AutoAnswer(Processor.RemoteTags(response.msg.msg));
         }
 
