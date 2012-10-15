@@ -12,7 +12,7 @@ http://retroshare.sourceforge.net/
 __RSRPC__ is a .NET library which offers an interface to communicate with a RetroShare SSH server via RPC calls.
 It manages the SSH connection and the send/receive process including (de)serialisation of data.
 
-__RetroShareSSHClient__ is a gui client using RSRPC lib. Its goal is to provide a lightweight gui to controll and maintain a RetroShare server.
+__RetroShareSSHClient__ is a gui client using RSRPC lib. Its goal is to provide a lightweight gui to control and maintain a RetroShare server.
 
 __Both (RSRPC and RetroShareSSHClient) are using:__
 * SSH.NET - http://sshnet.codeplex.com/
