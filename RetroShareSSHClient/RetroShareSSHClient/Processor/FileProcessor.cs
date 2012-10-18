@@ -177,7 +177,7 @@ namespace RetroShareSSHClient
 
         private string BuildFileTransferString(FileTransfer ft)
         {
-            return String.Format("{0:0,0.00}", ft.rate_kBs) + "kBs - " +
+            return String.Format("{0:0,0.00}", ft.rate_kBs) + "KiB/s - " +
                 ((ft.direction == Direction.DIRECTION_DOWNLOAD) ? (String.Format("{0:0,0.00}", ft.fraction * 100) + "% - ") : "") +
                 Processor.BuildSizeString(ft.file.size) + " - " +
                 ft.file.name;
@@ -187,10 +187,10 @@ namespace RetroShareSSHClient
         {
             gft = new GuiFileTransfer();
             if (_b.GUI.lb_filesDownloads.SelectedIndex != -1)
-                if (GetFileTransferByListIndexDir(_b.GUI.lb_filesDownloads.SelectedIndex, Direction.DIRECTION_DOWNLOAD, out gft)) ;
+                if (GetFileTransferByListIndexDir(_b.GUI.lb_filesDownloads.SelectedIndex, Direction.DIRECTION_DOWNLOAD, out gft)) { }
                 else return false;
             else if (_b.GUI.lb_filesUploads.SelectedIndex != -1)
-                if (GetFileTransferByListIndexDir(_b.GUI.lb_filesUploads.SelectedIndex, Direction.DIRECTION_UPLOAD, out gft)) ;
+                if (GetFileTransferByListIndexDir(_b.GUI.lb_filesUploads.SelectedIndex, Direction.DIRECTION_UPLOAD, out gft)) { }
                 else return false;
             else return false;
             return true;

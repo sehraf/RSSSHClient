@@ -71,11 +71,6 @@
             this.l_peerLocationID = new System.Windows.Forms.Label();
             this.bt_test = new System.Windows.Forms.Button();
             this.tc_main = new System.Windows.Forms.TabControl();
-            this.tp_friends = new System.Windows.Forms.TabPage();
-            this.gb_peerNew = new System.Windows.Forms.GroupBox();
-            this.tb_peedNew = new System.Windows.Forms.TextBox();
-            this.gb_peerInfo = new System.Windows.Forms.GroupBox();
-            this.bt_peerRemove = new System.Windows.Forms.Button();
             this.tp_chat = new System.Windows.Forms.TabPage();
             this.gb_autoResp = new System.Windows.Forms.GroupBox();
             this.tb_chatAutoRespAnswer = new System.Windows.Forms.TextBox();
@@ -91,7 +86,13 @@
             this.clb_chatLobbies = new System.Windows.Forms.CheckedListBox();
             this.bt_chatSend = new System.Windows.Forms.Button();
             this.tb_chatMsg = new System.Windows.Forms.TextBox();
+            this.tp_friends = new System.Windows.Forms.TabPage();
+            this.gb_peerNew = new System.Windows.Forms.GroupBox();
+            this.tb_peedNew = new System.Windows.Forms.TextBox();
+            this.gb_peerInfo = new System.Windows.Forms.GroupBox();
+            this.bt_peerRemove = new System.Windows.Forms.Button();
             this.tp_files = new System.Windows.Forms.TabPage();
+            this.bt_filesAddCollection = new System.Windows.Forms.Button();
             this.bt_filesWait = new System.Windows.Forms.Button();
             this.bt_filesRestart = new System.Windows.Forms.Button();
             this.bt_filesForceCheck = new System.Windows.Forms.Button();
@@ -117,17 +118,18 @@
             this.cb_settingsSaveChat = new System.Windows.Forms.CheckBox();
             this.cb_settingsSavePW = new System.Windows.Forms.CheckBox();
             this.cb_settingsSave = new System.Windows.Forms.CheckBox();
+            this.ofd_collection = new System.Windows.Forms.OpenFileDialog();
             this.gb_systemStatus.SuspendLayout();
             this.gb_ip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortExt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortInt)).BeginInit();
             this.tc_main.SuspendLayout();
-            this.tp_friends.SuspendLayout();
-            this.gb_peerNew.SuspendLayout();
-            this.gb_peerInfo.SuspendLayout();
             this.tp_chat.SuspendLayout();
             this.gb_autoResp.SuspendLayout();
             this.gb_nickname.SuspendLayout();
+            this.tp_friends.SuspendLayout();
+            this.gb_peerNew.SuspendLayout();
+            this.gb_peerInfo.SuspendLayout();
             this.tp_files.SuspendLayout();
             this.tb_search.SuspendLayout();
             this.tb_optios.SuspendLayout();
@@ -150,7 +152,7 @@
             this.bt_disconnect.Location = new System.Drawing.Point(103, 113);
             this.bt_disconnect.Name = "bt_disconnect";
             this.bt_disconnect.Size = new System.Drawing.Size(75, 23);
-            this.bt_disconnect.TabIndex = 1;
+            this.bt_disconnect.TabIndex = 6;
             this.bt_disconnect.Text = "disconnect";
             this.bt_disconnect.UseVisualStyleBackColor = true;
             this.bt_disconnect.Click += new System.EventHandler(this.bt_disconnect_Click);
@@ -539,71 +541,6 @@
             this.tc_main.Size = new System.Drawing.Size(649, 538);
             this.tc_main.TabIndex = 15;
             // 
-            // tp_friends
-            // 
-            this.tp_friends.Controls.Add(this.gb_peerNew);
-            this.tp_friends.Controls.Add(this.gb_peerInfo);
-            this.tp_friends.Controls.Add(this.lb_friends);
-            this.tp_friends.Location = new System.Drawing.Point(4, 22);
-            this.tp_friends.Name = "tp_friends";
-            this.tp_friends.Padding = new System.Windows.Forms.Padding(3);
-            this.tp_friends.Size = new System.Drawing.Size(641, 512);
-            this.tp_friends.TabIndex = 0;
-            this.tp_friends.Text = "Friends";
-            this.tp_friends.UseVisualStyleBackColor = true;
-            // 
-            // gb_peerNew
-            // 
-            this.gb_peerNew.Controls.Add(this.tb_peedNew);
-            this.gb_peerNew.Controls.Add(this.bt_peerNew);
-            this.gb_peerNew.Enabled = false;
-            this.gb_peerNew.Location = new System.Drawing.Point(207, 207);
-            this.gb_peerNew.Name = "gb_peerNew";
-            this.gb_peerNew.Size = new System.Drawing.Size(428, 298);
-            this.gb_peerNew.TabIndex = 28;
-            this.gb_peerNew.TabStop = false;
-            this.gb_peerNew.Text = "Add a new friend";
-            // 
-            // tb_peedNew
-            // 
-            this.tb_peedNew.Location = new System.Drawing.Point(6, 19);
-            this.tb_peedNew.Multiline = true;
-            this.tb_peedNew.Name = "tb_peedNew";
-            this.tb_peedNew.Size = new System.Drawing.Size(413, 186);
-            this.tb_peedNew.TabIndex = 26;
-            // 
-            // gb_peerInfo
-            // 
-            this.gb_peerInfo.Controls.Add(this.bt_peerRemove);
-            this.gb_peerInfo.Controls.Add(this.lb_locations);
-            this.gb_peerInfo.Controls.Add(this.tb_peerName);
-            this.gb_peerInfo.Controls.Add(this.gb_ip);
-            this.gb_peerInfo.Controls.Add(this.tb_peerID);
-            this.gb_peerInfo.Controls.Add(this.tb_peerLocation);
-            this.gb_peerInfo.Controls.Add(this.l_peerName);
-            this.gb_peerInfo.Controls.Add(this.bt_peerSave);
-            this.gb_peerInfo.Controls.Add(this.l_peerID);
-            this.gb_peerInfo.Controls.Add(this.l_peerLocationID);
-            this.gb_peerInfo.Controls.Add(this.tb_peerLocationID);
-            this.gb_peerInfo.Controls.Add(this.l_peerLocation);
-            this.gb_peerInfo.Location = new System.Drawing.Point(207, 7);
-            this.gb_peerInfo.Name = "gb_peerInfo";
-            this.gb_peerInfo.Size = new System.Drawing.Size(428, 194);
-            this.gb_peerInfo.TabIndex = 27;
-            this.gb_peerInfo.TabStop = false;
-            this.gb_peerInfo.Text = "Information";
-            // 
-            // bt_peerRemove
-            // 
-            this.bt_peerRemove.Enabled = false;
-            this.bt_peerRemove.Location = new System.Drawing.Point(321, 18);
-            this.bt_peerRemove.Name = "bt_peerRemove";
-            this.bt_peerRemove.Size = new System.Drawing.Size(98, 23);
-            this.bt_peerRemove.TabIndex = 25;
-            this.bt_peerRemove.Text = "Block/Remove";
-            this.bt_peerRemove.UseVisualStyleBackColor = true;
-            this.bt_peerRemove.Click += new System.EventHandler(this.bt_peerRemove_Click);
-            // 
             // tp_chat
             // 
             this.tp_chat.Controls.Add(this.gb_autoResp);
@@ -752,8 +689,74 @@
             this.tb_chatMsg.TabIndex = 3;
             this.tb_chatMsg.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tb_chatMsg_KeyUp);
             // 
+            // tp_friends
+            // 
+            this.tp_friends.Controls.Add(this.gb_peerNew);
+            this.tp_friends.Controls.Add(this.gb_peerInfo);
+            this.tp_friends.Controls.Add(this.lb_friends);
+            this.tp_friends.Location = new System.Drawing.Point(4, 22);
+            this.tp_friends.Name = "tp_friends";
+            this.tp_friends.Padding = new System.Windows.Forms.Padding(3);
+            this.tp_friends.Size = new System.Drawing.Size(641, 512);
+            this.tp_friends.TabIndex = 0;
+            this.tp_friends.Text = "Friends";
+            this.tp_friends.UseVisualStyleBackColor = true;
+            // 
+            // gb_peerNew
+            // 
+            this.gb_peerNew.Controls.Add(this.tb_peedNew);
+            this.gb_peerNew.Controls.Add(this.bt_peerNew);
+            this.gb_peerNew.Enabled = false;
+            this.gb_peerNew.Location = new System.Drawing.Point(207, 207);
+            this.gb_peerNew.Name = "gb_peerNew";
+            this.gb_peerNew.Size = new System.Drawing.Size(428, 298);
+            this.gb_peerNew.TabIndex = 28;
+            this.gb_peerNew.TabStop = false;
+            this.gb_peerNew.Text = "Add a new friend";
+            // 
+            // tb_peedNew
+            // 
+            this.tb_peedNew.Location = new System.Drawing.Point(6, 19);
+            this.tb_peedNew.Multiline = true;
+            this.tb_peedNew.Name = "tb_peedNew";
+            this.tb_peedNew.Size = new System.Drawing.Size(413, 186);
+            this.tb_peedNew.TabIndex = 26;
+            // 
+            // gb_peerInfo
+            // 
+            this.gb_peerInfo.Controls.Add(this.bt_peerRemove);
+            this.gb_peerInfo.Controls.Add(this.lb_locations);
+            this.gb_peerInfo.Controls.Add(this.tb_peerName);
+            this.gb_peerInfo.Controls.Add(this.gb_ip);
+            this.gb_peerInfo.Controls.Add(this.tb_peerID);
+            this.gb_peerInfo.Controls.Add(this.tb_peerLocation);
+            this.gb_peerInfo.Controls.Add(this.l_peerName);
+            this.gb_peerInfo.Controls.Add(this.bt_peerSave);
+            this.gb_peerInfo.Controls.Add(this.l_peerID);
+            this.gb_peerInfo.Controls.Add(this.l_peerLocationID);
+            this.gb_peerInfo.Controls.Add(this.tb_peerLocationID);
+            this.gb_peerInfo.Controls.Add(this.l_peerLocation);
+            this.gb_peerInfo.Location = new System.Drawing.Point(207, 7);
+            this.gb_peerInfo.Name = "gb_peerInfo";
+            this.gb_peerInfo.Size = new System.Drawing.Size(428, 194);
+            this.gb_peerInfo.TabIndex = 27;
+            this.gb_peerInfo.TabStop = false;
+            this.gb_peerInfo.Text = "Information";
+            // 
+            // bt_peerRemove
+            // 
+            this.bt_peerRemove.Enabled = false;
+            this.bt_peerRemove.Location = new System.Drawing.Point(321, 18);
+            this.bt_peerRemove.Name = "bt_peerRemove";
+            this.bt_peerRemove.Size = new System.Drawing.Size(98, 23);
+            this.bt_peerRemove.TabIndex = 25;
+            this.bt_peerRemove.Text = "Block/Remove";
+            this.bt_peerRemove.UseVisualStyleBackColor = true;
+            this.bt_peerRemove.Click += new System.EventHandler(this.bt_peerRemove_Click);
+            // 
             // tp_files
             // 
+            this.tp_files.Controls.Add(this.bt_filesAddCollection);
             this.tp_files.Controls.Add(this.bt_filesWait);
             this.tp_files.Controls.Add(this.bt_filesRestart);
             this.tp_files.Controls.Add(this.bt_filesForceCheck);
@@ -772,12 +775,24 @@
             this.tp_files.Text = "Files";
             this.tp_files.UseVisualStyleBackColor = true;
             // 
+            // bt_filesAddCollection
+            // 
+            this.bt_filesAddCollection.Enabled = false;
+            this.bt_filesAddCollection.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.85F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_filesAddCollection.Location = new System.Drawing.Point(549, 200);
+            this.bt_filesAddCollection.Name = "bt_filesAddCollection";
+            this.bt_filesAddCollection.Size = new System.Drawing.Size(89, 23);
+            this.bt_filesAddCollection.TabIndex = 10;
+            this.bt_filesAddCollection.Text = "add collection";
+            this.bt_filesAddCollection.UseVisualStyleBackColor = true;
+            this.bt_filesAddCollection.Click += new System.EventHandler(this.bt_filesAddCollection_Click);
+            // 
             // bt_filesWait
             // 
-            this.bt_filesWait.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_filesWait.Location = new System.Drawing.Point(563, 83);
+            this.bt_filesWait.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_filesWait.Location = new System.Drawing.Point(549, 83);
             this.bt_filesWait.Name = "bt_filesWait";
-            this.bt_filesWait.Size = new System.Drawing.Size(75, 23);
+            this.bt_filesWait.Size = new System.Drawing.Size(89, 23);
             this.bt_filesWait.TabIndex = 9;
             this.bt_filesWait.Text = "queue bottom";
             this.bt_filesWait.UseVisualStyleBackColor = true;
@@ -785,9 +800,9 @@
             // 
             // bt_filesRestart
             // 
-            this.bt_filesRestart.Location = new System.Drawing.Point(563, 54);
+            this.bt_filesRestart.Location = new System.Drawing.Point(549, 54);
             this.bt_filesRestart.Name = "bt_filesRestart";
-            this.bt_filesRestart.Size = new System.Drawing.Size(75, 23);
+            this.bt_filesRestart.Size = new System.Drawing.Size(89, 23);
             this.bt_filesRestart.TabIndex = 8;
             this.bt_filesRestart.Text = "restart";
             this.bt_filesRestart.UseVisualStyleBackColor = true;
@@ -795,9 +810,9 @@
             // 
             // bt_filesForceCheck
             // 
-            this.bt_filesForceCheck.Location = new System.Drawing.Point(563, 142);
+            this.bt_filesForceCheck.Location = new System.Drawing.Point(549, 142);
             this.bt_filesForceCheck.Name = "bt_filesForceCheck";
-            this.bt_filesForceCheck.Size = new System.Drawing.Size(75, 23);
+            this.bt_filesForceCheck.Size = new System.Drawing.Size(89, 23);
             this.bt_filesForceCheck.TabIndex = 7;
             this.bt_filesForceCheck.Text = "force check";
             this.bt_filesForceCheck.UseVisualStyleBackColor = true;
@@ -805,9 +820,9 @@
             // 
             // bt_filesContinue
             // 
-            this.bt_filesContinue.Location = new System.Drawing.Point(563, 112);
+            this.bt_filesContinue.Location = new System.Drawing.Point(549, 112);
             this.bt_filesContinue.Name = "bt_filesContinue";
-            this.bt_filesContinue.Size = new System.Drawing.Size(75, 23);
+            this.bt_filesContinue.Size = new System.Drawing.Size(89, 23);
             this.bt_filesContinue.TabIndex = 6;
             this.bt_filesContinue.Text = "queue top";
             this.bt_filesContinue.UseVisualStyleBackColor = true;
@@ -815,9 +830,9 @@
             // 
             // bt_filesCancel
             // 
-            this.bt_filesCancel.Location = new System.Drawing.Point(563, 171);
+            this.bt_filesCancel.Location = new System.Drawing.Point(549, 171);
             this.bt_filesCancel.Name = "bt_filesCancel";
-            this.bt_filesCancel.Size = new System.Drawing.Size(75, 23);
+            this.bt_filesCancel.Size = new System.Drawing.Size(89, 23);
             this.bt_filesCancel.TabIndex = 5;
             this.bt_filesCancel.Text = "cancel";
             this.bt_filesCancel.UseVisualStyleBackColor = true;
@@ -825,9 +840,9 @@
             // 
             // bt_filesPause
             // 
-            this.bt_filesPause.Location = new System.Drawing.Point(563, 25);
+            this.bt_filesPause.Location = new System.Drawing.Point(549, 25);
             this.bt_filesPause.Name = "bt_filesPause";
-            this.bt_filesPause.Size = new System.Drawing.Size(75, 23);
+            this.bt_filesPause.Size = new System.Drawing.Size(89, 23);
             this.bt_filesPause.TabIndex = 4;
             this.bt_filesPause.Text = "pause";
             this.bt_filesPause.UseVisualStyleBackColor = true;
@@ -856,7 +871,7 @@
             this.lb_filesUploads.FormattingEnabled = true;
             this.lb_filesUploads.Location = new System.Drawing.Point(3, 256);
             this.lb_filesUploads.Name = "lb_filesUploads";
-            this.lb_filesUploads.Size = new System.Drawing.Size(554, 251);
+            this.lb_filesUploads.Size = new System.Drawing.Size(540, 251);
             this.lb_filesUploads.TabIndex = 1;
             this.lb_filesUploads.SelectedIndexChanged += new System.EventHandler(this.lb_filesUploads_SelectedIndexChanged);
             // 
@@ -865,7 +880,7 @@
             this.lb_filesDownloads.FormattingEnabled = true;
             this.lb_filesDownloads.Location = new System.Drawing.Point(3, 25);
             this.lb_filesDownloads.Name = "lb_filesDownloads";
-            this.lb_filesDownloads.Size = new System.Drawing.Size(554, 212);
+            this.lb_filesDownloads.Size = new System.Drawing.Size(540, 212);
             this.lb_filesDownloads.TabIndex = 0;
             this.lb_filesDownloads.SelectedIndexChanged += new System.EventHandler(this.lb_filesDownloads_SelectedIndexChanged);
             // 
@@ -1036,6 +1051,11 @@
             this.cb_settingsSave.UseVisualStyleBackColor = true;
             this.cb_settingsSave.CheckedChanged += new System.EventHandler(this.cb_settingsSave_CheckedChanged);
             // 
+            // ofd_collection
+            // 
+            this.ofd_collection.FileName = "openFileDialog1";
+            this.ofd_collection.Filter = "Collection (.rscollection)|*.rscollection";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1056,17 +1076,17 @@
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortExt)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortInt)).EndInit();
             this.tc_main.ResumeLayout(false);
-            this.tp_friends.ResumeLayout(false);
-            this.gb_peerNew.ResumeLayout(false);
-            this.gb_peerNew.PerformLayout();
-            this.gb_peerInfo.ResumeLayout(false);
-            this.gb_peerInfo.PerformLayout();
             this.tp_chat.ResumeLayout(false);
             this.tp_chat.PerformLayout();
             this.gb_autoResp.ResumeLayout(false);
             this.gb_autoResp.PerformLayout();
             this.gb_nickname.ResumeLayout(false);
             this.gb_nickname.PerformLayout();
+            this.tp_friends.ResumeLayout(false);
+            this.gb_peerNew.ResumeLayout(false);
+            this.gb_peerNew.PerformLayout();
+            this.gb_peerInfo.ResumeLayout(false);
+            this.gb_peerInfo.PerformLayout();
             this.tp_files.ResumeLayout(false);
             this.tp_files.PerformLayout();
             this.tb_search.ResumeLayout(false);
@@ -1171,6 +1191,8 @@
         internal System.Windows.Forms.ListBox lb_searches;
         private System.Windows.Forms.Button bt_searchAddToDL;
         private System.Windows.Forms.Button bt_searchRemove;
+        private System.Windows.Forms.Button bt_filesAddCollection;
+        private System.Windows.Forms.OpenFileDialog ofd_collection;
     }
 }
 

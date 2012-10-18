@@ -307,13 +307,8 @@ namespace RetroShareSSHClient
 
         private void bt_test_Click(object sender, EventArgs e)
         {
-            uint regID;
-            //regID = _bridge.RPC.GetSystemStatus();
-            //regID = _bridge.RPC.GetFriendList(RequestPeers.SetOption.OWNID);
-            //_processor.PendingPeerRequests.Add(regID, RequestPeers.SetOption.OWNID);
-            //regID = _bridge.RPC.GetFriendList(RequestPeers.SetOption.FRIENDS);
-            //_processor.PendingPeerRequests.Add(regID, RequestPeers.SetOption.FRIENDS);
-            regID = _b.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_PUBLIC);
+            List<File> tmp;
+            RsCollection.ReadCollection("D:\\Downloads\\RetroShare\\Collections\\Evelyn.rscollection", out tmp);
         }
 
         #region friends
@@ -462,6 +457,24 @@ namespace RetroShareSSHClient
             _b.RPC.FilesControllDownload(RequestControlDownload.Action.ACTION_CANCEL, gft.FileTransfer.file);
         }
 
+        private void bt_filesAddCollection_Click(object sender, EventArgs e)
+        {
+            if (ofd_collection.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                tb_out.AppendText("Error adding collection" + "\n");
+
+            List<File> fileList;
+            if (!RsCollection.ReadCollection(ofd_collection.FileName, out fileList) || fileList == null)
+            {
+                tb_out.AppendText("Error adding collection" + "\n");
+            }
+
+            foreach (File f in fileList)
+            {
+                // add all the files 
+            }
+            tb_out.AppendText("adding " + fileList.Count + " files" + "\n");
+        }
+
         #endregion
 
         #region search
@@ -502,6 +515,7 @@ namespace RetroShareSSHClient
         }
 
         #endregion
+
     }
 
     public class Bridge
