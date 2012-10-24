@@ -119,6 +119,8 @@
             this.cb_settingsSavePW = new System.Windows.Forms.CheckBox();
             this.cb_settingsSave = new System.Windows.Forms.CheckBox();
             this.ofd_collection = new System.Windows.Forms.OpenFileDialog();
+            this.l_settingsReadSpeed = new System.Windows.Forms.Label();
+            this.cb_settingsReadSpeed = new System.Windows.Forms.ComboBox();
             this.gb_systemStatus.SuspendLayout();
             this.gb_ip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortExt)).BeginInit();
@@ -520,7 +522,6 @@
             // 
             // bt_test
             // 
-            this.bt_test.Enabled = false;
             this.bt_test.Location = new System.Drawing.Point(12, 327);
             this.bt_test.Name = "bt_test";
             this.bt_test.Size = new System.Drawing.Size(194, 31);
@@ -1009,6 +1010,8 @@
             // 
             // tb_options
             // 
+            this.tb_options.Controls.Add(this.cb_settingsReadSpeed);
+            this.tb_options.Controls.Add(this.l_settingsReadSpeed);
             this.tb_options.Controls.Add(this.cb_settingsSaveChat);
             this.tb_options.Controls.Add(this.cb_settingsSavePW);
             this.tb_options.Controls.Add(this.cb_settingsSave);
@@ -1055,6 +1058,24 @@
             // 
             this.ofd_collection.FileName = "openFileDialog1";
             this.ofd_collection.Filter = "Collection (.rscollection)|*.rscollection";
+            // 
+            // l_settingsReadSpeed
+            // 
+            this.l_settingsReadSpeed.AutoSize = true;
+            this.l_settingsReadSpeed.Location = new System.Drawing.Point(7, 78);
+            this.l_settingsReadSpeed.Name = "l_settingsReadSpeed";
+            this.l_settingsReadSpeed.Size = new System.Drawing.Size(95, 13);
+            this.l_settingsReadSpeed.TabIndex = 3;
+            this.l_settingsReadSpeed.Text = "read speed (KiB/s)";
+            // 
+            // cb_settingsReadSpeed
+            // 
+            this.cb_settingsReadSpeed.FormattingEnabled = true;
+            this.cb_settingsReadSpeed.Location = new System.Drawing.Point(108, 75);
+            this.cb_settingsReadSpeed.Name = "cb_settingsReadSpeed";
+            this.cb_settingsReadSpeed.Size = new System.Drawing.Size(76, 21);
+            this.cb_settingsReadSpeed.TabIndex = 4;
+            this.cb_settingsReadSpeed.SelectedIndexChanged += new System.EventHandler(this.cb_settingsReadSpeed_SelectedIndexChanged);
             // 
             // MainForm
             // 
@@ -1193,6 +1214,8 @@
         private System.Windows.Forms.Button bt_searchRemove;
         private System.Windows.Forms.Button bt_filesAddCollection;
         private System.Windows.Forms.OpenFileDialog ofd_collection;
+        private System.Windows.Forms.ComboBox cb_settingsReadSpeed;
+        private System.Windows.Forms.Label l_settingsReadSpeed;
     }
 }
 

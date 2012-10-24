@@ -18,7 +18,7 @@ namespace RetroShareSSHClient
      */
     static class RsCollection
     {
-        const bool DEBUG = true;
+        const bool DEBUG = false;
 
         static public bool ReadCollection(string path, out List<File> fileList)
         {
@@ -31,8 +31,8 @@ namespace RetroShareSSHClient
             while (tr.Read())
             {
                 if (tr.Name == "") continue;
-                System.Diagnostics.Debug.WriteLineIf(DEBUG, "rsc: knoten name " + tr.Name);
-                System.Diagnostics.Debug.WriteLineIf(DEBUG, "rsc: att count " + tr.AttributeCount);
+                System.Diagnostics.Debug.WriteLineIf(DEBUG, "ReadCollection: node name " + tr.Name);
+                System.Diagnostics.Debug.WriteLineIf(DEBUG, "ReadCollection: att count " + tr.AttributeCount);
 
                 switch (tr.Name)
                 {

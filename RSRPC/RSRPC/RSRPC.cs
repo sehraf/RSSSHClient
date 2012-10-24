@@ -112,6 +112,12 @@ namespace Sehraf.RSRPC
             return _rsConnector.Reconnect(out stream);
         }
 
+        public void SetReadSpeed(ushort speed)
+        {
+            // maybe need a check here
+            _rsProtoBuf.ReadSpeed = speed;
+        }
+
         internal void Error(Exception e)
         {
             _event(EventType.Error, e);

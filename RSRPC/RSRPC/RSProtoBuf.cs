@@ -59,6 +59,7 @@ namespace Sehraf.RSRPC
 
         ShellStream _stream;
         uint _nextReqID, _timeOut, _lastSize;
+        ushort _readSpeed = 100; // KiB/s
         RSRPC _parent;
 
         Queue<RSProtoBuffSSHMsg> _sendQueue;
@@ -68,6 +69,7 @@ namespace Sehraf.RSRPC
         bool _run, _finishQueue, _findMagicCode;
 
         public bool ThreadRunning { get { return _t.IsAlive; } }
+        public ushort ReadSpeed { get { return _readSpeed; } set { _readSpeed = value; } }
 
         public RSProtoBuf(ShellStream stream, Queue<RSProtoBuffSSHMsg> sendQueue, Queue<RSProtoBuffSSHMsg> receiveQueue, RSRPC parent, uint timeout = 1000, bool useThread = true)
         {
@@ -196,11 +198,28 @@ namespace Sehraf.RSRPC
         private bool ReadFromStream(uint timeOut, int length, out byte[] output)
         {
             bool done = false;
-            //ushort bufferLength = 512, sleepTime = 50; // ~10KiB/s
-            //ushort bufferLength = 1024, sleepTime = 50; // ~20KiB/s
-            //ushort bufferLength = 512, sleepTime = 10; // ~50KiB/s
-            //ushort bufferLength = 512, sleepTime = 5; // ~100KiB/s
-            ushort bufferLength = 512, sleepTime = 1; // ~500KiB/s
+            ushort bufferLength = 512, sleepTime = 1; // ~100KiB/s
+            switch (_readSpeed)
+            {
+                case 0:
+                default:
+                    break;
+                case 10:
+                    bufferLength = 512; sleepTime = 50; // ~10KiB/s
+                    break;
+                case 20:
+                    bufferLength = 1024; sleepTime = 50; // ~20KiB/s
+                    break;
+                case 50:
+                    bufferLength = 512; sleepTime = 10; // ~50KiB/s
+                    break;
+                case 100:
+                    bufferLength = 512; sleepTime = 5; // ~100KiB/s
+                    break;
+                case 500:
+                    bufferLength = 512; sleepTime = 1; // ~500KiB/s
+                    break;                
+            }
             uint read = 0;
             ushort toRead;
             byte[] buffer = new byte[bufferLength];
@@ -448,7 +467,7 @@ namespace Sehraf.RSRPC
         public static bool Deserialize<T>(Stream body, out T msg, out Exception e)
         {
             try
-            {
+            {                
                 msg = Serializer.Deserialize<T>(body);
                 e = null;
                 return true;

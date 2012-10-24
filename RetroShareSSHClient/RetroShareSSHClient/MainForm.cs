@@ -39,7 +39,17 @@ namespace RetroShareSSHClient
             _settings = new Settings();
             _tickCounter = 0;
 
+            SetSpeedOptions(); // set options _before_ loading settings!
             LoadForms();
+        }
+
+        private void SetSpeedOptions()
+        {
+            cb_settingsReadSpeed.Items.Add(10);
+            cb_settingsReadSpeed.Items.Add(20);
+            cb_settingsReadSpeed.Items.Add(50);
+            cb_settingsReadSpeed.Items.Add(100);
+            cb_settingsReadSpeed.Items.Add(500);
         }
 
         private void LoadForms()
@@ -54,6 +64,7 @@ namespace RetroShareSSHClient
                     tb_pw.Text = opt.Password;
                     cb_settingsSave.Checked = true;
                     cb_settingsSavePW.Checked = opt.SavePW;
+                    cb_settingsReadSpeed.SelectedIndex = opt.ReadSpeedIndex;
                 }
                 if (opt.SaveChat)
                 {
@@ -79,6 +90,7 @@ namespace RetroShareSSHClient
                 opt.Password = cb_settingsSavePW.Checked ? tb_pw.Text : "";
                 opt.SaveSettings = true;
                 opt.SavePW = cb_settingsSavePW.Checked;
+                opt.ReadSpeedIndex = (byte)cb_settingsReadSpeed.SelectedIndex;
             }
             if (cb_settingsSaveChat.Checked)
             {
@@ -309,6 +321,13 @@ namespace RetroShareSSHClient
         {
             List<File> tmp;
             RsCollection.ReadCollection("D:\\Downloads\\RetroShare\\Collections\\Evelyn.rscollection", out tmp);
+        }
+
+        private void cb_settingsReadSpeed_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string selected = cb_settingsReadSpeed.SelectedText;
+            if (selected != "")
+                _b.RPC.SetReadSpeed(Convert.ToUInt16(selected));
         }
 
         #region friends

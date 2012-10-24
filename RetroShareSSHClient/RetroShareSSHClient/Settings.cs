@@ -25,12 +25,14 @@ namespace RetroShareSSHClient
         string _chatAutoRespAnswer;
         bool _enableAutoResp;
         bool _saveChat;
+        byte _readSpeedIndex;
 
         public string Nick { get { return _nickname; } set { _nickname = value; } }
         public string AutoRespSearch { get { return _chatAutoRespSearch; } set { _chatAutoRespSearch = value; } }
         public string AutoRespAnswer { get { return _chatAutoRespAnswer; } set { _chatAutoRespAnswer = value; } }
         public bool EnableAutoResp { get { return _enableAutoResp; } set { _enableAutoResp = value; } }
         public bool SaveChat { get { return _saveChat; } set { _saveChat = value; } }
+        public byte ReadSpeedIndex { get { return _readSpeedIndex; } set { _readSpeedIndex = value; } }
     }
 
     class Settings
@@ -61,6 +63,7 @@ namespace RetroShareSSHClient
                     opt.AutoRespSearch = sr.ReadLine();
                     opt.EnableAutoResp = (sr.ReadLine() == "1") ? true : false;
                     opt.SaveChat = (sr.ReadLine() == "1") ? true : false;
+                    opt.ReadSpeedIndex = Convert.ToByte(sr.ReadLine());
 
                     sr.Close();
                     sr.Dispose();
@@ -100,6 +103,7 @@ namespace RetroShareSSHClient
                 sw.WriteLine(opt.AutoRespSearch);
                 sw.WriteLine(opt.EnableAutoResp ? "1" : "0");
                 sw.WriteLine(opt.SaveChat ? "1" : "0");
+                sw.WriteLine(opt.ReadSpeedIndex);
 
                 sw.Flush();
                 sw.Close();
