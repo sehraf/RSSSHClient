@@ -6,11 +6,7 @@ using System.Threading;
 
 using ProtoBuf;
 
-//using Renci.SshNet;
-//using Renci.SshNet.Common;
-
 using rsctrl.core;
-//using rsctrl.peers;
 
 using Renci.SshNet;
 
@@ -28,6 +24,9 @@ using Renci.SshNet;
 
 namespace Sehraf.RSRPC
 {
+    /// <summary>
+    /// Structure containing everything needed for a RPC call
+    /// </summary>
     public struct RSProtoBuffSSHMsg
     {
         private const uint _magicCode = 0x137f0001;
@@ -35,16 +34,17 @@ namespace Sehraf.RSRPC
 
         private uint _msgID, _reqID, _bodySize;
         Stream _pbMsg;
-        //bool _important;
 
         public uint MagicCode { get { return _magicCode; } }
         public uint MsgID { get { return _msgID; } set { _msgID = value; } }
         public uint ReqID { get { return _reqID; } set { _reqID = value; } }
         public uint BodySize { get { return _bodySize; } set { _bodySize = value; } }
         public Stream ProtoBuffMsg { get { return _pbMsg; } set { _pbMsg = value; } }
-        //public bool IsImportant { get { return _important; } set { _important = value; } }
     }
 
+    /// <summary>
+    /// Compare two persons by name
+    /// </summary>
     public class PersonComparer : IComparer<Person>
     {
         public int Compare(Person p1, Person p2)
@@ -93,6 +93,11 @@ namespace Sehraf.RSRPC
             }
         }
 
+        /// <summary>
+        /// Wrtites a msg to the SSH stream
+        /// </summary>
+        /// <param name="msg">msg to send</param>
+        /// <returns></returns>
         public uint Send(RSProtoBuffSSHMsg msg)
         {
             System.Diagnostics.Debug.WriteLineIf(DEBUG, "send: sending packet " + msg.ReqID + " MsgID: " + msg.MsgID + " body size: " + msg.BodySize);
@@ -117,17 +122,24 @@ namespace Sehraf.RSRPC
             return msg.ReqID;
         }
 
-        // temporary solution
+        /// <summary>
+        /// breaks the SSH connecting by sending a wrong packet
+        /// temporary solution
+        /// </summary>
         public void BreakConnection()
         {
             _stream.Write("disconnect");
-            //_stream.Flush();
         }
 
+        /// <summary>
+        /// wrapper for ReadMsgFromStream(..)
+        /// </summary>
+        /// <param name="msg">RSProtoBuffSSHMsg (out)</param>
+        /// <param name="timeOut">timeout in ms ( 0 = default)</param>
+        /// <returns>success?</returns>
         public bool Receive(out RSProtoBuffSSHMsg msg, uint timeOut = 0)
         {
             msg = new RSProtoBuffSSHMsg();
-            //if (!_streamOut.CanRead) 
             if (!_stream.CanRead)
             {
                 System.Diagnostics.Debug.WriteLine("rec: cannot read stream!");
@@ -144,6 +156,13 @@ namespace Sehraf.RSRPC
             return true;
         }
 
+        /// <summary>
+        /// Contructs a msg from the SSH stream
+        /// </summary>
+        /// <param name="msg">RSProtoBuffSSHMsg (ref)</param>
+        /// <param name="timeOut">timeout in ms ( 0 = default)</param>
+        /// <param name="GetHeader">read header or skip to ProtoBufMsg</param>
+        /// <returns>success?</returns>
         private bool ReadMsgFromStream(ref RSProtoBuffSSHMsg msg, uint timeOut = 0, bool GetHeader = true)
         {
             if (timeOut == 0)
@@ -195,6 +214,13 @@ namespace Sehraf.RSRPC
             return true;
         }
 
+        /// <summary>
+        /// Reads bytes from the SSH stream
+        /// </summary>
+        /// <param name="timeOut">timeout in ms</param>
+        /// <param name="length">how many bytes</param>
+        /// <param name="output">byte array (out)</param>
+        /// <returns>success?</returns>
         private bool ReadFromStream(uint timeOut, int length, out byte[] output)
         {
             bool done = false;
@@ -244,7 +270,7 @@ namespace Sehraf.RSRPC
                         if (read == length)
                             done = true;
 
-                        // we got data 
+                        // we got data - reset timeout
                         timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
                     }
                     catch (Exception e)
@@ -266,6 +292,11 @@ namespace Sehraf.RSRPC
             return true;
         }
 
+        /// <summary>
+        /// Converts a msg into a a byte array in network order (ready to send)
+        /// </summary>
+        /// <param name="msg">input RSProtoBuffSSHMsg to convert</param>
+        /// <returns>msg as a byte array</returns>
         private byte[] CreatePacketFromMsg(RSProtoBuffSSHMsg msg)
         {
             byte[] a = new byte[4];
@@ -288,6 +319,11 @@ namespace Sehraf.RSRPC
             return output;
         }
 
+        /// <summary>
+        /// Converts an unsigned integer (uint) into a byte array in network order
+        /// </summary>
+        /// <param name="i">unsigned integer to convert</param>
+        /// <returns>unsigned integer converted to byte array</returns>
         private byte[] UintToByteNetwortOrder(uint i)
         {
             byte[] a = new byte[4];
@@ -296,6 +332,10 @@ namespace Sehraf.RSRPC
             return a;
         }
 
+        /// <summary>
+        /// Generates a request ID by adding 1 to the last ID
+        /// </summary>
+        /// <returns>request ID</returns>
         public uint GetReqID()
         {
             if (_nextReqID < UInt32.MaxValue)
@@ -305,7 +345,17 @@ namespace Sehraf.RSRPC
             return _nextReqID;
         }
 
-        // main loop
+        /// <summary>
+        /// Main loop to send and receive data from the SSH stream.
+        /// 
+        /// Takes msgs from _sendQueue and sends them.
+        /// Reads msgs and put them in _receiveQueue for further processing.
+        /// Also reconnects when "MagicCode missmatch" occurs.
+        /// 
+        /// Is designed to run in an own thread.
+        /// Use _run = false to stop the loop.
+        /// Use _finishQueue to send al pending msgs ( won't receive data anymore )
+        /// </summary>
         private void mainLoop()
         {
             bool foundWork;
@@ -407,11 +457,17 @@ namespace Sehraf.RSRPC
             }
         }
 
+        /// <summary>
+        /// Function to prepare the main loop to stop ( sets _finishQueue = true )
+        /// </summary>
         public void FinishQueue()
         {
             _finishQueue = true;
         }
 
+        /// <summary>
+        /// Stops the main loop ( using Thread.Abort() )
+        /// </summary>
         public void StopThread()
         {
             _run = false;
@@ -464,6 +520,14 @@ namespace Sehraf.RSRPC
             return Convert.ToString(msgID, 16);
         }
 
+        /// <summary>
+        /// Wrapper with error handling for deserialisation
+        /// </summary>
+        /// <typeparam name="T">type of msg</typeparam>
+        /// <param name="body">stream containing the msg</param>
+        /// <param name="msg">msg (out) is default(T) if an error occurs</param>
+        /// <param name="e">error (out) contains the error if any occurs</param>
+        /// <returns>success?</returns>
         public static bool Deserialize<T>(Stream body, out T msg, out Exception e)
         {
             try

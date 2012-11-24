@@ -67,7 +67,7 @@ namespace Sehraf.RSRPC
             {
                 _sendQueue.Clear();
                 _receiveQueue.Clear();
-                _rsConnector = new RSSSHConnector(host, port, user, pw);
+                _rsConnector = new RSSSHConnector(this, host, port, user, pw);
                 if (_rsConnector.Connect())
                 {
                     _rsProtoBuf = new RSProtoBuf(_rsConnector.Stream, _sendQueue, _receiveQueue, this);
