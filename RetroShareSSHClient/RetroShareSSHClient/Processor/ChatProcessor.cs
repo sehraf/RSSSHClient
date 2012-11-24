@@ -200,6 +200,34 @@ namespace RetroShareSSHClient
             }
         }
 
+        public void SendChatMsg(GuiChatLobby cl, string inMsg = "")
+        {
+            string text = (inMsg == "") ? _b.GUI.tb_chatMsg.Text : inMsg;
+
+            ChatId id = new ChatId();
+            if (cl.ID == GROUPCHAT)
+            {
+                id.chat_id = "";
+                id.chat_type = ChatType.TYPE_GROUP;
+            }
+            else
+            {
+                id.chat_id = cl.ID;
+                id.chat_type = ChatType.TYPE_LOBBY;
+            }
+            ChatMessage msg = new ChatMessage();
+            msg.id = id;
+            msg.msg = text;
+            msg.peer_nickname = _nick;
+            msg.send_time = (uint)DateTime.Now.Second;
+
+            _b.RPC.ChatSendMsg(msg);
+            if (cl.ID != GROUPCHAT) // needed ?!
+                PrintMsgToLobby(cl.ID, DateTime.Now.ToLongTimeString() + " - " + _nick + " > " + text + "\n");
+            if (inMsg == "")
+                _b.GUI.tb_chatMsg.Clear();
+        }
+
         public void PrintMsgToLobby(string ID, EventChatMessage response)
         {
             System.Diagnostics.Debug.WriteLineIf(DEBUG, "Chat: PrintMsgToLobby ID: " + response.msg.id);
@@ -231,7 +259,8 @@ namespace RetroShareSSHClient
                     _chatLobbies[ID] = cl;
                 }
             }
-            AutoAnswer(Processor.RemoteTags(response.msg.msg));
+            //AutoAnswer(Processor.RemoteTags(response.msg.msg));
+            AutoAnswer(response, cl);
         }
 
         public void PrintMsgToLobby(string ID, string msg)
@@ -286,6 +315,22 @@ namespace RetroShareSSHClient
             {
                 if (msg.ToLower().Contains(_b.GUI.tb_chatAutoRespSearch.Text.ToLower()))
                     SendChatMsg(_b.GUI.tb_chatAutoRespAnswer.Text);
+            }
+        }
+
+        private void AutoAnswer(EventChatMessage response, GuiChatLobby cl)
+        {
+            if (_b.GUI.cb_chatAutoRespEnable.Checked && _b.GUI.tb_chatAutoRespSearch.Text != "" && _b.GUI.tb_chatAutoRespAnswer.Text != "")
+            {
+                if (Processor.RemoteTags(response.msg.msg).ToLower().Contains(_b.GUI.tb_chatAutoRespSearch.Text.ToLower()))
+                {
+                    string s = _b.GUI.tb_chatAutoRespAnswer.Text;
+
+                    //replace pattern
+                    s = s.Replace("%nick%", response.msg.peer_nickname);
+
+                    SendChatMsg(cl, s);
+                }
             }
         }
 

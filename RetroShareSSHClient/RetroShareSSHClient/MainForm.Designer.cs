@@ -115,12 +115,13 @@
             this.tb_connection = new System.Windows.Forms.TabPage();
             this.bt_shutdown = new System.Windows.Forms.Button();
             this.tb_options = new System.Windows.Forms.TabPage();
+            this.bt_settingsClearLog = new System.Windows.Forms.Button();
+            this.cb_settingsReadSpeed = new System.Windows.Forms.ComboBox();
+            this.l_settingsReadSpeed = new System.Windows.Forms.Label();
             this.cb_settingsSaveChat = new System.Windows.Forms.CheckBox();
             this.cb_settingsSavePW = new System.Windows.Forms.CheckBox();
             this.cb_settingsSave = new System.Windows.Forms.CheckBox();
             this.ofd_collection = new System.Windows.Forms.OpenFileDialog();
-            this.l_settingsReadSpeed = new System.Windows.Forms.Label();
-            this.cb_settingsReadSpeed = new System.Windows.Forms.ComboBox();
             this.gb_systemStatus.SuspendLayout();
             this.gb_ip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortExt)).BeginInit();
@@ -1010,6 +1011,7 @@
             // 
             // tb_options
             // 
+            this.tb_options.Controls.Add(this.bt_settingsClearLog);
             this.tb_options.Controls.Add(this.cb_settingsReadSpeed);
             this.tb_options.Controls.Add(this.l_settingsReadSpeed);
             this.tb_options.Controls.Add(this.cb_settingsSaveChat);
@@ -1022,6 +1024,34 @@
             this.tb_options.TabIndex = 1;
             this.tb_options.Text = "Settings";
             this.tb_options.UseVisualStyleBackColor = true;
+            // 
+            // bt_settingsClearLog
+            // 
+            this.bt_settingsClearLog.Location = new System.Drawing.Point(7, 148);
+            this.bt_settingsClearLog.Name = "bt_settingsClearLog";
+            this.bt_settingsClearLog.Size = new System.Drawing.Size(75, 23);
+            this.bt_settingsClearLog.TabIndex = 5;
+            this.bt_settingsClearLog.Text = "clear log";
+            this.bt_settingsClearLog.UseVisualStyleBackColor = true;
+            this.bt_settingsClearLog.Click += new System.EventHandler(this.bt_settingsClearLog_Click);
+            // 
+            // cb_settingsReadSpeed
+            // 
+            this.cb_settingsReadSpeed.FormattingEnabled = true;
+            this.cb_settingsReadSpeed.Location = new System.Drawing.Point(108, 75);
+            this.cb_settingsReadSpeed.Name = "cb_settingsReadSpeed";
+            this.cb_settingsReadSpeed.Size = new System.Drawing.Size(76, 21);
+            this.cb_settingsReadSpeed.TabIndex = 4;
+            this.cb_settingsReadSpeed.SelectedIndexChanged += new System.EventHandler(this.cb_settingsReadSpeed_SelectedIndexChanged);
+            // 
+            // l_settingsReadSpeed
+            // 
+            this.l_settingsReadSpeed.AutoSize = true;
+            this.l_settingsReadSpeed.Location = new System.Drawing.Point(7, 78);
+            this.l_settingsReadSpeed.Name = "l_settingsReadSpeed";
+            this.l_settingsReadSpeed.Size = new System.Drawing.Size(95, 13);
+            this.l_settingsReadSpeed.TabIndex = 3;
+            this.l_settingsReadSpeed.Text = "read speed (KiB/s)";
             // 
             // cb_settingsSaveChat
             // 
@@ -1058,24 +1088,6 @@
             // 
             this.ofd_collection.FileName = "openFileDialog1";
             this.ofd_collection.Filter = "Collection (.rscollection)|*.rscollection";
-            // 
-            // l_settingsReadSpeed
-            // 
-            this.l_settingsReadSpeed.AutoSize = true;
-            this.l_settingsReadSpeed.Location = new System.Drawing.Point(7, 78);
-            this.l_settingsReadSpeed.Name = "l_settingsReadSpeed";
-            this.l_settingsReadSpeed.Size = new System.Drawing.Size(95, 13);
-            this.l_settingsReadSpeed.TabIndex = 3;
-            this.l_settingsReadSpeed.Text = "read speed (KiB/s)";
-            // 
-            // cb_settingsReadSpeed
-            // 
-            this.cb_settingsReadSpeed.FormattingEnabled = true;
-            this.cb_settingsReadSpeed.Location = new System.Drawing.Point(108, 75);
-            this.cb_settingsReadSpeed.Name = "cb_settingsReadSpeed";
-            this.cb_settingsReadSpeed.Size = new System.Drawing.Size(76, 21);
-            this.cb_settingsReadSpeed.TabIndex = 4;
-            this.cb_settingsReadSpeed.SelectedIndexChanged += new System.EventHandler(this.cb_settingsReadSpeed_SelectedIndexChanged);
             // 
             // MainForm
             // 
@@ -1216,6 +1228,7 @@
         private System.Windows.Forms.OpenFileDialog ofd_collection;
         private System.Windows.Forms.ComboBox cb_settingsReadSpeed;
         private System.Windows.Forms.Label l_settingsReadSpeed;
+        private System.Windows.Forms.Button bt_settingsClearLog;
     }
 }
 

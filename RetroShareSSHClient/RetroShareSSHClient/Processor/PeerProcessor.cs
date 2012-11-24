@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using rsctrl.core;
@@ -11,8 +12,8 @@ namespace RetroShareSSHClient
     class PeerProcessor
     {
         Person _owner;
-        List<Person> _friendList;
-        Person _selectedFriend;
+        List<Person> _peerList;
+        Person _selectedPeer;
 
         Bridge _b;
 
@@ -21,35 +22,44 @@ namespace RetroShareSSHClient
             _b = bridge;
 
             _owner = new Person();
-            _friendList = new List<Person>();
-            _selectedFriend = new Person();
+            _peerList = new List<Person>();
+            _selectedPeer = new Person();
         }
 
         public void Reset()
         {
             //_owner = null; needed?
-            _friendList.Clear();
+            _peerList.Clear();
             _b.GUI.lb_friends.Items.Clear();
             _b.GUI.lb_locations.Items.Clear();
-            _selectedFriend = null;
+            _selectedPeer = null;
         }
 
         public void UpdatePeerList(ResponsePeerList msg)
         {
+            // get new peerlist
+            List<Person> _newPeerList = msg.peers;
+            _newPeerList.Sort(new PersonComparer());
+
+            // check if anything had changed
+            if (EqualPeerLists(_peerList, _newPeerList))
+                return;
+            
+            //save selected peer/location
             int index1 = _b.GUI.lb_friends.SelectedIndex, index2 = _b.GUI.lb_locations.SelectedIndex;
             _b.GUI.lb_friends.Items.Clear();
             ClearPeerForm();
-            _friendList.Clear();
-            List<Location> locs = new List<rsctrl.core.Location>();
-            _friendList = msg.peers;
+            _peerList.Clear();
+
+            _peerList = msg.peers;
             if (_owner.locations.Count > 0)
-                _friendList.Add(_owner);
-            _friendList.Sort(new PersonComparer());
-            foreach (Person p in _friendList)
+                _peerList.Add(_owner);
+            _peerList.Sort(new PersonComparer());
+
+            foreach (Person p in _peerList)
             {
-                locs = p.locations;
                 byte online = 0, total = 0;
-                foreach (Location l in locs)
+                foreach (Location l in p.locations)
                 {
                     total++;
                     switch (l.state)
@@ -65,9 +75,27 @@ namespace RetroShareSSHClient
                 }
                 _b.GUI.lb_friends.Items.Add("(" + online + "/" + total + ") " + p.name);
             }
+
             _b.GUI.lb_friends.SelectedIndex = index1;
             _b.GUI.lb_locations.SelectedIndex = index2;
-            //lb_locations_SelectedIndexChanged(null, null);
+        }
+
+        private bool EqualPeerLists(List<Person> ai, List<Person> bi)
+        {
+            if (ai.Count != bi.Count) return false;
+
+            Person[] a = ai.ToArray(), b = bi.ToArray();
+            Person p1, p2;
+
+            for (int i = 0; i < a.Length; i++)
+            {
+                p1 = a[i];
+                p2 = b[i];
+
+                if (p1.gpg_id != p2.gpg_id || p1.name != p2.name || p1.locations.Count != p2.locations.Count) return false;                
+            }
+
+            return true;
         }
 
         public void SetOwnID(ResponsePeerList msg)
@@ -103,8 +131,8 @@ namespace RetroShareSSHClient
         public void FriendsSelectedIndexChanged(int index)
         {
             ClearPeerForm();
-            Person p = _friendList[index];
-            _selectedFriend = p;
+            Person p = _peerList[index];
+            _selectedPeer = p;
             foreach (Location l in p.locations)
             {
                 string state = "";
@@ -134,7 +162,7 @@ namespace RetroShareSSHClient
 
         public void LocationSelevtedIndexChanged(int index)
         {
-            Location l = _selectedFriend.locations[index];
+            Location l = _selectedPeer.locations[index];
             _b.GUI.tb_peerLocation.Text = l.location;
             _b.GUI.tb_peerLocationID.Text = l.ssl_id;
             _b.GUI.tb_peerIPExt.Text = l.extaddr.addr;
@@ -148,7 +176,7 @@ namespace RetroShareSSHClient
 
         public void SavePeer(int locationIndex)
         {
-            Person p = _selectedFriend;
+            Person p = _selectedPeer;
             Location l = p.locations[locationIndex];
             l.extaddr.addr = _b.GUI.tb_peerIPExt.Text;
             l.extaddr.port = Convert.ToUInt16(_b.GUI.nud_peerPortExt.Value);
@@ -156,7 +184,7 @@ namespace RetroShareSSHClient
             l.localaddr.port = Convert.ToUInt16(_b.GUI.nud_peerPortInt.Value);
             //dyndns
             p.locations[locationIndex] = l;
-            _selectedFriend = p;
+            _selectedPeer = p;
             uint reqID = _b.RPC.PeersModifyPeer(p, RequestModifyPeer.ModCmd.ADDRESS);
             // save request ???
         }

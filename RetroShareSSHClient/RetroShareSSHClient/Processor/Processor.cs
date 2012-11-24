@@ -88,6 +88,8 @@ namespace RetroShareSSHClient
             ushort service = RSProtoBuf.GetRpcMsgIdService(msg.MsgID);
             System.Diagnostics.Debug.WriteLineIf(DEBUG, "Processing Msg " + msg.ReqID + " .....");
             System.Diagnostics.Debug.WriteLineIf(DEBUG, "ext: " + extension + " - service: " + service + " - submsg: " + RSProtoBuf.GetRpcMsgIdSubMsg(msg.MsgID));
+            //System.Diagnostics.Debug.WriteLineIf(true, "Processing Msg " + msg.ReqID + " .....");
+            //System.Diagnostics.Debug.WriteLineIf(true, "ext: " + extension + " - service: " + service + " - submsg: " + RSProtoBuf.GetRpcMsgIdSubMsg(msg.MsgID));
             //_gui.tb_out.AppendText(" -> " + msg.ReqID + "\n");
             switch (extension)
             {
@@ -125,6 +127,7 @@ namespace RetroShareSSHClient
         // ---------- chat ----------
         private void ProcessChat(RSProtoBuffSSHMsg msg)
         {
+            //System.Diagnostics.Debug.WriteLine(" ----------- processing chat ----------");
             byte submsg = RSProtoBuf.GetRpcMsgIdSubMsg(msg.MsgID);
             switch (submsg)
             {
@@ -166,7 +169,7 @@ namespace RetroShareSSHClient
                     case ChatType.TYPE_PRIVATE:
                         break;
                     default:
-                        // :S
+                        System.Diagnostics.Debug.WriteLineIf(DEBUG, "ProcessChatMsg: unknown chat type");
                         break;
                 }
 

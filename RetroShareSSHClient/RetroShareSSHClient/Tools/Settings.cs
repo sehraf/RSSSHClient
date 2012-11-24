@@ -109,7 +109,7 @@ namespace RetroShareSSHClient
                 sw.Close();
                 sw.Dispose();
 
-                fs.Flush();
+                //fs.Flush();
                 fs.Close();
                 fs.Dispose();
             }

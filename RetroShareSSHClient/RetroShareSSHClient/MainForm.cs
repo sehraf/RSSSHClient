@@ -21,6 +21,7 @@ namespace RetroShareSSHClient
     public partial class MainForm : Form
     {     
         Settings _settings;
+        Log _log;
         uint _tickCounter;
 
         Bridge _b;
@@ -37,6 +38,8 @@ namespace RetroShareSSHClient
             _b.RPC.ReceivedMsg += ProcessMsgFromThread;
 
             _settings = new Settings();
+            _log = new Log();
+            _log.NewSession();
             _tickCounter = 0;
 
             SetSpeedOptions(); // set options _before_ loading settings!
@@ -121,6 +124,7 @@ namespace RetroShareSSHClient
         {
             System.Diagnostics.Debug.WriteLine(e.Message);
             tb_out.AppendText(e.Message + "\n");
+            _log.AddError(e);
         }
 
         private void ReconnectOccurred()
@@ -319,8 +323,7 @@ namespace RetroShareSSHClient
 
         private void bt_test_Click(object sender, EventArgs e)
         {
-            List<File> tmp;
-            RsCollection.ReadCollection("D:\\Downloads\\RetroShare\\Collections\\Evelyn.rscollection", out tmp);
+
         }
 
         private void cb_settingsReadSpeed_SelectedIndexChanged(object sender, EventArgs e)
@@ -328,6 +331,11 @@ namespace RetroShareSSHClient
             string selected = cb_settingsReadSpeed.SelectedText;
             if (selected != "")
                 _b.RPC.SetReadSpeed(Convert.ToUInt16(selected));
+        }
+
+        private void bt_settingsClearLog_Click(object sender, EventArgs e)
+        {
+            _log.ClearLog();
         }
 
         #region friends
@@ -534,6 +542,7 @@ namespace RetroShareSSHClient
         }
 
         #endregion
+
 
     }
 
