@@ -103,8 +103,8 @@ namespace rsctrl.chat
       [global::ProtoBuf.ProtoEnum(Name=@"LOBBYSTATE_INVITED", Value=2)]
       LOBBYSTATE_INVITED = 2,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"LOBBYSTATE_PUBLIC", Value=3)]
-      LOBBYSTATE_PUBLIC = 3
+      [global::ProtoBuf.ProtoEnum(Name=@"LOBBYSTATE_VISIBLE", Value=3)]
+      LOBBYSTATE_VISIBLE = 3
     }
   
     private global::ProtoBuf.IExtension extensionObject;
@@ -245,8 +245,8 @@ namespace rsctrl.chat
       [global::ProtoBuf.ProtoEnum(Name=@"LOBBYSET_INVITED", Value=3)]
       LOBBYSET_INVITED = 3,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"LOBBYSET_PUBLIC", Value=4)]
-      LOBBYSET_PUBLIC = 4
+      [global::ProtoBuf.ProtoEnum(Name=@"LOBBYSET_VISIBLE", Value=4)]
+      LOBBYSET_VISIBLE = 4
     }
   
     private global::ProtoBuf.IExtension extensionObject;
