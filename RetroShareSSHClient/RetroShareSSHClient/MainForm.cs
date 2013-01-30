@@ -254,13 +254,11 @@ namespace RetroShareSSHClient
             {
                 // tick
                 _b.RPC.SystemGetStatus();
-                _b.ChatProcessor.ToggleCheckboxes();
                 
                 // DL/UL
                 if (_tickCounter % 30 == 0 || (tc_main.SelectedTab == tp_files && _tickCounter % 2 == 0))
                 {
-                    _b.RPC.FilesGetTransferList(rsctrl.files.Direction.DIRECTION_DOWNLOAD);
-                    _b.RPC.FilesGetTransferList(rsctrl.files.Direction.DIRECTION_UPLOAD);
+                    _b.FileProcessor.RequestFileLists();
                 }
 
                 // every 10 sec - not to often!
@@ -278,13 +276,8 @@ namespace RetroShareSSHClient
                 }
 
                 //chat lobbies
-                if (_tickCounter % 30 == 0 || (_tickCounter < 30 && _tickCounter % 10 == 0))
-                {
-                    //_bridge.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_JOINED);
-                    //_bridge.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_INVITED);
-                    //_bridge.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_PUBLIC);
-                    _b.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_ALL);
-                }
+                _b.ChatProcessor.Tick(_tickCounter);
+
 
                 if (_tickCounter == uint.MaxValue)
                     _tickCounter = 0;
@@ -382,10 +375,12 @@ namespace RetroShareSSHClient
             tb_chatMsg.Focus();
         }
 
-        private void clb_chatLobbies_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-            _b.ChatProcessor.ChatLobbyItemChecked(e);
-        }
+        //private void clb_chatLobbies_ItemCheck(object sender, ItemCheckEventArgs e)
+        //{
+        //    clb_chatLobbies.SetItemCheckState(e.Index,
+        //        _b.ChatProcessor.Joined(e.Index) ? CheckState.Checked : CheckState.Unchecked
+        //        );
+        //}
 
         private void clb_chatLobbies_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -412,6 +407,26 @@ namespace RetroShareSSHClient
         private void bt_shutdown_Click(object sender, EventArgs e)
         {
             Shutdown();
+        }
+
+        private void bt_joinChatLobby_Click(object sender, EventArgs e)
+        {
+            int index = clb_chatLobbies.SelectedIndex;
+            if (index > 0)  // 0 is group chat
+            {
+                clb_chatLobbies.SetItemCheckState(index, CheckState.Checked);
+                _b.ChatProcessor.JoinLeaveChatLobby(true, clb_chatLobbies.SelectedIndex);
+            }
+        }
+
+        private void bt_leaveChatLobby_Click(object sender, EventArgs e)
+        {
+            int index = clb_chatLobbies.SelectedIndex;
+            if (index > 0)  // 0 is group chat
+            {
+                clb_chatLobbies.SetItemCheckState(index, CheckState.Unchecked);
+                _b.ChatProcessor.JoinLeaveChatLobby(false, clb_chatLobbies.SelectedIndex);
+            }
         }
 
         #endregion
@@ -542,7 +557,6 @@ namespace RetroShareSSHClient
         }
 
         #endregion
-
 
     }
 

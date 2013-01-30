@@ -72,6 +72,8 @@
             this.bt_test = new System.Windows.Forms.Button();
             this.tc_main = new System.Windows.Forms.TabControl();
             this.tp_chat = new System.Windows.Forms.TabPage();
+            this.bt_leaveChatLobby = new System.Windows.Forms.Button();
+            this.bt_joinChatLobby = new System.Windows.Forms.Button();
             this.gb_autoResp = new System.Windows.Forms.GroupBox();
             this.tb_chatAutoRespAnswer = new System.Windows.Forms.TextBox();
             this.l_chatAutoRespSearch = new System.Windows.Forms.Label();
@@ -545,6 +547,8 @@
             // 
             // tp_chat
             // 
+            this.tp_chat.Controls.Add(this.bt_leaveChatLobby);
+            this.tp_chat.Controls.Add(this.bt_joinChatLobby);
             this.tp_chat.Controls.Add(this.gb_autoResp);
             this.tp_chat.Controls.Add(this.clb_chatUser);
             this.tp_chat.Controls.Add(this.gb_nickname);
@@ -559,6 +563,26 @@
             this.tp_chat.TabIndex = 1;
             this.tp_chat.Text = "Chat";
             this.tp_chat.UseVisualStyleBackColor = true;
+            // 
+            // bt_leaveChatLobby
+            // 
+            this.bt_leaveChatLobby.Location = new System.Drawing.Point(84, 152);
+            this.bt_leaveChatLobby.Name = "bt_leaveChatLobby";
+            this.bt_leaveChatLobby.Size = new System.Drawing.Size(60, 23);
+            this.bt_leaveChatLobby.TabIndex = 12;
+            this.bt_leaveChatLobby.Text = "leave";
+            this.bt_leaveChatLobby.UseVisualStyleBackColor = true;
+            this.bt_leaveChatLobby.Click += new System.EventHandler(this.bt_leaveChatLobby_Click);
+            // 
+            // bt_joinChatLobby
+            // 
+            this.bt_joinChatLobby.Location = new System.Drawing.Point(4, 152);
+            this.bt_joinChatLobby.Name = "bt_joinChatLobby";
+            this.bt_joinChatLobby.Size = new System.Drawing.Size(70, 23);
+            this.bt_joinChatLobby.TabIndex = 11;
+            this.bt_joinChatLobby.Text = "join";
+            this.bt_joinChatLobby.UseVisualStyleBackColor = true;
+            this.bt_joinChatLobby.Click += new System.EventHandler(this.bt_joinChatLobby_Click);
             // 
             // gb_autoResp
             // 
@@ -622,9 +646,9 @@
             // 
             this.clb_chatUser.Enabled = false;
             this.clb_chatUser.FormattingEnabled = true;
-            this.clb_chatUser.Location = new System.Drawing.Point(4, 152);
+            this.clb_chatUser.Location = new System.Drawing.Point(4, 182);
             this.clb_chatUser.Name = "clb_chatUser";
-            this.clb_chatUser.Size = new System.Drawing.Size(140, 349);
+            this.clb_chatUser.Size = new System.Drawing.Size(140, 319);
             this.clb_chatUser.TabIndex = 10;
             // 
             // gb_nickname
@@ -670,7 +694,6 @@
             this.clb_chatLobbies.Name = "clb_chatLobbies";
             this.clb_chatLobbies.Size = new System.Drawing.Size(141, 139);
             this.clb_chatLobbies.TabIndex = 6;
-            this.clb_chatLobbies.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clb_chatLobbies_ItemCheck);
             this.clb_chatLobbies.SelectedIndexChanged += new System.EventHandler(this.clb_chatLobbies_SelectedIndexChanged);
             // 
             // bt_chatSend
@@ -1229,6 +1252,8 @@
         private System.Windows.Forms.ComboBox cb_settingsReadSpeed;
         private System.Windows.Forms.Label l_settingsReadSpeed;
         private System.Windows.Forms.Button bt_settingsClearLog;
+        private System.Windows.Forms.Button bt_leaveChatLobby;
+        private System.Windows.Forms.Button bt_joinChatLobby;
     }
 }
 

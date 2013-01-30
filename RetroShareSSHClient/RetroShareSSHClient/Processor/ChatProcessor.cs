@@ -25,13 +25,17 @@ namespace RetroShareSSHClient
         public List<string> ChatUser { get { return _chatUser; } set { _chatUser = value; } }
     }
 
-    internal class ChatProcessor
+    class ChatProcessor
     {
         const bool DEBUG = false;
         const string GROUPCHAT = "%groupChat%";
 
         Dictionary<string, GuiChatLobby> _chatLobbies;
         bool _isRegistered;
+        /// <summary>
+        /// says if we have to redraw the chat (e.g. a new msg has arrived)
+        /// </summary>
+        bool _reDrawChat;
         string _nick;
 
         Bridge _b;
@@ -44,6 +48,7 @@ namespace RetroShareSSHClient
 
             _chatLobbies = new Dictionary<string, GuiChatLobby>();
             _isRegistered = false;
+            _reDrawChat = false;
         }
 
         public void Reset(bool justResetChatRegistration = false)
@@ -53,6 +58,7 @@ namespace RetroShareSSHClient
                 _chatLobbies.Clear();
                 _b.GUI.clb_chatLobbies.Items.Clear();
                 _b.GUI.clb_chatUser.Items.Clear();
+                _b.GUI.rtb_chat.Clear();
             }
             _isRegistered = false;
         }
@@ -75,8 +81,13 @@ namespace RetroShareSSHClient
 
         private void ProcessLobby(ChatLobbyInfo lobby)
         {
-            string ID = lobby.lobby_id;
+            string ID = lobby.lobby_id, nameToShow = "";
             GuiChatLobby cl = new GuiChatLobby();
+
+            nameToShow = "(" + lobby.no_peers + ") " + lobby.lobby_name +
+                    // when there is no topic don't add "-"
+                    (lobby.lobby_topic != "" ? " - " + lobby.lobby_topic : "");
+
             if (_chatLobbies.ContainsKey(ID)) //update
             {
                 System.Diagnostics.Debug.WriteLineIf(DEBUG, "updating lobby " + lobby.lobby_name + " - state " + lobby.lobby_state);
@@ -85,7 +96,7 @@ namespace RetroShareSSHClient
                 cl.Lobby = lobby;
                 cl.ChatUser = lobby.participating_friends;
                 _chatLobbies[ID] = cl;
-                _b.GUI.clb_chatLobbies.Items[cl.Index] = "(" + lobby.no_peers + ") " + lobby.lobby_name + " - " + lobby.lobby_topic;
+                _b.GUI.clb_chatLobbies.Items[cl.Index] = nameToShow;
 
                 if (lobby.lobby_state == ChatLobbyInfo.LobbyState.LOBBYSTATE_INVITED && !cl.Joined)
                     _b.GUI.clb_chatLobbies.SetItemCheckState(cl.Index, CheckState.Indeterminate);
@@ -97,15 +108,14 @@ namespace RetroShareSSHClient
                 cl.Lobby = lobby;
                 cl.Index = (ushort)_b.GUI.clb_chatLobbies.Items.Count;
                 cl.Joined = (lobby.lobby_state == ChatLobbyInfo.LobbyState.LOBBYSTATE_JOINED);
-                {
-                    _b.GUI.clb_chatLobbies.Items.Add(cl.Lobby.lobby_name, cl.Joined);
-                    cl.Index = (ushort)_b.GUI.clb_chatLobbies.Items.IndexOf(cl.Lobby.lobby_name);
-                    if (lobby.lobby_state == ChatLobbyInfo.LobbyState.LOBBYSTATE_INVITED)
-                        _b.GUI.clb_chatLobbies.SetItemCheckState(cl.Index, CheckState.Indeterminate);
-                }
                 cl.Unread = false;
                 cl.ChatText = "======= " + DateTime.Now.ToLongDateString() + " - " + lobby.lobby_name + " =======\n";
                 cl.ChatUser = lobby.participating_friends;
+                
+                _b.GUI.clb_chatLobbies.Items.Add(nameToShow, cl.Joined);
+                if (lobby.lobby_state == ChatLobbyInfo.LobbyState.LOBBYSTATE_INVITED)
+                    _b.GUI.clb_chatLobbies.SetItemCheckState(cl.Index, CheckState.Indeterminate);                
+
                 _chatLobbies.Add(cl.ID, cl);
             }
         }
@@ -249,7 +259,8 @@ namespace RetroShareSSHClient
 
             _chatLobbies[ID] = cl;
             if (_b.GUI.clb_chatLobbies.SelectedIndex == cl.Index)
-                SetChatText(ID);
+                //SetChatText(ID);
+                _reDrawChat = true;
             else
             {
                 if (!cl.Unread)
@@ -259,6 +270,7 @@ namespace RetroShareSSHClient
                     _chatLobbies[ID] = cl;
                 }
             }
+
             //AutoAnswer(Processor.RemoteTags(response.msg.msg));
             AutoAnswer(response, cl);
         }
@@ -294,17 +306,21 @@ namespace RetroShareSSHClient
             AutoAnswer(Processor.RemoteTags(response.msg.msg));
         }
 
-        private void SetChatText(string ID)
+        /// <summary>
+        /// prints the text from a lobby to screen (textbox)
+        /// </summary>
+        /// <param name="LobbyID">lobby ID</param>
+        private void SetChatText(string LobbyID)
         {
             //rtb_chat.Clear();
             //rtb_chat.Rtf =@"{\rtf1\ansi " + _chatText[index] + "}";
-            _b.GUI.rtb_chat.Text = _chatLobbies[ID].ChatText;
+            _b.GUI.rtb_chat.Text = _chatLobbies[LobbyID].ChatText;
             _b.GUI.rtb_chat.SelectionStart = _b.GUI.rtb_chat.Text.Length;
             _b.GUI.rtb_chat.ScrollToCaret();
 
-            GuiChatLobby cl = _chatLobbies[ID];
+            GuiChatLobby cl = _chatLobbies[LobbyID];
             cl.Unread = false;
-            _chatLobbies[ID] = cl;
+            _chatLobbies[LobbyID] = cl;
             if (cl.Joined && _b.GUI.clb_chatLobbies.GetItemCheckState(cl.Index) == CheckState.Indeterminate)
                 _b.GUI.clb_chatLobbies.SetItemCheckState(cl.Index, CheckState.Checked);
         }
@@ -378,31 +394,6 @@ namespace RetroShareSSHClient
             }
         }
 
-        public void ToggleCheckboxes()
-        {
-            GuiChatLobby[] values = new GuiChatLobby[_chatLobbies.Count];
-            _chatLobbies.Values.CopyTo(values, 0);
-            foreach (GuiChatLobby lobby in values)
-            {
-                if (lobby.Lobby == null)
-                    continue;
-                CheckState state = _b.GUI.clb_chatLobbies.GetItemCheckState(lobby.Index);
-                if (lobby.Unread)
-                {
-                    if (state == CheckState.Indeterminate)
-                        if (lobby.Joined)
-                            state = CheckState.Checked;
-                        else
-                            state = CheckState.Unchecked;
-                    else
-                        state = CheckState.Indeterminate;
-                    _b.GUI.clb_chatLobbies.SetItemCheckState(lobby.Index, state);
-                }
-                else if (lobby.Lobby.lobby_state == ChatLobbyInfo.LobbyState.LOBBYSTATE_INVITED)
-                    _b.GUI.clb_chatLobbies.SetItemCheckState(lobby.Index, (state == CheckState.Indeterminate) ? CheckState.Unchecked : CheckState.Indeterminate);
-            }
-        }
-
         public void ChatLobbyIndexChange(int index)
         {
             if (index >= 0)
@@ -418,29 +409,144 @@ namespace RetroShareSSHClient
             }
         }
 
-        public void ChatLobbyItemChecked(ItemCheckEventArgs e)
+        //public void ChatLobbyItemChecked(ItemCheckEventArgs e)
+        //{
+        //    GuiChatLobby cl = new GuiChatLobby();
+        //    if (GetLobbyByListIndex(e.Index, out cl))
+        //    {
+        //        if (e.NewValue != CheckState.Indeterminate)
+        //        {
+        //            if (cl.Joined && e.NewValue == CheckState.Unchecked) // leave lobby
+        //            {
+        //                _b.RPC.ChatJoinLeaveLobby(RequestJoinOrLeaveLobby.LobbyAction.LEAVE_OR_DENY, cl.ID);
+        //                cl.Joined = false;
+        //            }
+        //            else if (!cl.Joined && e.NewValue == CheckState.Checked) // join lobby
+        //            {
+        //                _b.RPC.ChatJoinLeaveLobby(RequestJoinOrLeaveLobby.LobbyAction.JOIN_OR_ACCEPT, cl.ID);
+        //                cl.Joined = true;
+        //                //if(cl.Lobby.lobby_state == ChatLobbyInfo.LobbyState.LOBBYSTATE_INVITED)
+        //                cl.Lobby.lobby_state = ChatLobbyInfo.LobbyState.LOBBYSTATE_JOINED;
+        //            }
+        //            _chatLobbies[cl.ID] = cl;
+        //            CheckChatRegistration();
+        //        }
+        //    }
+        //}
+
+        /// <summary>
+        /// joins/leaves selected lobby
+        /// </summary>
+        /// <param name="action">true = join; false = leave</param>
+        /// <param name="index">lobby index</param>
+        public void JoinLeaveChatLobby(bool action, int index)
         {
             GuiChatLobby cl = new GuiChatLobby();
-            if (GetLobbyByListIndex(e.Index, out cl))
+            if (GetLobbyByListIndex(index, out cl))
             {
-                if (e.NewValue != CheckState.Indeterminate)
+                if (action && !cl.Joined) // join lobby
                 {
-                    if (cl.Joined && e.NewValue == CheckState.Unchecked) // leave lobby
-                    {
-                        _b.RPC.ChatJoinLeaveLobby(RequestJoinOrLeaveLobby.LobbyAction.LEAVE_OR_DENY, cl.ID);
-                        cl.Joined = false;
-                    }
-                    else if (!cl.Joined && e.NewValue == CheckState.Checked) // join lobby
-                    {
-                        _b.RPC.ChatJoinLeaveLobby(RequestJoinOrLeaveLobby.LobbyAction.JOIN_OR_ACCEPT, cl.ID);
-                        cl.Joined = true;
-                        //if(cl.Lobby.lobby_state == ChatLobbyInfo.LobbyState.LOBBYSTATE_INVITED)
-                        cl.Lobby.lobby_state = ChatLobbyInfo.LobbyState.LOBBYSTATE_JOINED;
-                    }
-                    _chatLobbies[cl.ID] = cl;
-                    CheckChatRegistration();
+                    _b.RPC.ChatJoinLeaveLobby(RequestJoinOrLeaveLobby.LobbyAction.JOIN_OR_ACCEPT, cl.ID);
+                    cl.Joined = true;
+                    cl.Lobby.lobby_state = ChatLobbyInfo.LobbyState.LOBBYSTATE_JOINED;
                 }
+                else if (!action && cl.Joined) // leave lobby 
+                {
+                    _b.RPC.ChatJoinLeaveLobby(RequestJoinOrLeaveLobby.LobbyAction.LEAVE_OR_DENY, cl.ID);
+                    cl.Joined = false;
+                    cl.Lobby.lobby_state = ChatLobbyInfo.LobbyState.LOBBYSTATE_VISIBLE;
+                }
+
+                // save changes
+                _chatLobbies[cl.ID] = cl;
+                CheckChatRegistration();
             }
         }
+
+        /// <summary>
+        /// returns if the server has joined a lobby ( by lobby list index )
+        /// </summary>
+        /// <param name="index">index in lobby list</param>
+        /// <returns>true = joines; false = not joined</returns>
+        //public bool Joined(int index)
+        //{
+        //    GuiChatLobby cl = new GuiChatLobby();
+        //    if (GetLobbyByListIndex(index, out cl))
+        //        return cl.Joined;
+
+        //    return false;
+        //}
+
+        /// <summary>
+        /// returns if the server has joined a lobby ( by lobby ID )
+        /// </summary>
+        /// <param name="ID">lobby ID</param>
+        /// <returns>true = joines; false = not joined</returns>
+        //public bool Joined(string ID)
+        //{
+        //    if (_chatLobbies.ContainsKey(ID))
+        //        return _chatLobbies[ID].Joined;
+
+        //    return false;
+        //}
+
+        #region tick
+
+        public void Tick(uint counter)
+        {
+            NotifysAndSetCheckState();
+
+            if (_reDrawChat)
+            {
+                GuiChatLobby gcl;
+                if (GetLobbyByListIndex(_b.GUI.clb_chatLobbies.SelectedIndex, out gcl))
+                    SetChatText(gcl.ID);
+                _reDrawChat = false;
+            }
+
+            // update lobbies every 30 seconds OR every 10 seconds if the connection was just established ( this will speed up getting available lobbies) 
+            if (counter % 30 == 0 || (counter < 30 && counter % 10 == 0))
+            {
+                //_bridge.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_JOINED);
+                //_bridge.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_INVITED);
+                //_bridge.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_PUBLIC);
+                _b.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_ALL);
+            }
+        }
+
+        private void NotifysAndSetCheckState()
+        {
+            GuiChatLobby[] values = new GuiChatLobby[_chatLobbies.Count];
+            _chatLobbies.Values.CopyTo(values, 0);
+            foreach (GuiChatLobby lobby in values)
+            {
+                if (lobby.Lobby == null)
+                    continue;
+
+                CheckState state = _b.GUI.clb_chatLobbies.GetItemCheckState(lobby.Index);
+                if (lobby.Unread)
+                {
+                    // unread messages
+                    if (state == CheckState.Indeterminate)
+                        if (lobby.Joined)
+                            state = CheckState.Checked;
+                        else
+                            state = CheckState.Unchecked;
+                    else
+                        state = CheckState.Indeterminate;
+                    _b.GUI.clb_chatLobbies.SetItemCheckState(lobby.Index, state);
+                }
+                else if (lobby.Lobby.lobby_state == ChatLobbyInfo.LobbyState.LOBBYSTATE_INVITED)
+                    // invited by someone
+                    _b.GUI.clb_chatLobbies.SetItemCheckState(lobby.Index, (state == CheckState.Indeterminate) ? CheckState.Unchecked : CheckState.Indeterminate);
+                else                
+                    // nothing to notify - just set the correct CheckState
+                    _b.GUI.clb_chatLobbies.SetItemCheckState(lobby.Index,
+                        lobby.Joined ? CheckState.Checked : CheckState.Unchecked
+                        );                
+            }
+        }
+
+        #endregion
     }
 }

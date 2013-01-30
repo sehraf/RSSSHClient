@@ -262,7 +262,7 @@ namespace RetroShareSSHClient
             if (RSProtoBuf.Deserialize<ResponseTransferList>(msg.ProtoBuffMsg, out response, out e))
             {
                 if (response.status.code == Status.StatusCode.SUCCESS)
-                    _b.FileProcessor.UpdateFileTransfers(response);
+                    _b.FileProcessor.UpdateFileTransfers(response, msg.ReqID);
             }
             else
                 System.Diagnostics.Debug.WriteLine("ProcessTransferlist: error deserializing " + e.Message);

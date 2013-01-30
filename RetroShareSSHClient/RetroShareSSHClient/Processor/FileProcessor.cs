@@ -10,7 +10,7 @@ namespace RetroShareSSHClient
     {
         FileTransfer _fileTransfer;
         ushort _listIndex;
-        bool @new;
+        //bool @new;
 
         public FileTransfer FileTransfer { get { return _fileTransfer; } set { _fileTransfer = value; } }
         //public File File { get { return _fileTransfer.file; } set { _fileTransfer.file = value; } }
@@ -19,10 +19,10 @@ namespace RetroShareSSHClient
         //public float Speed { get { return _fileTransfer.rate_kBs; } set { _fileTransfer.rate_kBs = value; } }
         public string Hash { get { return _fileTransfer.file.hash; } set { _fileTransfer.file.hash = value; } }
         public ushort Index { get { return _listIndex; } set { _listIndex = value; } }
-        public bool @New { get { return @new; } set { @new = value; } }
+        //public bool @New { get { return @new; } set { @new = value; } }
 
-        public bool Download { get { return (_fileTransfer.direction == rsctrl.files.Direction.DIRECTION_DOWNLOAD); } }
-        public bool Upload { get { return (_fileTransfer.direction == rsctrl.files.Direction.DIRECTION_UPLOAD); } }
+        public bool Download { get { return (_fileTransfer.direction == Direction.DIRECTION_DOWNLOAD); } }
+        public bool Upload { get { return (_fileTransfer.direction == Direction.DIRECTION_UPLOAD); } }
     }
 
     class GuiFileTransferComparer : IComparer<GuiFileTransfer>
@@ -38,6 +38,7 @@ namespace RetroShareSSHClient
         const bool DEBUG_FILES = false;   
 
         Dictionary<string, GuiFileTransfer> _fileTransfers;
+        Dictionary<uint, Direction> _pendingRequests;
 
         Bridge _b;
 
@@ -46,23 +47,41 @@ namespace RetroShareSSHClient
             _b = bridge;
 
             _fileTransfers = new Dictionary<string, GuiFileTransfer>();
+            _pendingRequests = new Dictionary<uint, Direction>();
         }
 
         public void Reset()
         {
             _fileTransfers.Clear();
+            _pendingRequests.Clear();
             _b.GUI.lb_filesDownloads.Items.Clear();
             _b.GUI.lb_filesUploads.Items.Clear();
         }
 
-        public void UpdateFileTransfers(ResponseTransferList list)
+        public void UpdateFileTransfers(ResponseTransferList list, uint reqID)
         {
-            if (list.transfers.Count == 0)
-                return;
+            //if (list.transfers.Count == 0)
+            //{
+            //    // no DLs/ULs
+            //    // ToDo: remove all items
+            //    return;
+            //}
+
             List<string> hashes = new List<string>();
-            Direction dir = list.transfers[0].direction;
-            bool added = false;
-            bool removed = false;
+
+            // get direction(DL/UL) of request/result
+            Direction dir;
+            if (_pendingRequests.TryGetValue(reqID, out dir))
+                _pendingRequests.Remove(reqID);
+            else
+                if (list.transfers.Count > 0)
+                    dir = list.transfers[0].direction;
+                else
+                    // shouldn't end here 
+                    return;
+
+            //bool added = false;
+            //bool removed = false;
 
             // add new / update old
             foreach (FileTransfer ft in list.transfers)
@@ -80,13 +99,14 @@ namespace RetroShareSSHClient
                 {
                     GuiFileTransfer gft = new GuiFileTransfer();
                     gft.FileTransfer = ft;
-                    gft.New = true;
+                    //gft.New = true;
                     _fileTransfers.Add(gft.Hash, gft);
-                    added = true;
+                    //added = true;
                     System.Diagnostics.Debug.WriteLineIf(DEBUG_FILES, "FileTransfer: adding " + ft.file.hash);
                 }
                 hashes.Add(ft.file.hash);
             }
+
 
             // remove
             GuiFileTransfer[] fileTransfers = new GuiFileTransfer[_fileTransfers.Values.Count];
@@ -96,14 +116,15 @@ namespace RetroShareSSHClient
                 if (!hashes.Contains(gft.Hash) && gft.FileTransfer.direction == dir)
                 {
                     _fileTransfers.Remove(gft.Hash);
-                    removed = true;
+                    //removed = true;
                 }
             }
 
-            UpdateFileLists(dir, added, removed);
+            //UpdateFileLists(dir, added, removed);
+            UpdateFileLists(dir);
         }
 
-        public void UpdateFileLists(Direction dir, bool added, bool removed)
+        public void UpdateFileLists(Direction dir)
         {
             List<GuiFileTransfer> tmpList = new List<GuiFileTransfer>();
             GuiFileTransfer[] values = new GuiFileTransfer[_fileTransfers.Values.Count];
@@ -210,6 +231,16 @@ namespace RetroShareSSHClient
             }
             gft = default(GuiFileTransfer);
             return false;
+        }
+
+        public void RequestFileLists()
+        {
+            uint i;
+            i = _b.RPC.FilesGetTransferList(Direction.DIRECTION_DOWNLOAD);
+            _pendingRequests.Add(i, Direction.DIRECTION_DOWNLOAD);
+
+            i = _b.RPC.FilesGetTransferList(Direction.DIRECTION_UPLOAD);
+            _pendingRequests.Add(i, Direction.DIRECTION_UPLOAD);
         }
 
     }
