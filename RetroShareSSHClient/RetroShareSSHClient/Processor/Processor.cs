@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using System.IO;
 
 using Sehraf.RSRPC;
 
@@ -23,26 +24,34 @@ namespace RetroShareSSHClient
         const bool DEBUG = false;
         const string pattern = "<.*?>";
 
-        Dictionary<uint, RequestPeers.SetOption> _pendingPeerRequests;
-
-        public Dictionary<uint, RequestPeers.SetOption> PendingPeerRequests { get { return _pendingPeerRequests; } set { _pendingPeerRequests = value; } }
-
-        public Processor(Bridge bridge)
+        public Processor()
         {
-            _b = bridge;
-
-            _pendingPeerRequests = new Dictionary<uint, RequestPeers.SetOption>();
+            _b = Bridge.GetBridge();
         }
 
         public void Reset()
         {
-            _pendingPeerRequests.Clear();
+            
         }
 
         public static string RemoteTags(string inputString)
         {
             return Regex.Replace
               (inputString, pattern, string.Empty);
+        }
+
+        public static double conv_Date2Timestam(DateTime date2)
+        {
+            DateTime date1 = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            TimeSpan ts = new TimeSpan(date2.Ticks - date1.Ticks); 
+            return ts.TotalSeconds;
+        }
+
+        public static DateTime conv_Timestamp2Date(double Timestamp)
+        {
+            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);         
+            dateTime = dateTime.AddSeconds(Timestamp);
+            return dateTime;
         }
 
         public static string BuildSizeString(ulong size)
@@ -81,6 +90,17 @@ namespace RetroShareSSHClient
             }
             return String.Format("{0:0.00}", sizef) + s;
         }
+
+        //public static string GetRandomInsult()
+        //{
+        //    string fileName = "beleidigungen.txt";
+        //    string[] list = System.IO.File.ReadAllLines(fileName);
+
+        //    Random rnd = new Random(DateTime.UtcNow.Millisecond );
+        //    int random = rnd.Next(list.Length - 1);
+            
+        //    return list[random];
+        //}
 
         public void ProcessMsg(RSProtoBuffSSHMsg msg)
         {
@@ -161,10 +181,11 @@ namespace RetroShareSSHClient
                 switch (response.msg.id.chat_type)
                 {
                     case ChatType.TYPE_GROUP:
-                        _b.ChatProcessor.PrintMsgToGroupChat(response);
+                        //_b.ChatProcessor.AddMsgToGroupChat(response);
+                        _b.ChatProcessor.AddMsgToLobby(ChatProcessor.GROUPCHAT, response.msg);
                         break;
                     case ChatType.TYPE_LOBBY:
-                        _b.ChatProcessor.PrintMsgToLobby(response.msg.id.chat_id, response);
+                        _b.ChatProcessor.AddMsgToLobby(response.msg.id.chat_id, response.msg);
                         break;
                     case ChatType.TYPE_PRIVATE:
                         break;
@@ -313,30 +334,9 @@ namespace RetroShareSSHClient
         {
             ResponsePeerList response = new ResponsePeerList();
             Exception e;
-            if (RSProtoBuf.Deserialize<ResponsePeerList>(msg.ProtoBuffMsg, out response, out e))
-            {
-                RequestPeers.SetOption opt;
+            if (RSProtoBuf.Deserialize<ResponsePeerList>(msg.ProtoBuffMsg, out response, out e))            
                 if (response.status.code == Status.StatusCode.SUCCESS)
-                {
-                    if (_pendingPeerRequests.TryGetValue(msg.ReqID, out opt))
-                        switch (opt)
-                        {
-                            case RequestPeers.SetOption.OWNID:
-                                _b.PeerProcessor.SetOwnID(response);
-                                break;
-                            case RequestPeers.SetOption.FRIENDS:
-                                _b.PeerProcessor.UpdatePeerList(response);
-                                break;
-                            default:
-                                // all other cases 
-                                break;
-                        }
-                    else
-                    {
-                        // peer list but no clue what is in it
-                    }
-                }
-            }
+                    _b.PeerProcessor.ProcessResponsePeerList(msg.ReqID, response);            
             else
                 System.Diagnostics.Debug.WriteLine("ProcessPeerList: error deserializing " + e.Message);
         }

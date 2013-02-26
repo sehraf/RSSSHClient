@@ -71,23 +71,50 @@
             this.l_peerLocationID = new System.Windows.Forms.Label();
             this.bt_test = new System.Windows.Forms.Button();
             this.tc_main = new System.Windows.Forms.TabControl();
+            this.tp_setup = new System.Windows.Forms.TabPage();
+            this.gb_settings = new System.Windows.Forms.GroupBox();
+            this.cb_settingsSave = new System.Windows.Forms.CheckBox();
+            this.cb_settingsSavePW = new System.Windows.Forms.CheckBox();
+            this.cb_settingsSaveChat = new System.Windows.Forms.CheckBox();
+            this.cb_settingsReadSpeed = new System.Windows.Forms.ComboBox();
+            this.l_settingsReadSpeed = new System.Windows.Forms.Label();
+            this.gb_connection = new System.Windows.Forms.GroupBox();
+            this.bt_shutdown = new System.Windows.Forms.Button();
+            this.bt_settingsClearLog = new System.Windows.Forms.Button();
             this.tp_chat = new System.Windows.Forms.TabPage();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tp_chat_chat = new System.Windows.Forms.TabPage();
             this.bt_leaveChatLobby = new System.Windows.Forms.Button();
+            this.rtb_chat = new System.Windows.Forms.RichTextBox();
             this.bt_joinChatLobby = new System.Windows.Forms.Button();
-            this.gb_autoResp = new System.Windows.Forms.GroupBox();
-            this.tb_chatAutoRespAnswer = new System.Windows.Forms.TextBox();
-            this.l_chatAutoRespSearch = new System.Windows.Forms.Label();
-            this.tb_chatAutoRespSearch = new System.Windows.Forms.TextBox();
-            this.cb_chatAutoRespEnable = new System.Windows.Forms.CheckBox();
-            this.l_chatAutoRespAnswer = new System.Windows.Forms.Label();
+            this.tb_chatMsg = new System.Windows.Forms.TextBox();
+            this.bt_chatSend = new System.Windows.Forms.Button();
             this.clb_chatUser = new System.Windows.Forms.CheckedListBox();
+            this.clb_chatLobbies = new System.Windows.Forms.CheckedListBox();
             this.gb_nickname = new System.Windows.Forms.GroupBox();
             this.tb_chatNickname = new System.Windows.Forms.TextBox();
             this.bt_setNickname = new System.Windows.Forms.Button();
-            this.rtb_chat = new System.Windows.Forms.RichTextBox();
-            this.clb_chatLobbies = new System.Windows.Forms.CheckedListBox();
-            this.bt_chatSend = new System.Windows.Forms.Button();
-            this.tb_chatMsg = new System.Windows.Forms.TextBox();
+            this.tp_chat_autoResponse = new System.Windows.Forms.TabPage();
+            this.gb_chat_arOptions = new System.Windows.Forms.GroupBox();
+            this.bt_chat_arRemove = new System.Windows.Forms.Button();
+            this.bt_chat_arNew = new System.Windows.Forms.Button();
+            this.bt_chat_arSave = new System.Windows.Forms.Button();
+            this.tb_chat_arPrefix = new System.Windows.Forms.TextBox();
+            this.l_chat_arPrefix = new System.Windows.Forms.Label();
+            this.l_chat_arUsesFunction = new System.Windows.Forms.Label();
+            this.cb_chat_arUsesFunction = new System.Windows.Forms.CheckBox();
+            this.l_chat_arAnswer = new System.Windows.Forms.Label();
+            this.l_chat_arSearchFor = new System.Windows.Forms.Label();
+            this.tb_chat_arAnswer = new System.Windows.Forms.TextBox();
+            this.tb_chat_arSearchFor = new System.Windows.Forms.TextBox();
+            this.tb_chat_arName = new System.Windows.Forms.TextBox();
+            this.cb_chat_arCaseSensitive = new System.Windows.Forms.CheckBox();
+            this.cb_chat_arWithSpaces = new System.Windows.Forms.CheckBox();
+            this.cb_chat_arOnly = new System.Windows.Forms.CheckBox();
+            this.l_chat_arName = new System.Windows.Forms.Label();
+            this.l_chat_arList = new System.Windows.Forms.Label();
+            this.clb_chat_arList = new System.Windows.Forms.CheckedListBox();
+            this.cb_chat_arEnable = new System.Windows.Forms.CheckBox();
             this.tp_friends = new System.Windows.Forms.TabPage();
             this.gb_peerNew = new System.Windows.Forms.GroupBox();
             this.tb_peedNew = new System.Windows.Forms.TextBox();
@@ -113,38 +140,31 @@
             this.tb_searchKeyWords = new System.Windows.Forms.TextBox();
             this.bt_searchSearch = new System.Windows.Forms.Button();
             this.l_searchKeyWords = new System.Windows.Forms.Label();
-            this.tb_optios = new System.Windows.Forms.TabControl();
-            this.tb_connection = new System.Windows.Forms.TabPage();
-            this.bt_shutdown = new System.Windows.Forms.Button();
-            this.tb_options = new System.Windows.Forms.TabPage();
-            this.bt_settingsClearLog = new System.Windows.Forms.Button();
-            this.cb_settingsReadSpeed = new System.Windows.Forms.ComboBox();
-            this.l_settingsReadSpeed = new System.Windows.Forms.Label();
-            this.cb_settingsSaveChat = new System.Windows.Forms.CheckBox();
-            this.cb_settingsSavePW = new System.Windows.Forms.CheckBox();
-            this.cb_settingsSave = new System.Windows.Forms.CheckBox();
             this.ofd_collection = new System.Windows.Forms.OpenFileDialog();
             this.gb_systemStatus.SuspendLayout();
             this.gb_ip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortExt)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortInt)).BeginInit();
             this.tc_main.SuspendLayout();
+            this.tp_setup.SuspendLayout();
+            this.gb_settings.SuspendLayout();
+            this.gb_connection.SuspendLayout();
             this.tp_chat.SuspendLayout();
-            this.gb_autoResp.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tp_chat_chat.SuspendLayout();
             this.gb_nickname.SuspendLayout();
+            this.tp_chat_autoResponse.SuspendLayout();
+            this.gb_chat_arOptions.SuspendLayout();
             this.tp_friends.SuspendLayout();
             this.gb_peerNew.SuspendLayout();
             this.gb_peerInfo.SuspendLayout();
             this.tp_files.SuspendLayout();
             this.tb_search.SuspendLayout();
-            this.tb_optios.SuspendLayout();
-            this.tb_connection.SuspendLayout();
-            this.tb_options.SuspendLayout();
             this.SuspendLayout();
             // 
             // bt_connect
             // 
-            this.bt_connect.Location = new System.Drawing.Point(9, 113);
+            this.bt_connect.Location = new System.Drawing.Point(9, 120);
             this.bt_connect.Name = "bt_connect";
             this.bt_connect.Size = new System.Drawing.Size(77, 23);
             this.bt_connect.TabIndex = 5;
@@ -154,7 +174,7 @@
             // 
             // bt_disconnect
             // 
-            this.bt_disconnect.Location = new System.Drawing.Point(103, 113);
+            this.bt_disconnect.Location = new System.Drawing.Point(103, 120);
             this.bt_disconnect.Name = "bt_disconnect";
             this.bt_disconnect.Size = new System.Drawing.Size(75, 23);
             this.bt_disconnect.TabIndex = 6;
@@ -164,7 +184,7 @@
             // 
             // tb_out
             // 
-            this.tb_out.Location = new System.Drawing.Point(12, 364);
+            this.tb_out.Location = new System.Drawing.Point(381, 295);
             this.tb_out.Multiline = true;
             this.tb_out.Name = "tb_out";
             this.tb_out.Size = new System.Drawing.Size(194, 184);
@@ -172,14 +192,14 @@
             // 
             // tb_user
             // 
-            this.tb_user.Location = new System.Drawing.Point(76, 58);
+            this.tb_user.Location = new System.Drawing.Point(76, 65);
             this.tb_user.Name = "tb_user";
             this.tb_user.Size = new System.Drawing.Size(102, 20);
             this.tb_user.TabIndex = 3;
             // 
             // tb_pw
             // 
-            this.tb_pw.Location = new System.Drawing.Point(76, 84);
+            this.tb_pw.Location = new System.Drawing.Point(76, 91);
             this.tb_pw.Name = "tb_pw";
             this.tb_pw.Size = new System.Drawing.Size(102, 20);
             this.tb_pw.TabIndex = 4;
@@ -188,14 +208,14 @@
             // 
             // tb_host
             // 
-            this.tb_host.Location = new System.Drawing.Point(76, 6);
+            this.tb_host.Location = new System.Drawing.Point(76, 13);
             this.tb_host.Name = "tb_host";
             this.tb_host.Size = new System.Drawing.Size(102, 20);
             this.tb_host.TabIndex = 1;
             // 
             // tb_port
             // 
-            this.tb_port.Location = new System.Drawing.Point(76, 32);
+            this.tb_port.Location = new System.Drawing.Point(76, 39);
             this.tb_port.Name = "tb_port";
             this.tb_port.Size = new System.Drawing.Size(102, 20);
             this.tb_port.TabIndex = 2;
@@ -203,7 +223,7 @@
             // cb_con
             // 
             this.cb_con.AutoSize = true;
-            this.cb_con.Location = new System.Drawing.Point(103, 146);
+            this.cb_con.Location = new System.Drawing.Point(103, 153);
             this.cb_con.Name = "cb_con";
             this.cb_con.Size = new System.Drawing.Size(77, 17);
             this.cb_con.TabIndex = 10;
@@ -214,7 +234,7 @@
             // l_pw
             // 
             this.l_pw.AutoSize = true;
-            this.l_pw.Location = new System.Drawing.Point(6, 87);
+            this.l_pw.Location = new System.Drawing.Point(6, 94);
             this.l_pw.Name = "l_pw";
             this.l_pw.Size = new System.Drawing.Size(53, 13);
             this.l_pw.TabIndex = 11;
@@ -223,7 +243,7 @@
             // l_user
             // 
             this.l_user.AutoSize = true;
-            this.l_user.Location = new System.Drawing.Point(6, 61);
+            this.l_user.Location = new System.Drawing.Point(6, 68);
             this.l_user.Name = "l_user";
             this.l_user.Size = new System.Drawing.Size(55, 13);
             this.l_user.TabIndex = 10;
@@ -232,7 +252,7 @@
             // l_port
             // 
             this.l_port.AutoSize = true;
-            this.l_port.Location = new System.Drawing.Point(6, 35);
+            this.l_port.Location = new System.Drawing.Point(6, 42);
             this.l_port.Name = "l_port";
             this.l_port.Size = new System.Drawing.Size(26, 13);
             this.l_port.TabIndex = 9;
@@ -241,7 +261,7 @@
             // l_ip
             // 
             this.l_ip.AutoSize = true;
-            this.l_ip.Location = new System.Drawing.Point(6, 9);
+            this.l_ip.Location = new System.Drawing.Point(6, 16);
             this.l_ip.Name = "l_ip";
             this.l_ip.Size = new System.Drawing.Size(64, 13);
             this.l_ip.TabIndex = 0;
@@ -254,7 +274,7 @@
             this.gb_systemStatus.Controls.Add(this.l_network);
             this.gb_systemStatus.Controls.Add(this.l_bwDown);
             this.gb_systemStatus.Controls.Add(this.l_bwUp);
-            this.gb_systemStatus.Location = new System.Drawing.Point(12, 221);
+            this.gb_systemStatus.Location = new System.Drawing.Point(195, 4);
             this.gb_systemStatus.Name = "gb_systemStatus";
             this.gb_systemStatus.Size = new System.Drawing.Size(194, 100);
             this.gb_systemStatus.TabIndex = 12;
@@ -525,7 +545,7 @@
             // 
             // bt_test
             // 
-            this.bt_test.Location = new System.Drawing.Point(12, 327);
+            this.bt_test.Location = new System.Drawing.Point(381, 258);
             this.bt_test.Name = "bt_test";
             this.bt_test.Size = new System.Drawing.Size(194, 31);
             this.bt_test.TabIndex = 11;
@@ -535,27 +555,140 @@
             // 
             // tc_main
             // 
+            this.tc_main.Controls.Add(this.tp_setup);
             this.tc_main.Controls.Add(this.tp_chat);
             this.tc_main.Controls.Add(this.tp_friends);
             this.tc_main.Controls.Add(this.tp_files);
             this.tc_main.Controls.Add(this.tb_search);
-            this.tc_main.Location = new System.Drawing.Point(216, 12);
+            this.tc_main.Location = new System.Drawing.Point(12, 12);
             this.tc_main.Name = "tc_main";
             this.tc_main.SelectedIndex = 0;
             this.tc_main.Size = new System.Drawing.Size(649, 538);
             this.tc_main.TabIndex = 15;
             // 
+            // tp_setup
+            // 
+            this.tp_setup.Controls.Add(this.gb_settings);
+            this.tp_setup.Controls.Add(this.gb_connection);
+            this.tp_setup.Controls.Add(this.bt_settingsClearLog);
+            this.tp_setup.Controls.Add(this.bt_test);
+            this.tp_setup.Controls.Add(this.gb_systemStatus);
+            this.tp_setup.Controls.Add(this.tb_out);
+            this.tp_setup.Location = new System.Drawing.Point(4, 22);
+            this.tp_setup.Name = "tp_setup";
+            this.tp_setup.Size = new System.Drawing.Size(641, 512);
+            this.tp_setup.TabIndex = 4;
+            this.tp_setup.Text = "Setup";
+            this.tp_setup.UseVisualStyleBackColor = true;
+            // 
+            // gb_settings
+            // 
+            this.gb_settings.Controls.Add(this.cb_settingsSave);
+            this.gb_settings.Controls.Add(this.cb_settingsSavePW);
+            this.gb_settings.Controls.Add(this.cb_settingsSaveChat);
+            this.gb_settings.Controls.Add(this.cb_settingsReadSpeed);
+            this.gb_settings.Controls.Add(this.l_settingsReadSpeed);
+            this.gb_settings.Location = new System.Drawing.Point(4, 188);
+            this.gb_settings.Name = "gb_settings";
+            this.gb_settings.Size = new System.Drawing.Size(185, 119);
+            this.gb_settings.TabIndex = 14;
+            this.gb_settings.TabStop = false;
+            this.gb_settings.Text = "Settings";
+            // 
+            // cb_settingsSave
+            // 
+            this.cb_settingsSave.AutoSize = true;
+            this.cb_settingsSave.Location = new System.Drawing.Point(6, 19);
+            this.cb_settingsSave.Name = "cb_settingsSave";
+            this.cb_settingsSave.Size = new System.Drawing.Size(88, 17);
+            this.cb_settingsSave.TabIndex = 0;
+            this.cb_settingsSave.Text = "save settings";
+            this.cb_settingsSave.UseVisualStyleBackColor = true;
+            this.cb_settingsSave.CheckedChanged += new System.EventHandler(this.cb_settingsSave_CheckedChanged);
+            // 
+            // cb_settingsSavePW
+            // 
+            this.cb_settingsSavePW.AutoSize = true;
+            this.cb_settingsSavePW.Location = new System.Drawing.Point(6, 42);
+            this.cb_settingsSavePW.Name = "cb_settingsSavePW";
+            this.cb_settingsSavePW.Size = new System.Drawing.Size(156, 17);
+            this.cb_settingsSavePW.TabIndex = 1;
+            this.cb_settingsSavePW.Text = "save password (as Base64)";
+            this.cb_settingsSavePW.UseVisualStyleBackColor = true;
+            // 
+            // cb_settingsSaveChat
+            // 
+            this.cb_settingsSaveChat.AutoSize = true;
+            this.cb_settingsSaveChat.Location = new System.Drawing.Point(6, 65);
+            this.cb_settingsSaveChat.Name = "cb_settingsSaveChat";
+            this.cb_settingsSaveChat.Size = new System.Drawing.Size(107, 17);
+            this.cb_settingsSaveChat.TabIndex = 2;
+            this.cb_settingsSaveChat.Text = "save chat setting";
+            this.cb_settingsSaveChat.UseVisualStyleBackColor = true;
+            // 
+            // cb_settingsReadSpeed
+            // 
+            this.cb_settingsReadSpeed.FormattingEnabled = true;
+            this.cb_settingsReadSpeed.Location = new System.Drawing.Point(108, 86);
+            this.cb_settingsReadSpeed.Name = "cb_settingsReadSpeed";
+            this.cb_settingsReadSpeed.Size = new System.Drawing.Size(70, 21);
+            this.cb_settingsReadSpeed.TabIndex = 4;
+            this.cb_settingsReadSpeed.SelectedIndexChanged += new System.EventHandler(this.cb_settingsReadSpeed_SelectedIndexChanged);
+            // 
+            // l_settingsReadSpeed
+            // 
+            this.l_settingsReadSpeed.AutoSize = true;
+            this.l_settingsReadSpeed.Location = new System.Drawing.Point(7, 89);
+            this.l_settingsReadSpeed.Name = "l_settingsReadSpeed";
+            this.l_settingsReadSpeed.Size = new System.Drawing.Size(95, 13);
+            this.l_settingsReadSpeed.TabIndex = 3;
+            this.l_settingsReadSpeed.Text = "read speed (KiB/s)";
+            // 
+            // gb_connection
+            // 
+            this.gb_connection.Controls.Add(this.tb_host);
+            this.gb_connection.Controls.Add(this.bt_shutdown);
+            this.gb_connection.Controls.Add(this.tb_pw);
+            this.gb_connection.Controls.Add(this.bt_connect);
+            this.gb_connection.Controls.Add(this.cb_con);
+            this.gb_connection.Controls.Add(this.bt_disconnect);
+            this.gb_connection.Controls.Add(this.l_ip);
+            this.gb_connection.Controls.Add(this.l_port);
+            this.gb_connection.Controls.Add(this.tb_user);
+            this.gb_connection.Controls.Add(this.l_pw);
+            this.gb_connection.Controls.Add(this.tb_port);
+            this.gb_connection.Controls.Add(this.l_user);
+            this.gb_connection.Location = new System.Drawing.Point(4, 4);
+            this.gb_connection.Name = "gb_connection";
+            this.gb_connection.Size = new System.Drawing.Size(185, 178);
+            this.gb_connection.TabIndex = 13;
+            this.gb_connection.TabStop = false;
+            this.gb_connection.Text = "Connection";
+            // 
+            // bt_shutdown
+            // 
+            this.bt_shutdown.Enabled = false;
+            this.bt_shutdown.Location = new System.Drawing.Point(9, 149);
+            this.bt_shutdown.Name = "bt_shutdown";
+            this.bt_shutdown.Size = new System.Drawing.Size(77, 23);
+            this.bt_shutdown.TabIndex = 12;
+            this.bt_shutdown.Text = "shutdown";
+            this.bt_shutdown.UseVisualStyleBackColor = true;
+            this.bt_shutdown.Click += new System.EventHandler(this.bt_shutdown_Click);
+            // 
+            // bt_settingsClearLog
+            // 
+            this.bt_settingsClearLog.Location = new System.Drawing.Point(473, 179);
+            this.bt_settingsClearLog.Name = "bt_settingsClearLog";
+            this.bt_settingsClearLog.Size = new System.Drawing.Size(75, 23);
+            this.bt_settingsClearLog.TabIndex = 5;
+            this.bt_settingsClearLog.Text = "clear log";
+            this.bt_settingsClearLog.UseVisualStyleBackColor = true;
+            this.bt_settingsClearLog.Click += new System.EventHandler(this.bt_settingsClearLog_Click);
+            // 
             // tp_chat
             // 
-            this.tp_chat.Controls.Add(this.bt_leaveChatLobby);
-            this.tp_chat.Controls.Add(this.bt_joinChatLobby);
-            this.tp_chat.Controls.Add(this.gb_autoResp);
-            this.tp_chat.Controls.Add(this.clb_chatUser);
-            this.tp_chat.Controls.Add(this.gb_nickname);
-            this.tp_chat.Controls.Add(this.rtb_chat);
-            this.tp_chat.Controls.Add(this.clb_chatLobbies);
-            this.tp_chat.Controls.Add(this.bt_chatSend);
-            this.tp_chat.Controls.Add(this.tb_chatMsg);
+            this.tp_chat.Controls.Add(this.tabControl1);
             this.tp_chat.Location = new System.Drawing.Point(4, 22);
             this.tp_chat.Name = "tp_chat";
             this.tp_chat.Padding = new System.Windows.Forms.Padding(3);
@@ -564,100 +697,105 @@
             this.tp_chat.Text = "Chat";
             this.tp_chat.UseVisualStyleBackColor = true;
             // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tp_chat_chat);
+            this.tabControl1.Controls.Add(this.tp_chat_autoResponse);
+            this.tabControl1.Location = new System.Drawing.Point(6, 3);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(629, 503);
+            this.tabControl1.TabIndex = 16;
+            // 
+            // tp_chat_chat
+            // 
+            this.tp_chat_chat.Controls.Add(this.bt_leaveChatLobby);
+            this.tp_chat_chat.Controls.Add(this.rtb_chat);
+            this.tp_chat_chat.Controls.Add(this.bt_joinChatLobby);
+            this.tp_chat_chat.Controls.Add(this.tb_chatMsg);
+            this.tp_chat_chat.Controls.Add(this.bt_chatSend);
+            this.tp_chat_chat.Controls.Add(this.clb_chatUser);
+            this.tp_chat_chat.Controls.Add(this.clb_chatLobbies);
+            this.tp_chat_chat.Controls.Add(this.gb_nickname);
+            this.tp_chat_chat.Location = new System.Drawing.Point(4, 22);
+            this.tp_chat_chat.Name = "tp_chat_chat";
+            this.tp_chat_chat.Padding = new System.Windows.Forms.Padding(3);
+            this.tp_chat_chat.Size = new System.Drawing.Size(621, 477);
+            this.tp_chat_chat.TabIndex = 0;
+            this.tp_chat_chat.Text = "Chat";
+            this.tp_chat_chat.UseVisualStyleBackColor = true;
+            // 
             // bt_leaveChatLobby
             // 
-            this.bt_leaveChatLobby.Location = new System.Drawing.Point(84, 152);
+            this.bt_leaveChatLobby.Location = new System.Drawing.Point(87, 149);
             this.bt_leaveChatLobby.Name = "bt_leaveChatLobby";
-            this.bt_leaveChatLobby.Size = new System.Drawing.Size(60, 23);
+            this.bt_leaveChatLobby.Size = new System.Drawing.Size(59, 23);
             this.bt_leaveChatLobby.TabIndex = 12;
             this.bt_leaveChatLobby.Text = "leave";
             this.bt_leaveChatLobby.UseVisualStyleBackColor = true;
             this.bt_leaveChatLobby.Click += new System.EventHandler(this.bt_leaveChatLobby_Click);
             // 
+            // rtb_chat
+            // 
+            this.rtb_chat.Location = new System.Drawing.Point(153, 3);
+            this.rtb_chat.Name = "rtb_chat";
+            this.rtb_chat.Size = new System.Drawing.Size(462, 360);
+            this.rtb_chat.TabIndex = 7;
+            this.rtb_chat.Text = "";
+            // 
             // bt_joinChatLobby
             // 
-            this.bt_joinChatLobby.Location = new System.Drawing.Point(4, 152);
+            this.bt_joinChatLobby.Location = new System.Drawing.Point(7, 149);
             this.bt_joinChatLobby.Name = "bt_joinChatLobby";
-            this.bt_joinChatLobby.Size = new System.Drawing.Size(70, 23);
+            this.bt_joinChatLobby.Size = new System.Drawing.Size(69, 23);
             this.bt_joinChatLobby.TabIndex = 11;
             this.bt_joinChatLobby.Text = "join";
             this.bt_joinChatLobby.UseVisualStyleBackColor = true;
             this.bt_joinChatLobby.Click += new System.EventHandler(this.bt_joinChatLobby_Click);
             // 
-            // gb_autoResp
+            // tb_chatMsg
             // 
-            this.gb_autoResp.Controls.Add(this.tb_chatAutoRespAnswer);
-            this.gb_autoResp.Controls.Add(this.l_chatAutoRespSearch);
-            this.gb_autoResp.Controls.Add(this.tb_chatAutoRespSearch);
-            this.gb_autoResp.Controls.Add(this.cb_chatAutoRespEnable);
-            this.gb_autoResp.Controls.Add(this.l_chatAutoRespAnswer);
-            this.gb_autoResp.Location = new System.Drawing.Point(278, 400);
-            this.gb_autoResp.Name = "gb_autoResp";
-            this.gb_autoResp.Size = new System.Drawing.Size(357, 100);
-            this.gb_autoResp.TabIndex = 8;
-            this.gb_autoResp.TabStop = false;
-            this.gb_autoResp.Text = "Auto Response";
+            this.tb_chatMsg.Location = new System.Drawing.Point(153, 371);
+            this.tb_chatMsg.Name = "tb_chatMsg";
+            this.tb_chatMsg.Size = new System.Drawing.Size(382, 20);
+            this.tb_chatMsg.TabIndex = 3;
+            this.tb_chatMsg.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tb_chatMsg_KeyUp);
             // 
-            // tb_chatAutoRespAnswer
+            // bt_chatSend
             // 
-            this.tb_chatAutoRespAnswer.Location = new System.Drawing.Point(78, 50);
-            this.tb_chatAutoRespAnswer.Multiline = true;
-            this.tb_chatAutoRespAnswer.Name = "tb_chatAutoRespAnswer";
-            this.tb_chatAutoRespAnswer.Size = new System.Drawing.Size(273, 44);
-            this.tb_chatAutoRespAnswer.TabIndex = 7;
-            this.tb_chatAutoRespAnswer.Text = "[AutoResponse] afk";
-            // 
-            // l_chatAutoRespSearch
-            // 
-            this.l_chatAutoRespSearch.AutoSize = true;
-            this.l_chatAutoRespSearch.Location = new System.Drawing.Point(6, 22);
-            this.l_chatAutoRespSearch.Name = "l_chatAutoRespSearch";
-            this.l_chatAutoRespSearch.Size = new System.Drawing.Size(54, 13);
-            this.l_chatAutoRespSearch.TabIndex = 4;
-            this.l_chatAutoRespSearch.Text = "search for";
-            // 
-            // tb_chatAutoRespSearch
-            // 
-            this.tb_chatAutoRespSearch.Location = new System.Drawing.Point(78, 20);
-            this.tb_chatAutoRespSearch.Name = "tb_chatAutoRespSearch";
-            this.tb_chatAutoRespSearch.Size = new System.Drawing.Size(198, 20);
-            this.tb_chatAutoRespSearch.TabIndex = 6;
-            // 
-            // cb_chatAutoRespEnable
-            // 
-            this.cb_chatAutoRespEnable.AutoSize = true;
-            this.cb_chatAutoRespEnable.Location = new System.Drawing.Point(282, 22);
-            this.cb_chatAutoRespEnable.Name = "cb_chatAutoRespEnable";
-            this.cb_chatAutoRespEnable.Size = new System.Drawing.Size(58, 17);
-            this.cb_chatAutoRespEnable.TabIndex = 3;
-            this.cb_chatAutoRespEnable.Text = "enable";
-            this.cb_chatAutoRespEnable.UseVisualStyleBackColor = true;
-            // 
-            // l_chatAutoRespAnswer
-            // 
-            this.l_chatAutoRespAnswer.AutoSize = true;
-            this.l_chatAutoRespAnswer.Location = new System.Drawing.Point(6, 50);
-            this.l_chatAutoRespAnswer.Name = "l_chatAutoRespAnswer";
-            this.l_chatAutoRespAnswer.Size = new System.Drawing.Size(41, 13);
-            this.l_chatAutoRespAnswer.TabIndex = 5;
-            this.l_chatAutoRespAnswer.Text = "answer";
+            this.bt_chatSend.Location = new System.Drawing.Point(541, 369);
+            this.bt_chatSend.Name = "bt_chatSend";
+            this.bt_chatSend.Size = new System.Drawing.Size(74, 23);
+            this.bt_chatSend.TabIndex = 4;
+            this.bt_chatSend.Text = "Senden";
+            this.bt_chatSend.UseVisualStyleBackColor = true;
+            this.bt_chatSend.Click += new System.EventHandler(this.bt_chatSend_Click);
             // 
             // clb_chatUser
             // 
             this.clb_chatUser.Enabled = false;
             this.clb_chatUser.FormattingEnabled = true;
-            this.clb_chatUser.Location = new System.Drawing.Point(4, 182);
+            this.clb_chatUser.Location = new System.Drawing.Point(7, 179);
             this.clb_chatUser.Name = "clb_chatUser";
-            this.clb_chatUser.Size = new System.Drawing.Size(140, 319);
+            this.clb_chatUser.Size = new System.Drawing.Size(139, 289);
             this.clb_chatUser.TabIndex = 10;
+            // 
+            // clb_chatLobbies
+            // 
+            this.clb_chatLobbies.FormattingEnabled = true;
+            this.clb_chatLobbies.Location = new System.Drawing.Point(6, 3);
+            this.clb_chatLobbies.Name = "clb_chatLobbies";
+            this.clb_chatLobbies.Size = new System.Drawing.Size(140, 139);
+            this.clb_chatLobbies.TabIndex = 6;
+            this.clb_chatLobbies.SelectedIndexChanged += new System.EventHandler(this.clb_chatLobbies_SelectedIndexChanged);
             // 
             // gb_nickname
             // 
             this.gb_nickname.Controls.Add(this.tb_chatNickname);
             this.gb_nickname.Controls.Add(this.bt_setNickname);
-            this.gb_nickname.Location = new System.Drawing.Point(150, 400);
+            this.gb_nickname.Location = new System.Drawing.Point(153, 397);
             this.gb_nickname.Name = "gb_nickname";
-            this.gb_nickname.Size = new System.Drawing.Size(122, 100);
+            this.gb_nickname.Size = new System.Drawing.Size(120, 74);
             this.gb_nickname.TabIndex = 9;
             this.gb_nickname.TabStop = false;
             this.gb_nickname.Text = "Nickname";
@@ -679,40 +817,217 @@
             this.bt_setNickname.UseVisualStyleBackColor = true;
             this.bt_setNickname.Click += new System.EventHandler(this.bt_setNickname_Click);
             // 
-            // rtb_chat
+            // tp_chat_autoResponse
             // 
-            this.rtb_chat.Location = new System.Drawing.Point(150, 6);
-            this.rtb_chat.Name = "rtb_chat";
-            this.rtb_chat.Size = new System.Drawing.Size(485, 360);
-            this.rtb_chat.TabIndex = 7;
-            this.rtb_chat.Text = "";
+            this.tp_chat_autoResponse.Controls.Add(this.gb_chat_arOptions);
+            this.tp_chat_autoResponse.Controls.Add(this.l_chat_arList);
+            this.tp_chat_autoResponse.Controls.Add(this.clb_chat_arList);
+            this.tp_chat_autoResponse.Controls.Add(this.cb_chat_arEnable);
+            this.tp_chat_autoResponse.Location = new System.Drawing.Point(4, 22);
+            this.tp_chat_autoResponse.Name = "tp_chat_autoResponse";
+            this.tp_chat_autoResponse.Padding = new System.Windows.Forms.Padding(3);
+            this.tp_chat_autoResponse.Size = new System.Drawing.Size(621, 477);
+            this.tp_chat_autoResponse.TabIndex = 1;
+            this.tp_chat_autoResponse.Text = "Auto Response System";
+            this.tp_chat_autoResponse.UseVisualStyleBackColor = true;
             // 
-            // clb_chatLobbies
+            // gb_chat_arOptions
             // 
-            this.clb_chatLobbies.FormattingEnabled = true;
-            this.clb_chatLobbies.Location = new System.Drawing.Point(3, 6);
-            this.clb_chatLobbies.Name = "clb_chatLobbies";
-            this.clb_chatLobbies.Size = new System.Drawing.Size(141, 139);
-            this.clb_chatLobbies.TabIndex = 6;
-            this.clb_chatLobbies.SelectedIndexChanged += new System.EventHandler(this.clb_chatLobbies_SelectedIndexChanged);
+            this.gb_chat_arOptions.Controls.Add(this.bt_chat_arRemove);
+            this.gb_chat_arOptions.Controls.Add(this.bt_chat_arNew);
+            this.gb_chat_arOptions.Controls.Add(this.bt_chat_arSave);
+            this.gb_chat_arOptions.Controls.Add(this.tb_chat_arPrefix);
+            this.gb_chat_arOptions.Controls.Add(this.l_chat_arPrefix);
+            this.gb_chat_arOptions.Controls.Add(this.l_chat_arUsesFunction);
+            this.gb_chat_arOptions.Controls.Add(this.cb_chat_arUsesFunction);
+            this.gb_chat_arOptions.Controls.Add(this.l_chat_arAnswer);
+            this.gb_chat_arOptions.Controls.Add(this.l_chat_arSearchFor);
+            this.gb_chat_arOptions.Controls.Add(this.tb_chat_arAnswer);
+            this.gb_chat_arOptions.Controls.Add(this.tb_chat_arSearchFor);
+            this.gb_chat_arOptions.Controls.Add(this.tb_chat_arName);
+            this.gb_chat_arOptions.Controls.Add(this.cb_chat_arCaseSensitive);
+            this.gb_chat_arOptions.Controls.Add(this.cb_chat_arWithSpaces);
+            this.gb_chat_arOptions.Controls.Add(this.cb_chat_arOnly);
+            this.gb_chat_arOptions.Controls.Add(this.l_chat_arName);
+            this.gb_chat_arOptions.Location = new System.Drawing.Point(132, 6);
+            this.gb_chat_arOptions.Name = "gb_chat_arOptions";
+            this.gb_chat_arOptions.Size = new System.Drawing.Size(383, 181);
+            this.gb_chat_arOptions.TabIndex = 3;
+            this.gb_chat_arOptions.TabStop = false;
+            this.gb_chat_arOptions.Text = "Auto Response Options";
             // 
-            // bt_chatSend
+            // bt_chat_arRemove
             // 
-            this.bt_chatSend.Location = new System.Drawing.Point(560, 372);
-            this.bt_chatSend.Name = "bt_chatSend";
-            this.bt_chatSend.Size = new System.Drawing.Size(75, 23);
-            this.bt_chatSend.TabIndex = 4;
-            this.bt_chatSend.Text = "Senden";
-            this.bt_chatSend.UseVisualStyleBackColor = true;
-            this.bt_chatSend.Click += new System.EventHandler(this.bt_chatSend_Click);
+            this.bt_chat_arRemove.Location = new System.Drawing.Point(172, 149);
+            this.bt_chat_arRemove.Name = "bt_chat_arRemove";
+            this.bt_chat_arRemove.Size = new System.Drawing.Size(75, 23);
+            this.bt_chat_arRemove.TabIndex = 15;
+            this.bt_chat_arRemove.Text = "remove";
+            this.bt_chat_arRemove.UseVisualStyleBackColor = true;
+            this.bt_chat_arRemove.Click += new System.EventHandler(this.bt_chat_arRemove_Click);
             // 
-            // tb_chatMsg
+            // bt_chat_arNew
             // 
-            this.tb_chatMsg.Location = new System.Drawing.Point(150, 374);
-            this.tb_chatMsg.Name = "tb_chatMsg";
-            this.tb_chatMsg.Size = new System.Drawing.Size(404, 20);
-            this.tb_chatMsg.TabIndex = 3;
-            this.tb_chatMsg.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tb_chatMsg_KeyUp);
+            this.bt_chat_arNew.Location = new System.Drawing.Point(90, 149);
+            this.bt_chat_arNew.Name = "bt_chat_arNew";
+            this.bt_chat_arNew.Size = new System.Drawing.Size(75, 23);
+            this.bt_chat_arNew.TabIndex = 14;
+            this.bt_chat_arNew.Text = "add new";
+            this.bt_chat_arNew.UseVisualStyleBackColor = true;
+            this.bt_chat_arNew.Click += new System.EventHandler(this.bt_chat_arNew_Click);
+            // 
+            // bt_chat_arSave
+            // 
+            this.bt_chat_arSave.Location = new System.Drawing.Point(9, 149);
+            this.bt_chat_arSave.Name = "bt_chat_arSave";
+            this.bt_chat_arSave.Size = new System.Drawing.Size(75, 23);
+            this.bt_chat_arSave.TabIndex = 13;
+            this.bt_chat_arSave.Text = "Save";
+            this.bt_chat_arSave.UseVisualStyleBackColor = true;
+            this.bt_chat_arSave.Click += new System.EventHandler(this.bt_chat_arSave_Click);
+            // 
+            // tb_chat_arPrefix
+            // 
+            this.tb_chat_arPrefix.Location = new System.Drawing.Point(66, 72);
+            this.tb_chat_arPrefix.Name = "tb_chat_arPrefix";
+            this.tb_chat_arPrefix.Size = new System.Drawing.Size(20, 20);
+            this.tb_chat_arPrefix.TabIndex = 6;
+            // 
+            // l_chat_arPrefix
+            // 
+            this.l_chat_arPrefix.AutoSize = true;
+            this.l_chat_arPrefix.Location = new System.Drawing.Point(6, 75);
+            this.l_chat_arPrefix.Name = "l_chat_arPrefix";
+            this.l_chat_arPrefix.Size = new System.Drawing.Size(32, 13);
+            this.l_chat_arPrefix.TabIndex = 11;
+            this.l_chat_arPrefix.Text = "prefix";
+            // 
+            // l_chat_arUsesFunction
+            // 
+            this.l_chat_arUsesFunction.AutoSize = true;
+            this.l_chat_arUsesFunction.Location = new System.Drawing.Point(293, 49);
+            this.l_chat_arUsesFunction.Name = "l_chat_arUsesFunction";
+            this.l_chat_arUsesFunction.Size = new System.Drawing.Size(70, 13);
+            this.l_chat_arUsesFunction.TabIndex = 10;
+            this.l_chat_arUsesFunction.Text = "uses function";
+            // 
+            // cb_chat_arUsesFunction
+            // 
+            this.cb_chat_arUsesFunction.AutoSize = true;
+            this.cb_chat_arUsesFunction.Enabled = false;
+            this.cb_chat_arUsesFunction.Location = new System.Drawing.Point(277, 48);
+            this.cb_chat_arUsesFunction.Name = "cb_chat_arUsesFunction";
+            this.cb_chat_arUsesFunction.Size = new System.Drawing.Size(15, 14);
+            this.cb_chat_arUsesFunction.TabIndex = 9;
+            this.cb_chat_arUsesFunction.UseVisualStyleBackColor = true;
+            // 
+            // l_chat_arAnswer
+            // 
+            this.l_chat_arAnswer.AutoSize = true;
+            this.l_chat_arAnswer.Location = new System.Drawing.Point(6, 101);
+            this.l_chat_arAnswer.Name = "l_chat_arAnswer";
+            this.l_chat_arAnswer.Size = new System.Drawing.Size(41, 13);
+            this.l_chat_arAnswer.TabIndex = 8;
+            this.l_chat_arAnswer.Text = "answer";
+            // 
+            // l_chat_arSearchFor
+            // 
+            this.l_chat_arSearchFor.AutoSize = true;
+            this.l_chat_arSearchFor.Location = new System.Drawing.Point(6, 48);
+            this.l_chat_arSearchFor.Name = "l_chat_arSearchFor";
+            this.l_chat_arSearchFor.Size = new System.Drawing.Size(54, 13);
+            this.l_chat_arSearchFor.TabIndex = 7;
+            this.l_chat_arSearchFor.Text = "search for";
+            // 
+            // tb_chat_arAnswer
+            // 
+            this.tb_chat_arAnswer.Location = new System.Drawing.Point(66, 98);
+            this.tb_chat_arAnswer.Multiline = true;
+            this.tb_chat_arAnswer.Name = "tb_chat_arAnswer";
+            this.tb_chat_arAnswer.Size = new System.Drawing.Size(297, 45);
+            this.tb_chat_arAnswer.TabIndex = 7;
+            // 
+            // tb_chat_arSearchFor
+            // 
+            this.tb_chat_arSearchFor.Location = new System.Drawing.Point(66, 45);
+            this.tb_chat_arSearchFor.Name = "tb_chat_arSearchFor";
+            this.tb_chat_arSearchFor.Size = new System.Drawing.Size(109, 20);
+            this.tb_chat_arSearchFor.TabIndex = 5;
+            // 
+            // tb_chat_arName
+            // 
+            this.tb_chat_arName.Location = new System.Drawing.Point(66, 19);
+            this.tb_chat_arName.Name = "tb_chat_arName";
+            this.tb_chat_arName.Size = new System.Drawing.Size(109, 20);
+            this.tb_chat_arName.TabIndex = 4;
+            // 
+            // cb_chat_arCaseSensitive
+            // 
+            this.cb_chat_arCaseSensitive.AutoSize = true;
+            this.cb_chat_arCaseSensitive.Location = new System.Drawing.Point(181, 48);
+            this.cb_chat_arCaseSensitive.Name = "cb_chat_arCaseSensitive";
+            this.cb_chat_arCaseSensitive.Size = new System.Drawing.Size(93, 17);
+            this.cb_chat_arCaseSensitive.TabIndex = 3;
+            this.cb_chat_arCaseSensitive.Text = "case sensitive";
+            this.cb_chat_arCaseSensitive.UseVisualStyleBackColor = true;
+            // 
+            // cb_chat_arWithSpaces
+            // 
+            this.cb_chat_arWithSpaces.AutoSize = true;
+            this.cb_chat_arWithSpaces.Location = new System.Drawing.Point(277, 21);
+            this.cb_chat_arWithSpaces.Name = "cb_chat_arWithSpaces";
+            this.cb_chat_arWithSpaces.Size = new System.Drawing.Size(73, 17);
+            this.cb_chat_arWithSpaces.TabIndex = 2;
+            this.cb_chat_arWithSpaces.Text = "separated";
+            this.cb_chat_arWithSpaces.UseVisualStyleBackColor = true;
+            // 
+            // cb_chat_arOnly
+            // 
+            this.cb_chat_arOnly.AutoSize = true;
+            this.cb_chat_arOnly.Location = new System.Drawing.Point(181, 21);
+            this.cb_chat_arOnly.Name = "cb_chat_arOnly";
+            this.cb_chat_arOnly.Size = new System.Drawing.Size(90, 17);
+            this.cb_chat_arOnly.TabIndex = 1;
+            this.cb_chat_arOnly.Text = "forbid context";
+            this.cb_chat_arOnly.UseVisualStyleBackColor = true;
+            // 
+            // l_chat_arName
+            // 
+            this.l_chat_arName.AutoSize = true;
+            this.l_chat_arName.Location = new System.Drawing.Point(6, 22);
+            this.l_chat_arName.Name = "l_chat_arName";
+            this.l_chat_arName.Size = new System.Drawing.Size(35, 13);
+            this.l_chat_arName.TabIndex = 0;
+            this.l_chat_arName.Text = "Name";
+            // 
+            // l_chat_arList
+            // 
+            this.l_chat_arList.AutoSize = true;
+            this.l_chat_arList.Location = new System.Drawing.Point(6, 46);
+            this.l_chat_arList.Name = "l_chat_arList";
+            this.l_chat_arList.Size = new System.Drawing.Size(85, 13);
+            this.l_chat_arList.TabIndex = 2;
+            this.l_chat_arList.Text = "Auto Responses";
+            // 
+            // clb_chat_arList
+            // 
+            this.clb_chat_arList.FormattingEnabled = true;
+            this.clb_chat_arList.Location = new System.Drawing.Point(6, 62);
+            this.clb_chat_arList.Name = "clb_chat_arList";
+            this.clb_chat_arList.Size = new System.Drawing.Size(120, 409);
+            this.clb_chat_arList.TabIndex = 1;
+            this.clb_chat_arList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clb_chat_arList_ItemCheck);
+            this.clb_chat_arList.SelectedIndexChanged += new System.EventHandler(this.clb_chat_arList_SelectedIndexChanged);
+            // 
+            // cb_chat_arEnable
+            // 
+            this.cb_chat_arEnable.AutoSize = true;
+            this.cb_chat_arEnable.Location = new System.Drawing.Point(6, 6);
+            this.cb_chat_arEnable.Name = "cb_chat_arEnable";
+            this.cb_chat_arEnable.Size = new System.Drawing.Size(58, 17);
+            this.cb_chat_arEnable.TabIndex = 0;
+            this.cb_chat_arEnable.Text = "enable";
+            this.cb_chat_arEnable.UseVisualStyleBackColor = true;
             // 
             // tp_friends
             // 
@@ -989,124 +1304,6 @@
             this.l_searchKeyWords.TabIndex = 0;
             this.l_searchKeyWords.Text = "key words";
             // 
-            // tb_optios
-            // 
-            this.tb_optios.Controls.Add(this.tb_connection);
-            this.tb_optios.Controls.Add(this.tb_options);
-            this.tb_optios.Location = new System.Drawing.Point(12, 12);
-            this.tb_optios.Name = "tb_optios";
-            this.tb_optios.SelectedIndex = 0;
-            this.tb_optios.Size = new System.Drawing.Size(198, 203);
-            this.tb_optios.TabIndex = 16;
-            // 
-            // tb_connection
-            // 
-            this.tb_connection.Controls.Add(this.bt_shutdown);
-            this.tb_connection.Controls.Add(this.cb_con);
-            this.tb_connection.Controls.Add(this.l_ip);
-            this.tb_connection.Controls.Add(this.l_pw);
-            this.tb_connection.Controls.Add(this.tb_host);
-            this.tb_connection.Controls.Add(this.l_user);
-            this.tb_connection.Controls.Add(this.tb_port);
-            this.tb_connection.Controls.Add(this.tb_user);
-            this.tb_connection.Controls.Add(this.l_port);
-            this.tb_connection.Controls.Add(this.bt_disconnect);
-            this.tb_connection.Controls.Add(this.bt_connect);
-            this.tb_connection.Controls.Add(this.tb_pw);
-            this.tb_connection.Location = new System.Drawing.Point(4, 22);
-            this.tb_connection.Name = "tb_connection";
-            this.tb_connection.Padding = new System.Windows.Forms.Padding(3);
-            this.tb_connection.Size = new System.Drawing.Size(190, 177);
-            this.tb_connection.TabIndex = 0;
-            this.tb_connection.Text = "Connection";
-            this.tb_connection.UseVisualStyleBackColor = true;
-            // 
-            // bt_shutdown
-            // 
-            this.bt_shutdown.Enabled = false;
-            this.bt_shutdown.Location = new System.Drawing.Point(9, 142);
-            this.bt_shutdown.Name = "bt_shutdown";
-            this.bt_shutdown.Size = new System.Drawing.Size(77, 23);
-            this.bt_shutdown.TabIndex = 12;
-            this.bt_shutdown.Text = "shutdown";
-            this.bt_shutdown.UseVisualStyleBackColor = true;
-            this.bt_shutdown.Click += new System.EventHandler(this.bt_shutdown_Click);
-            // 
-            // tb_options
-            // 
-            this.tb_options.Controls.Add(this.bt_settingsClearLog);
-            this.tb_options.Controls.Add(this.cb_settingsReadSpeed);
-            this.tb_options.Controls.Add(this.l_settingsReadSpeed);
-            this.tb_options.Controls.Add(this.cb_settingsSaveChat);
-            this.tb_options.Controls.Add(this.cb_settingsSavePW);
-            this.tb_options.Controls.Add(this.cb_settingsSave);
-            this.tb_options.Location = new System.Drawing.Point(4, 22);
-            this.tb_options.Name = "tb_options";
-            this.tb_options.Padding = new System.Windows.Forms.Padding(3);
-            this.tb_options.Size = new System.Drawing.Size(190, 177);
-            this.tb_options.TabIndex = 1;
-            this.tb_options.Text = "Settings";
-            this.tb_options.UseVisualStyleBackColor = true;
-            // 
-            // bt_settingsClearLog
-            // 
-            this.bt_settingsClearLog.Location = new System.Drawing.Point(7, 148);
-            this.bt_settingsClearLog.Name = "bt_settingsClearLog";
-            this.bt_settingsClearLog.Size = new System.Drawing.Size(75, 23);
-            this.bt_settingsClearLog.TabIndex = 5;
-            this.bt_settingsClearLog.Text = "clear log";
-            this.bt_settingsClearLog.UseVisualStyleBackColor = true;
-            this.bt_settingsClearLog.Click += new System.EventHandler(this.bt_settingsClearLog_Click);
-            // 
-            // cb_settingsReadSpeed
-            // 
-            this.cb_settingsReadSpeed.FormattingEnabled = true;
-            this.cb_settingsReadSpeed.Location = new System.Drawing.Point(108, 75);
-            this.cb_settingsReadSpeed.Name = "cb_settingsReadSpeed";
-            this.cb_settingsReadSpeed.Size = new System.Drawing.Size(76, 21);
-            this.cb_settingsReadSpeed.TabIndex = 4;
-            this.cb_settingsReadSpeed.SelectedIndexChanged += new System.EventHandler(this.cb_settingsReadSpeed_SelectedIndexChanged);
-            // 
-            // l_settingsReadSpeed
-            // 
-            this.l_settingsReadSpeed.AutoSize = true;
-            this.l_settingsReadSpeed.Location = new System.Drawing.Point(7, 78);
-            this.l_settingsReadSpeed.Name = "l_settingsReadSpeed";
-            this.l_settingsReadSpeed.Size = new System.Drawing.Size(95, 13);
-            this.l_settingsReadSpeed.TabIndex = 3;
-            this.l_settingsReadSpeed.Text = "read speed (KiB/s)";
-            // 
-            // cb_settingsSaveChat
-            // 
-            this.cb_settingsSaveChat.AutoSize = true;
-            this.cb_settingsSaveChat.Location = new System.Drawing.Point(6, 54);
-            this.cb_settingsSaveChat.Name = "cb_settingsSaveChat";
-            this.cb_settingsSaveChat.Size = new System.Drawing.Size(107, 17);
-            this.cb_settingsSaveChat.TabIndex = 2;
-            this.cb_settingsSaveChat.Text = "save chat setting";
-            this.cb_settingsSaveChat.UseVisualStyleBackColor = true;
-            // 
-            // cb_settingsSavePW
-            // 
-            this.cb_settingsSavePW.AutoSize = true;
-            this.cb_settingsSavePW.Location = new System.Drawing.Point(6, 31);
-            this.cb_settingsSavePW.Name = "cb_settingsSavePW";
-            this.cb_settingsSavePW.Size = new System.Drawing.Size(156, 17);
-            this.cb_settingsSavePW.TabIndex = 1;
-            this.cb_settingsSavePW.Text = "save password (as Base64)";
-            this.cb_settingsSavePW.UseVisualStyleBackColor = true;
-            // 
-            // cb_settingsSave
-            // 
-            this.cb_settingsSave.AutoSize = true;
-            this.cb_settingsSave.Location = new System.Drawing.Point(6, 8);
-            this.cb_settingsSave.Name = "cb_settingsSave";
-            this.cb_settingsSave.Size = new System.Drawing.Size(88, 17);
-            this.cb_settingsSave.TabIndex = 0;
-            this.cb_settingsSave.Text = "save settings";
-            this.cb_settingsSave.UseVisualStyleBackColor = true;
-            this.cb_settingsSave.CheckedChanged += new System.EventHandler(this.cb_settingsSave_CheckedChanged);
-            // 
             // ofd_collection
             // 
             this.ofd_collection.FileName = "openFileDialog1";
@@ -1116,12 +1313,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 562);
-            this.Controls.Add(this.tb_optios);
+            this.ClientSize = new System.Drawing.Size(670, 562);
             this.Controls.Add(this.tc_main);
-            this.Controls.Add(this.bt_test);
-            this.Controls.Add(this.gb_systemStatus);
-            this.Controls.Add(this.tb_out);
             this.Name = "MainForm";
             this.Text = "RetroShare SSH Client by sehraf";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -1132,12 +1325,22 @@
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortExt)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_peerPortInt)).EndInit();
             this.tc_main.ResumeLayout(false);
+            this.tp_setup.ResumeLayout(false);
+            this.tp_setup.PerformLayout();
+            this.gb_settings.ResumeLayout(false);
+            this.gb_settings.PerformLayout();
+            this.gb_connection.ResumeLayout(false);
+            this.gb_connection.PerformLayout();
             this.tp_chat.ResumeLayout(false);
-            this.tp_chat.PerformLayout();
-            this.gb_autoResp.ResumeLayout(false);
-            this.gb_autoResp.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
+            this.tp_chat_chat.ResumeLayout(false);
+            this.tp_chat_chat.PerformLayout();
             this.gb_nickname.ResumeLayout(false);
             this.gb_nickname.PerformLayout();
+            this.tp_chat_autoResponse.ResumeLayout(false);
+            this.tp_chat_autoResponse.PerformLayout();
+            this.gb_chat_arOptions.ResumeLayout(false);
+            this.gb_chat_arOptions.PerformLayout();
             this.tp_friends.ResumeLayout(false);
             this.gb_peerNew.ResumeLayout(false);
             this.gb_peerNew.PerformLayout();
@@ -1147,13 +1350,7 @@
             this.tp_files.PerformLayout();
             this.tb_search.ResumeLayout(false);
             this.tb_search.PerformLayout();
-            this.tb_optios.ResumeLayout(false);
-            this.tb_connection.ResumeLayout(false);
-            this.tb_connection.PerformLayout();
-            this.tb_options.ResumeLayout(false);
-            this.tb_options.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -1212,16 +1409,7 @@
         internal System.Windows.Forms.TextBox tb_chatNickname;
         private System.Windows.Forms.Button bt_setNickname;
         private System.Windows.Forms.Button bt_peerRemove;
-        internal System.Windows.Forms.GroupBox gb_autoResp;
-        internal System.Windows.Forms.TextBox tb_chatAutoRespAnswer;
-        private System.Windows.Forms.Label l_chatAutoRespSearch;
-        internal System.Windows.Forms.TextBox tb_chatAutoRespSearch;
-        internal System.Windows.Forms.CheckBox cb_chatAutoRespEnable;
-        private System.Windows.Forms.Label l_chatAutoRespAnswer;
         internal System.Windows.Forms.CheckedListBox clb_chatUser;
-        private System.Windows.Forms.TabControl tb_optios;
-        private System.Windows.Forms.TabPage tb_connection;
-        private System.Windows.Forms.TabPage tb_options;
         private System.Windows.Forms.CheckBox cb_settingsSave;
         private System.Windows.Forms.CheckBox cb_settingsSavePW;
         private System.Windows.Forms.CheckBox cb_settingsSaveChat;
@@ -1254,6 +1442,32 @@
         private System.Windows.Forms.Button bt_settingsClearLog;
         private System.Windows.Forms.Button bt_leaveChatLobby;
         private System.Windows.Forms.Button bt_joinChatLobby;
+        private System.Windows.Forms.TabPage tp_setup;
+        private System.Windows.Forms.GroupBox gb_settings;
+        private System.Windows.Forms.GroupBox gb_connection;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tp_chat_chat;
+        private System.Windows.Forms.TabPage tp_chat_autoResponse;
+        private System.Windows.Forms.GroupBox gb_chat_arOptions;
+        private System.Windows.Forms.Label l_chat_arName;
+        private System.Windows.Forms.Label l_chat_arList;
+        private System.Windows.Forms.Label l_chat_arAnswer;
+        private System.Windows.Forms.Label l_chat_arSearchFor;
+        private System.Windows.Forms.Label l_chat_arUsesFunction;
+        internal System.Windows.Forms.TextBox tb_chat_arName;
+        internal System.Windows.Forms.CheckBox cb_chat_arCaseSensitive;
+        internal System.Windows.Forms.CheckBox cb_chat_arWithSpaces;
+        internal System.Windows.Forms.CheckBox cb_chat_arOnly;
+        internal System.Windows.Forms.CheckedListBox clb_chat_arList;
+        internal System.Windows.Forms.TextBox tb_chat_arAnswer;
+        internal System.Windows.Forms.TextBox tb_chat_arSearchFor;
+        internal System.Windows.Forms.CheckBox cb_chat_arUsesFunction;
+        private System.Windows.Forms.Label l_chat_arPrefix;
+        internal System.Windows.Forms.TextBox tb_chat_arPrefix;
+        private System.Windows.Forms.Button bt_chat_arNew;
+        private System.Windows.Forms.Button bt_chat_arSave;
+        internal System.Windows.Forms.CheckBox cb_chat_arEnable;
+        private System.Windows.Forms.Button bt_chat_arRemove;
     }
 }
 

@@ -42,9 +42,9 @@ namespace RetroShareSSHClient
 
         Bridge _b;
 
-        public FileProcessor(Bridge bridge)
+        public FileProcessor()
         {
-            _b = bridge;
+            _b = Bridge.GetBridge();
 
             _fileTransfers = new Dictionary<string, GuiFileTransfer>();
             _pendingRequests = new Dictionary<uint, Direction>();

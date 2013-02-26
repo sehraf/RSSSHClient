@@ -28,10 +28,11 @@ namespace RetroShareSSHClient
     class ChatProcessor
     {
         const bool DEBUG = false;
-        const string GROUPCHAT = "%groupChat%";
+        public const string GROUPCHAT = "%groupChat%";
 
         Dictionary<string, GuiChatLobby> _chatLobbies;
         bool _isRegistered;
+
         /// <summary>
         /// says if we have to redraw the chat (e.g. a new msg has arrived)
         /// </summary>
@@ -42,9 +43,9 @@ namespace RetroShareSSHClient
 
         public string Nick { get { return _nick; } }
 
-        public ChatProcessor(Bridge bridge)
+        public ChatProcessor()
         {
-            _b = bridge;
+            _b = Bridge.GetBridge();
 
             _chatLobbies = new Dictionary<string, GuiChatLobby>();
             _isRegistered = false;
@@ -84,7 +85,9 @@ namespace RetroShareSSHClient
             string ID = lobby.lobby_id, nameToShow = "";
             GuiChatLobby cl = new GuiChatLobby();
 
-            nameToShow = "(" + lobby.no_peers + ") " + lobby.lobby_name +
+            nameToShow = 
+                    "[" + (lobby.no_peers <= 9 ? "0" : "") + lobby.no_peers + "] " + 
+                    lobby.lobby_name +
                     // when there is no topic don't add "-"
                     (lobby.lobby_topic != "" ? " - " + lobby.lobby_topic : "");
 
@@ -158,7 +161,7 @@ namespace RetroShareSSHClient
             }
         }
 
-        private bool GetLobbyByListIndex(int index, out GuiChatLobby lobby)
+        public bool GetLobbyByListIndex(int index, out GuiChatLobby lobby)
         {
             GuiChatLobby[] values = new GuiChatLobby[_chatLobbies.Values.Count];
             _chatLobbies.Values.CopyTo(values, 0);
@@ -174,41 +177,41 @@ namespace RetroShareSSHClient
             return false;
         }
 
-        public void SendChatMsg(string inMsg = "")
-        {
-            int index = _b.GUI.clb_chatLobbies.SelectedIndex;
-            if (index >= 0 && _b.GUI.clb_chatLobbies.GetItemChecked(index))
-            {
-                GuiChatLobby cl = new GuiChatLobby();
-                if (GetLobbyByListIndex(index, out cl))
-                {
-                    string text = (inMsg == "") ? _b.GUI.tb_chatMsg.Text : inMsg;
+        //public void SendChatMsg(string inMsg = "")
+        //{
+        //    int index = _b.GUI.clb_chatLobbies.SelectedIndex;
+        //    if (index >= 0 && _b.GUI.clb_chatLobbies.GetItemChecked(index))
+        //    {
+        //        GuiChatLobby cl = new GuiChatLobby();
+        //        if (GetLobbyByListIndex(index, out cl))
+        //        {
+        //            string text = (inMsg == "") ? _b.GUI.tb_chatMsg.Text : inMsg;
 
-                    ChatId id = new ChatId();
-                    if (cl.ID == GROUPCHAT)
-                    {
-                        id.chat_id = "";
-                        id.chat_type = ChatType.TYPE_GROUP;
-                    }
-                    else
-                    {
-                        id.chat_id = cl.ID;
-                        id.chat_type = ChatType.TYPE_LOBBY;
-                    }
-                    ChatMessage msg = new ChatMessage();
-                    msg.id = id;
-                    msg.msg = text;
-                    msg.peer_nickname = _nick;
-                    msg.send_time = (uint)DateTime.Now.Second;
+        //            ChatId id = new ChatId();
+        //            if (cl.ID == GROUPCHAT)
+        //            {
+        //                id.chat_id = "";
+        //                id.chat_type = ChatType.TYPE_GROUP;
+        //            }
+        //            else
+        //            {
+        //                id.chat_id = cl.ID;
+        //                id.chat_type = ChatType.TYPE_LOBBY;
+        //            }
+        //            ChatMessage msg = new ChatMessage();
+        //            msg.id = id;
+        //            msg.msg = text;
+        //            msg.peer_nickname = _nick;
+        //            msg.send_time = (uint)DateTime.Now.Second;
 
-                    _b.RPC.ChatSendMsg(msg);
-                    if(cl.ID != GROUPCHAT) // needed ?!
-                        PrintMsgToLobby(cl.ID, DateTime.Now.ToLongTimeString() + " - " + _nick + " > " + text + "\n");
-                    if (inMsg == "")
-                        _b.GUI.tb_chatMsg.Clear();
-                }
-            }
-        }
+        //            _b.RPC.ChatSendMsg(msg);
+        //            if(cl.ID != GROUPCHAT) // needed ?!
+        //                AddMsgToLobby(cl.ID, DateTime.Now.ToLongTimeString() + " - " + _nick + " > " + text + "\n");
+        //            if (inMsg == "")
+        //                _b.GUI.tb_chatMsg.Clear();
+        //        }
+        //    }
+        //}
 
         public void SendChatMsg(GuiChatLobby cl, string inMsg = "")
         {
@@ -233,29 +236,30 @@ namespace RetroShareSSHClient
 
             _b.RPC.ChatSendMsg(msg);
             if (cl.ID != GROUPCHAT) // needed ?!
-                PrintMsgToLobby(cl.ID, DateTime.Now.ToLongTimeString() + " - " + _nick + " > " + text + "\n");
+                AddMsgToLobby(cl.ID, DateTime.Now.ToLongTimeString() + " - " + _nick + " > " + text + "\n");
             if (inMsg == "")
                 _b.GUI.tb_chatMsg.Clear();
         }
 
-        public void PrintMsgToLobby(string ID, EventChatMessage response)
+        public void AddMsgToLobby(string ID, ChatMessage response)
         {
-            System.Diagnostics.Debug.WriteLineIf(DEBUG, "Chat: PrintMsgToLobby ID: " + response.msg.id);
+            System.Diagnostics.Debug.WriteLineIf(DEBUG, "Chat: PrintMsgToLobby ID: " + response.id);
             if (!_chatLobbies.ContainsKey(ID))
             {
                 // we don't know this lobby :S
-                System.Diagnostics.Debug.WriteLineIf(DEBUG, "Chat: ID (" + response.msg.id + ") is unknown");
+                System.Diagnostics.Debug.WriteLineIf(DEBUG, "Chat: ID (" + response.id + ") is unknown");
                 return;
             }
 
             GuiChatLobby cl = _chatLobbies[ID];
-            string msg = Processor.RemoteTags(response.msg.msg);
+            string msg = Processor.RemoteTags(response.msg);
 
             System.Diagnostics.Debug.WriteLineIf(DEBUG, "Chat: lobby: " + cl.Lobby.lobby_name);
-            System.Diagnostics.Debug.WriteLineIf(DEBUG, "Chat: msg: " + msg + " from " + response.msg.peer_nickname);
-            System.Diagnostics.Debug.WriteLineIf(DEBUG, "Chat: rec: " + response.msg.recv_time + " send: " + response.msg.send_time);
+            System.Diagnostics.Debug.WriteLineIf(DEBUG, "Chat: msg: " + msg + " from " + response.peer_nickname);
+            System.Diagnostics.Debug.WriteLineIf(DEBUG, "Chat: rec: " + response.recv_time + " send: " + response.send_time);
 
-            cl.ChatText += DateTime.Now.ToLongTimeString() + " - " + response.msg.peer_nickname + " > " + msg + "\n";
+            // add "*time* - *nick* > *msg*" 
+            cl.ChatText += Processor.conv_Timestamp2Date(response.send_time).ToLocalTime().ToLongTimeString() + " - " + response.peer_nickname + " > " + msg + "\n";
 
             _chatLobbies[ID] = cl;
             if (_b.GUI.clb_chatLobbies.SelectedIndex == cl.Index)
@@ -272,39 +276,37 @@ namespace RetroShareSSHClient
             }
 
             //AutoAnswer(Processor.RemoteTags(response.msg.msg));
-            AutoAnswer(response, cl);
+            AutoAnswer(response, cl);            
         }
 
-        public void PrintMsgToLobby(string ID, string msg)
+        public void AddMsgToLobby(string ID, string msg)
         {
             GuiChatLobby cl = _chatLobbies[ID];
             cl.ChatText += msg;
             _chatLobbies[ID] = cl;
             if (_b.GUI.clb_chatLobbies.SelectedIndex == cl.Index)
-                SetChatText(ID);
+                //SetChatText(ID);
+                _reDrawChat = true;
         }
 
-        public void PrintMsgToGroupChat(EventChatMessage response)
-        {
-            GuiChatLobby cl = _chatLobbies[GROUPCHAT];
-            cl.ChatText += DateTime.Now.ToShortTimeString() + " - " + response.msg.peer_nickname + " > " + Processor.RemoteTags(response.msg.msg) + "\n";
+        //public void AddMsgToGroupChat(EventChatMessage response)
+        //{
+        //    GuiChatLobby cl = _chatLobbies[GROUPCHAT];
+        //    cl.ChatText += DateTime.Now.ToShortTimeString() + " - " + response.msg.peer_nickname + " > " + Processor.RemoteTags(response.msg.msg) + "\n";
+        //    _chatLobbies[GROUPCHAT] = cl;
 
-            if (_b.GUI.clb_chatLobbies.SelectedIndex == 0)
-            {
-                _chatLobbies[GROUPCHAT] = cl;
-                SetChatText(GROUPCHAT);
-            }
-            else
-            {
-                if (!cl.Unread)
-                {
-                    cl.Unread = true;
-                    _b.GUI.clb_chatLobbies.SetItemCheckState(cl.Index, CheckState.Indeterminate);
-                }
-                _chatLobbies[GROUPCHAT] = cl;
-            }
-            AutoAnswer(Processor.RemoteTags(response.msg.msg));
-        }
+        //    if (_b.GUI.clb_chatLobbies.SelectedIndex == cl.Index)
+        //        //SetChatText(GROUPCHAT);
+        //        _reDrawChat = true;
+        //    else            
+        //        if (!cl.Unread)
+        //        {
+        //            cl.Unread = true;
+        //            _b.GUI.clb_chatLobbies.SetItemCheckState(cl.Index, CheckState.Indeterminate);
+        //        }            
+        //    _chatLobbies[GROUPCHAT] = cl;
+        //    AutoAnswer(Processor.RemoteTags(response.msg.msg), cl);
+        //}
 
         /// <summary>
         /// prints the text from a lobby to screen (textbox)
@@ -325,29 +327,21 @@ namespace RetroShareSSHClient
                 _b.GUI.clb_chatLobbies.SetItemCheckState(cl.Index, CheckState.Checked);
         }
 
-        private void AutoAnswer(string msg)
+        //private void AutoAnswer(string msg, GuiChatLobby cl)
+        //{
+        //    if (_b.GUI.cb_chatAutoRespEnable.Checked && _b.GUI.tb_chatAutoRespSearch.Text != "" && _b.GUI.tb_chatAutoRespAnswer.Text != "")            
+        //        if (msg.ToLower().Contains(_b.GUI.tb_chatAutoRespSearch.Text.ToLower()))
+        //            // can't replace %nick% until we know who sent the msg
+        //            SendChatMsg(cl, _b.GUI.tb_chatAutoRespAnswer.Text);
+        //}
+
+        private void AutoAnswer(ChatMessage response, GuiChatLobby cl)
         {
-            if (_b.GUI.cb_chatAutoRespEnable.Checked && _b.GUI.tb_chatAutoRespSearch.Text != "" && _b.GUI.tb_chatAutoRespAnswer.Text != "")
-            {
-                if (msg.ToLower().Contains(_b.GUI.tb_chatAutoRespSearch.Text.ToLower()))
-                    SendChatMsg(_b.GUI.tb_chatAutoRespAnswer.Text);
-            }
-        }
-
-        private void AutoAnswer(EventChatMessage response, GuiChatLobby cl)
-        {
-            if (_b.GUI.cb_chatAutoRespEnable.Checked && _b.GUI.tb_chatAutoRespSearch.Text != "" && _b.GUI.tb_chatAutoRespAnswer.Text != "")
-            {
-                if (Processor.RemoteTags(response.msg.msg).ToLower().Contains(_b.GUI.tb_chatAutoRespSearch.Text.ToLower()))
-                {
-                    string s = _b.GUI.tb_chatAutoRespAnswer.Text;
-
-                    //replace pattern
-                    s = s.Replace("%nick%", response.msg.peer_nickname);
-
-                    SendChatMsg(cl, s);
-                }
-            }
+            string[] msgOUT = _b.AutoResponse.Process(response, cl);
+            if (msgOUT != null)
+                foreach (string s in msgOUT)
+                    if (s != "")
+                        SendChatMsg(cl, s);
         }
 
         public void SetNick(string nick)
@@ -498,6 +492,7 @@ namespace RetroShareSSHClient
 
             if (_reDrawChat)
             {
+                System.Diagnostics.Debug.WriteLineIf(DEBUG, "redraw chat");
                 GuiChatLobby gcl;
                 if (GetLobbyByListIndex(_b.GUI.clb_chatLobbies.SelectedIndex, out gcl))
                     SetChatText(gcl.ID);

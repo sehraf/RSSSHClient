@@ -62,9 +62,9 @@ namespace RetroShareSSHClient
 
         Bridge _b;
 
-        public SearchProcessor(Bridge bridge)
+        public SearchProcessor()
         {
-            _b = bridge;
+            _b = Bridge.GetBridge();
 
             _pendingSearchReq = new Dictionary<uint, string>();
             _searches = new Dictionary<uint, GuiSearch>();

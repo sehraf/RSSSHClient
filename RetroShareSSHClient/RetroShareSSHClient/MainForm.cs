@@ -15,7 +15,6 @@ using rsctrl.peers;
 using rsctrl.search;
 using rsctrl.system;
 
-
 namespace RetroShareSSHClient
 {
     public partial class MainForm : Form
@@ -23,6 +22,7 @@ namespace RetroShareSSHClient
         Settings _settings;
         Log _log;
         uint _tickCounter;
+        int selectedIndex = -1;
 
         Bridge _b;
 
@@ -33,7 +33,7 @@ namespace RetroShareSSHClient
             InitializeComponent();
             cb_con.CheckState = CheckState.Unchecked;
 
-            _b = new Bridge(this);
+            _b = Bridge.GetBridge(this); // first initialisation of Bridge -> need gui
             _b.RPC.EventOccurred += EventFromThread;
             _b.RPC.ReceivedMsg += ProcessMsgFromThread;
 
@@ -42,11 +42,11 @@ namespace RetroShareSSHClient
             _log.NewSession();
             _tickCounter = 0;
 
-            SetSpeedOptions(); // set options _before_ loading settings!
-            LoadForms();
+            AddSpeedOptions(); // add options _before_ loading settings!
+            LoadSettings();
         }
 
-        private void SetSpeedOptions()
+        private void AddSpeedOptions()
         {
             cb_settingsReadSpeed.Items.Add(10);
             cb_settingsReadSpeed.Items.Add(20);
@@ -55,7 +55,7 @@ namespace RetroShareSSHClient
             cb_settingsReadSpeed.Items.Add(500);
         }
 
-        private void LoadForms()
+        private void LoadSettings()
         {
             Options opt;
             if(_settings.Load(out opt)) {
@@ -72,15 +72,15 @@ namespace RetroShareSSHClient
                 if (opt.SaveChat)
                 {
                     _b.ChatProcessor.SetNick(opt.Nick);
-                    tb_chatAutoRespAnswer.Text = opt.AutoRespAnswer;
-                    tb_chatAutoRespSearch.Text = opt.AutoRespSearch;
-                    cb_chatAutoRespEnable.Checked = opt.EnableAutoResp;
                     cb_settingsSaveChat.Checked = true;
+
+                    cb_chat_arEnable.Checked = opt.EnableAutoResp;
+                    _b.AutoResponse.AutoResponseList = opt.AutoResponseList;
                 }
             }
         }
 
-        private void SaveForms()
+        private void SaveSettings()
         {
             Options opt = new Options();
             opt.SaveSettings = false;
@@ -98,10 +98,10 @@ namespace RetroShareSSHClient
             if (cb_settingsSaveChat.Checked)
             {
                 opt.Nick = _b.ChatProcessor.Nick;
-                opt.AutoRespAnswer = tb_chatAutoRespAnswer.Text;
-                opt.AutoRespSearch = tb_chatAutoRespSearch.Text;
-                opt.EnableAutoResp = cb_chatAutoRespEnable.Checked;
                 opt.SaveChat = true;
+
+                opt.EnableAutoResp = cb_chat_arEnable.Checked;
+                opt.AutoResponseList = _b.AutoResponse.AutoResponseList;
             }            
             _settings.Save(opt);
         }
@@ -140,20 +140,24 @@ namespace RetroShareSSHClient
         }
 
         private void ProcessMsgFromThread(RSProtoBuffSSHMsg msg)
-        {           
-            this.Invoke((MethodInvoker)delegate { _b.Processor.ProcessMsg(msg); });
+        {
+            try
+            {
+                this.Invoke((MethodInvoker)delegate { _b.Processor.ProcessMsg(msg); });
+            }
+            catch { }
         }
 
         private void ConnectionEstablished()
         {
             _tickCounter = 0;
             t_tick.Start();
-            uint regID;
-            regID = _b.RPC.SystemGetStatus();
-            regID = _b.RPC.PeersGetFriendList(RequestPeers.SetOption.OWNID);
-            _b.Processor.PendingPeerRequests.Add(regID, RequestPeers.SetOption.OWNID);
-            _b.ChatProcessor.SetNick(_b.ChatProcessor.Nick);
 
+            _b.RPC.SystemGetStatus();
+
+            _b.PeerProcessor.RequestPeerList(true);
+
+            _b.ChatProcessor.SetNick(_b.ChatProcessor.Nick);
             _b.ChatProcessor.AddGroupChat();
         }
 
@@ -161,8 +165,9 @@ namespace RetroShareSSHClient
         {
             if (_b.RPC.IsConnected || tb_host.Text == "" || tb_port.Text == "")
                 return;
+
             cb_con.CheckState = CheckState.Indeterminate;
-            _b.Processor.PendingPeerRequests.Clear();
+
             if (_b.RPC.Connect(tb_host.Text, Convert.ToUInt16(tb_port.Text), tb_user.Text, tb_pw.Text))
             {
                 tb_out.Text = "connected!" + "\n";
@@ -250,29 +255,31 @@ namespace RetroShareSSHClient
 
         private void Tick()
         {
+            // 1 tick = 1 second
             if (_b.RPC.IsConnected)
             {
-                // tick
-                _b.RPC.SystemGetStatus();
+                // update system status (every tick/second)
+                if (_tickCounter % 30 == 0 || tc_main.SelectedTab == tp_setup)
+                {
+                    _b.RPC.SystemGetStatus();
+                }
                 
-                // DL/UL
+                // DL/UL (every second tick)
                 if (_tickCounter % 30 == 0 || (tc_main.SelectedTab == tp_files && _tickCounter % 2 == 0))
                 {
                     _b.FileProcessor.RequestFileLists();
                 }
 
-                // every 10 sec - not to often!
+                // get search results ( every 10 seconds )
                 if (_tickCounter % 10 == 0)
                 {
                     _b.SearchProcessor.GetSearchResults();
                 }
 
-                // friends
+                // update friends (every second tick)
                 if (_tickCounter % 30 == 0 || (tc_main.SelectedTab == tp_friends && _tickCounter % 2 == 0))
                 {
-                    uint regID;
-                    regID = _b.RPC.PeersGetFriendList(RequestPeers.SetOption.FRIENDS);
-                    _b.Processor.PendingPeerRequests.Add(regID, RequestPeers.SetOption.FRIENDS);
+                    _b.PeerProcessor.RequestPeerList();
                 }
 
                 //chat lobbies
@@ -301,7 +308,7 @@ namespace RetroShareSSHClient
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.Disconnect();
-            this.SaveForms();
+            this.SaveSettings();
         }
 
         private void tb_pw_Enter(object sender, EventArgs e)
@@ -370,7 +377,14 @@ namespace RetroShareSSHClient
         {
             if (tb_chatMsg.Text != "")
             {
-                _b.ChatProcessor.SendChatMsg();
+                // get chat lobby
+                int index = _b.GUI.clb_chatLobbies.SelectedIndex;
+                if (index >= 0 && _b.GUI.clb_chatLobbies.GetItemChecked(index))
+                {
+                    GuiChatLobby cl = new GuiChatLobby();
+                    if (_b.ChatProcessor.GetLobbyByListIndex(index, out cl))
+                        _b.ChatProcessor.SendChatMsg(cl);
+                }
             }
             tb_chatMsg.Focus();
         }
@@ -384,7 +398,11 @@ namespace RetroShareSSHClient
 
         private void clb_chatLobbies_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _b.ChatProcessor.ChatLobbyIndexChange(clb_chatLobbies.SelectedIndex);
+            if (selectedIndex != clb_chatLobbies.SelectedIndex)
+            {
+                selectedIndex = clb_chatLobbies.SelectedIndex;
+                _b.ChatProcessor.ChatLobbyIndexChange(clb_chatLobbies.SelectedIndex);
+            }
         }
 
         private void tb_chatMsg_KeyUp(object sender, KeyEventArgs e)
@@ -558,14 +576,49 @@ namespace RetroShareSSHClient
 
         #endregion
 
+        private void clb_chat_arList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int index = clb_chat_arList.SelectedIndex;
+            if (index >= 0)
+                _b.AutoResponse.ShowItem(clb_chat_arList.Items[index].ToString());
+        }
+
+        private void bt_chat_arSave_Click(object sender, EventArgs e)
+        {
+            int index = clb_chat_arList.SelectedIndex;
+            if (index >= 0)
+                _b.AutoResponse.SaveItem(clb_chat_arList.Items[index].ToString());
+        }
+
+        private void bt_chat_arNew_Click(object sender, EventArgs e)
+        {
+            _b.AutoResponse.AddNew(tb_chat_arName.Text);
+        }
+
+        private void clb_chat_arList_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            int index = clb_chat_arList.SelectedIndex;
+            if (index >= 0)
+                _b.AutoResponse.SetActive(clb_chat_arList.Items[index].ToString(), e.NewValue == CheckState.Checked);
+        }
+
+        private void bt_chat_arRemove_Click(object sender, EventArgs e)
+        {
+            int index = clb_chat_arList.SelectedIndex;
+            if (index >= 0)
+                _b.AutoResponse.RemoveItem(clb_chat_arList.Items[index].ToString());
+        }
+
     }
 
     public class Bridge
     {
+        static Bridge _b;
         MainForm _gui;
         RSRPC _rpc;
         Processor _processor;
         ChatProcessor _chat;
+        AutoResponse _autoResponse;
         PeerProcessor _peer;
         SearchProcessor _search;
         FileProcessor _file;
@@ -574,25 +627,67 @@ namespace RetroShareSSHClient
         public RSRPC RPC { get { return _rpc; } set { _rpc = value; } }        
         internal Processor Processor { get { return _processor; } set { _processor = value; } }
         internal ChatProcessor ChatProcessor { get { return _chat; } set { _chat = value; } }
+        internal AutoResponse AutoResponse { get { return _autoResponse; } set { _autoResponse = value; } }
         internal PeerProcessor PeerProcessor { get { return _peer; } set { _peer = value; } }
         internal SearchProcessor SearchProcessor { get { return _search; } set { _search = value; } }
         internal FileProcessor FileProcessor { get { return _file; } set { _file = value; } }
 
-        public Bridge(MainForm gui)
+        private Bridge(MainForm gui)
         {
             _gui = gui;
-            _rpc = new RSRPC(false);
-            _processor = new Processor(this);
-            _chat = new ChatProcessor(this);
-            _peer = new PeerProcessor(this);
-            _search = new SearchProcessor(this);
-            _file = new FileProcessor(this);
         }
 
+        /// <summary>
+        /// This need to be called after the bridge is instanced!
+        /// Most classes call GetBridge() on initialisation and if there is no bridge (yet)
+        /// this will end up in an endless loop.
+        /// </summary>
+        private static void InitBridge()
+        {
+            _b._rpc = new RSRPC(false);
+            _b._processor = new Processor();
+            _b._chat = new ChatProcessor();
+            _b._peer = new PeerProcessor();
+            _b._search = new SearchProcessor();
+            _b._file = new FileProcessor();
+            _b._autoResponse = new AutoResponse();
+        }
+
+        /// <summary>
+        /// This function will return always the same bridge.
+        /// </summary>
+        /// <param name="gui">gui only needs to be set on the first call!</param>
+        /// <returns>returns (the one and only) bridge</returns>
+        public static Bridge GetBridge(MainForm gui = null)
+        {
+            if (_b == null)
+                if (gui != null)
+                {
+                    _b = new Bridge(gui);
+                    InitBridge();
+                }
+                else
+                    throw new Exception("need GUI to initialize bridge");
+
+            return _b;
+        }
+
+        /// <summary>
+        /// Initialize all components
+        /// </summary>
+        //public void InitializeComponent()
+        //{
+        //    _autoResponse.Init();
+        //}
+
+        /// <summary>
+        /// Resets all components
+        /// </summary>
         public void Reset()
         {
             _processor.Reset();
             _chat.Reset();
+            _autoResponse.Reset();
             _peer.Reset();
             _search.Reset();
             _file.Reset();

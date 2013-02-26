@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
+using System.Runtime.Serialization.Formatters.Binary;
+
 
 namespace RetroShareSSHClient
 {
+    [Serializable()]
     struct Options
     {
         string _host;
@@ -21,65 +25,149 @@ namespace RetroShareSSHClient
         public bool SavePW { get { return _savePW; } set { _savePW = value; } }
 
         string _nickname;
-        string _chatAutoRespSearch;
-        string _chatAutoRespAnswer;
+        //string _chatAutoRespSearch;
+        //string _chatAutoRespAnswer;
         bool _enableAutoResp;
         bool _saveChat;
         byte _readSpeedIndex;
 
         public string Nick { get { return _nickname; } set { _nickname = value; } }
-        public string AutoRespSearch { get { return _chatAutoRespSearch; } set { _chatAutoRespSearch = value; } }
-        public string AutoRespAnswer { get { return _chatAutoRespAnswer; } set { _chatAutoRespAnswer = value; } }
+        //public string AutoRespSearch { get { return _chatAutoRespSearch; } set { _chatAutoRespSearch = value; } }
+        //public string AutoRespAnswer { get { return _chatAutoRespAnswer; } set { _chatAutoRespAnswer = value; } }
         public bool EnableAutoResp { get { return _enableAutoResp; } set { _enableAutoResp = value; } }
         public bool SaveChat { get { return _saveChat; } set { _saveChat = value; } }
         public byte ReadSpeedIndex { get { return _readSpeedIndex; } set { _readSpeedIndex = value; } }
+
+        AutoResponseItem[] _autoResponseList;
+
+        public AutoResponseItem[] AutoResponseList { get { return _autoResponseList; } set { _autoResponseList = value; } }
     }
 
     class Settings
     {
-        string _filename = "settings.txt";
+        string _filename = "settings.bin";
 
-        public Settings() { }
+        public Settings(string filename = null)
+        {
+            if (filename != null)
+                _filename = filename;
+        }
+
+        //public bool Load(out Options opt)
+        //{
+        //    if (true)
+        //        return Load2(out opt);            
+
+        //    opt = new Options();
+        //    if (File.Exists(_filename))
+        //    {
+        //        try
+        //        {
+        //            FileStream fs = new FileStream(_filename, FileMode.Open);
+        //            StreamReader sr = new StreamReader(fs);
+
+        //            opt.Host = sr.ReadLine();
+        //            opt.Port = sr.ReadLine();
+        //            opt.User = sr.ReadLine();
+        //            opt.Password = DecodeFrom64(sr.ReadLine());
+        //            opt.SaveSettings = (sr.ReadLine() == "1") ? true : false;
+        //            opt.SavePW = (sr.ReadLine() == "1") ? true : false;
+
+        //            opt.Nick = sr.ReadLine();
+        //            opt.AutoRespAnswer = sr.ReadLine();
+        //            opt.AutoRespSearch = sr.ReadLine();
+        //            opt.EnableAutoResp = (sr.ReadLine() == "1") ? true : false;
+        //            opt.SaveChat = (sr.ReadLine() == "1") ? true : false;
+        //            opt.ReadSpeedIndex = Convert.ToByte(sr.ReadLine());
+
+        //            sr.Close();
+        //            sr.Dispose();
+        //            fs.Close();
+        //            fs.Dispose();
+        //            return true;
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            System.Diagnostics.Debug.WriteLine(e.Message);
+        //            return false;
+        //        }
+        //    }
+        //    else
+        //        return false;
+        //}
 
         public bool Load(out Options opt)
         {
             opt = new Options();
-            if (File.Exists(_filename))
+            if (!File.Exists(_filename)) return false;
+
+            try
             {
-                try
-                {
-                    FileStream fs = new FileStream(_filename, FileMode.Open);
-                    StreamReader sr = new StreamReader(fs);
+                MemoryStream memory = new MemoryStream();
+                using (FileStream fStream = new FileStream(_filename, FileMode.Open))
+                using (GZipStream gStream = new GZipStream(fStream, CompressionMode.Decompress))
+                    gStream.CopyTo(memory);
 
-                    opt.Host = sr.ReadLine();
-                    opt.Port = sr.ReadLine();
-                    opt.User = sr.ReadLine();
-                    opt.Password = DecodeFrom64(sr.ReadLine());
-                    opt.SaveSettings = (sr.ReadLine() == "1") ? true : false;
-                    opt.SavePW = (sr.ReadLine() == "1") ? true : false;
+                memory.Position = 0;
+                BinaryFormatter binary = new BinaryFormatter();
+                opt = (Options)binary.Deserialize(memory);
 
-                    opt.Nick = sr.ReadLine();
-                    opt.AutoRespAnswer = sr.ReadLine();
-                    opt.AutoRespSearch = sr.ReadLine();
-                    opt.EnableAutoResp = (sr.ReadLine() == "1") ? true : false;
-                    opt.SaveChat = (sr.ReadLine() == "1") ? true : false;
-                    opt.ReadSpeedIndex = Convert.ToByte(sr.ReadLine());
+                // tmp fix to avoid answering to old msgs (which were saved by the server)
+                //opt.EnableAutoResp = false;
 
-                    sr.Close();
-                    sr.Dispose();
-                    fs.Close();
-                    fs.Dispose();
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    System.Diagnostics.Debug.WriteLine(e.Message);
-                    return false;
-                }
+                return true;
             }
-            else
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
                 return false;
+            }
+
         }
+
+        //public void Save(Options opt)
+        //{
+        //    if (true)
+        //    {
+        //        Save2(opt);
+        //        return;
+        //    }
+
+        //    if (!File.Exists(_filename))
+        //        File.Create(_filename);
+
+        //    try
+        //    {
+        //        FileStream fs = new FileStream(_filename, FileMode.Truncate);
+        //        StreamWriter sw = new StreamWriter(fs);
+
+        //        sw.WriteLine(opt.Host);
+        //        sw.WriteLine(opt.Port);
+        //        sw.WriteLine(opt.User);
+        //        sw.WriteLine(EncodeTo64(opt.Password));
+        //        sw.WriteLine(opt.SaveSettings ? "1" : "0");
+        //        sw.WriteLine(opt.SavePW ? "1" : "0");
+
+        //        sw.WriteLine(opt.Nick);
+        //        sw.WriteLine(opt.AutoRespAnswer);
+        //        sw.WriteLine(opt.AutoRespSearch);
+        //        sw.WriteLine(opt.EnableAutoResp ? "1" : "0");
+        //        sw.WriteLine(opt.SaveChat ? "1" : "0");
+        //        sw.WriteLine(opt.ReadSpeedIndex);
+
+        //        sw.Flush();
+        //        sw.Close();
+        //        sw.Dispose();
+
+        //        //fs.Flush();
+        //        fs.Close();
+        //        fs.Dispose();
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine(e.Message);
+        //    }
+        //}
 
         public void Save(Options opt)
         {
@@ -88,30 +176,15 @@ namespace RetroShareSSHClient
 
             try
             {
-                FileStream fs = new FileStream(_filename, FileMode.Truncate);
-                StreamWriter sw = new StreamWriter(fs);
+                MemoryStream memory = new MemoryStream();
+                BinaryFormatter binary = new BinaryFormatter();
 
-                sw.WriteLine(opt.Host);
-                sw.WriteLine(opt.Port);
-                sw.WriteLine(opt.User);
-                sw.WriteLine(EncodeTo64(opt.Password));
-                sw.WriteLine(opt.SaveSettings ? "1" : "0");
-                sw.WriteLine(opt.SavePW ? "1" : "0");
+                binary.Serialize(memory, opt);
+                memory.Position = 0;
 
-                sw.WriteLine(opt.Nick);
-                sw.WriteLine(opt.AutoRespAnswer);
-                sw.WriteLine(opt.AutoRespSearch);
-                sw.WriteLine(opt.EnableAutoResp ? "1" : "0");
-                sw.WriteLine(opt.SaveChat ? "1" : "0");
-                sw.WriteLine(opt.ReadSpeedIndex);
-
-                sw.Flush();
-                sw.Close();
-                sw.Dispose();
-
-                //fs.Flush();
-                fs.Close();
-                fs.Dispose();
+                using (FileStream fStream = new FileStream(_filename, FileMode.Create))
+                using (GZipStream gStream = new GZipStream(fStream, CompressionMode.Compress))
+                    memory.CopyTo(gStream);
             }
             catch (Exception e)
             {

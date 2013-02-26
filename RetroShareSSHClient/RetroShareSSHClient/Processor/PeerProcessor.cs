@@ -15,15 +15,19 @@ namespace RetroShareSSHClient
         List<Person> _peerList;
         Person _selectedPeer;
 
+        Dictionary<uint, RequestPeers.SetOption> _pendingPeerRequests;
+        //public Dictionary<uint, RequestPeers.SetOption> PendingPeerRequests { get { return _pendingPeerRequests; } set { _pendingPeerRequests = value; } }
+
         Bridge _b;
 
-        public PeerProcessor(Bridge bridge)
+        public PeerProcessor()
         {
-            _b = bridge;
+            _b = Bridge.GetBridge();
 
             _owner = new Person();
             _peerList = new List<Person>();
             _selectedPeer = new Person();
+            _pendingPeerRequests = new Dictionary<uint, RequestPeers.SetOption>();
         }
 
         public void Reset()
@@ -33,9 +37,51 @@ namespace RetroShareSSHClient
             _b.GUI.lb_friends.Items.Clear();
             _b.GUI.lb_locations.Items.Clear();
             _selectedPeer = null;
+
+            _pendingPeerRequests.Clear();
         }
 
-        public void UpdatePeerList(ResponsePeerList msg)
+        public void RequestPeerList(bool requestOwner = false)
+        {
+            uint regID;
+            if (requestOwner)
+            {
+                regID = _b.RPC.PeersGetFriendList(RequestPeers.SetOption.OWNID);
+                _pendingPeerRequests.Add(regID, RequestPeers.SetOption.OWNID);
+            }
+            else
+            {
+                regID = _b.RPC.PeersGetFriendList(RequestPeers.SetOption.FRIENDS);
+                _pendingPeerRequests.Add(regID, RequestPeers.SetOption.FRIENDS);
+            }
+        }
+
+        public void ProcessResponsePeerList(uint reqID, ResponsePeerList response)
+        {
+            RequestPeers.SetOption opt;
+            if (_pendingPeerRequests.TryGetValue(reqID, out opt))
+            {
+                _pendingPeerRequests.Remove(reqID);
+                switch (opt)
+                {
+                    case RequestPeers.SetOption.OWNID:
+                        SetOwnID(response);
+                        break;
+                    case RequestPeers.SetOption.FRIENDS:
+                        UpdatePeerList(response);
+                        break;
+                    default:
+                        // all other cases 
+                        break;
+                }
+            }
+            else
+            {
+                // peer list - but no clue what is in it
+            }
+        }
+
+        private void UpdatePeerList(ResponsePeerList msg)
         {
             // get new peerlist
             List<Person> _newPeerList = msg.peers;
@@ -98,7 +144,7 @@ namespace RetroShareSSHClient
             return true;
         }
 
-        public void SetOwnID(ResponsePeerList msg)
+        private void SetOwnID(ResponsePeerList msg)
         {
             _owner = msg.peers[0]; // i gues we just have one owner           
             _b.GUI.Text = "RetroShare SSH Client by sehraf - " + _owner.name + "(" + _owner.gpg_id + ") ";// +l.location + " (" + l.ssl_id + ")";
