@@ -29,6 +29,13 @@ namespace Sehraf.RSRPC
             Reconnect
         }
 
+        public enum ErrorFrom
+        {
+            SSH,
+            ProtoBuf,
+            RPC
+        }
+
         public delegate void ReceivedMsgEvent(RSProtoBuffSSHMsg msg);
         public delegate void EventOccurredEvent(EventType type, object obj); // nice name :D
 
@@ -118,9 +125,10 @@ namespace Sehraf.RSRPC
             _rsProtoBuf.ReadSpeed = speed;
         }
 
-        internal void Error(Exception e)
+        internal void Error(Exception e, ErrorFrom from)
         {
-            _event(EventType.Error, e);
+            if(from != ErrorFrom.SSH)
+                _event(EventType.Error, e);
         }
 
         private void ProcessNewMsgLoop()
@@ -167,7 +175,7 @@ namespace Sehraf.RSRPC
         {
             if (!_connected)
             {
-                Error(new Exception("not connected"));
+                Error(new Exception("not connected"), ErrorFrom.RPC);
                 return 0;
             }
 

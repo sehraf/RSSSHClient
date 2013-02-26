@@ -59,7 +59,7 @@ namespace Sehraf.RSRPC
 
         private void SSHError(object sender, ExceptionEventArgs e)
         {
-            _parent.Error(e.Exception);   
+            _parent.Error(e.Exception, RSRPC.ErrorFrom.SSH);   
         }
 
         public void Disconnect()

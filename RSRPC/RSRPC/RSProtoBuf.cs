@@ -110,13 +110,13 @@ namespace Sehraf.RSRPC
                 }
                 catch (Exception e)
                 {
-                    _parent.Error(e);
+                    _parent.Error(e, RSRPC.ErrorFrom.ProtoBuf);
                 }
             }
             else
             {
                 System.Diagnostics.Debug.WriteLine("send: can't write stream");
-                _parent.Error(new IOException("send: can't write stream"));
+                _parent.Error(new IOException("send: can't write stream"), RSRPC.ErrorFrom.ProtoBuf);
             }
 
             return msg.ReqID;
@@ -143,7 +143,7 @@ namespace Sehraf.RSRPC
             if (!_stream.CanRead)
             {
                 System.Diagnostics.Debug.WriteLine("rec: cannot read stream!");
-                _parent.Error(new IOException("send: can't read stream"));
+                _parent.Error(new IOException("send: can't read stream"), RSRPC.ErrorFrom.ProtoBuf);
                 return false;
             } 
             if (!ReadMsgFromStream(ref msg, timeOut))
@@ -192,7 +192,7 @@ namespace Sehraf.RSRPC
                     System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: MagicCode mismatch");
                     _findMagicCode = true;
                     _lastSize = msg.BodySize;
-                    _parent.Error(new Exception("MagicCode mismatch"));
+                    _parent.Error(new Exception("MagicCode mismatch"), RSRPC.ErrorFrom.ProtoBuf);
                     return false;
                 }
 
@@ -224,7 +224,7 @@ namespace Sehraf.RSRPC
         private bool ReadFromStream(uint timeOut, int length, out byte[] output)
         {
             bool done = false;
-            ushort bufferLength = 512, sleepTime = 1; // ~100KiB/s
+            ushort bufferLength = 512, sleepTime = 10; // ~50KiB/s
             switch (_readSpeed)
             {
                 case 0:
@@ -275,7 +275,7 @@ namespace Sehraf.RSRPC
                     }
                     catch (Exception e)
                     {
-                        _parent.Error(e);
+                        _parent.Error(e, RSRPC.ErrorFrom.ProtoBuf);
                     }
                 }
                 else
@@ -378,7 +378,7 @@ namespace Sehraf.RSRPC
                 {
                     if (!_parent.Reconnect(out _stream))
                     {
-                        _parent.Error(new Exception("Error while reconnecting"));
+                        _parent.Error(new Exception("Error while reconnecting"), RSRPC.ErrorFrom.ProtoBuf);
                         _run = false;
                     }
                     else 

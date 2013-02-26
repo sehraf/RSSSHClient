@@ -1328,6 +1328,26 @@
             The runtime version for the generated assembly
             </summary>
         </member>
+        <member name="P:ProtoBuf.Meta.RuntimeTypeModel.CompilerOptions.Accessibility">
+            <summary>
+            The acecssibility of the generated serializer
+            </summary>
+        </member>
+        <member name="T:ProtoBuf.Meta.RuntimeTypeModel.Accessibility">
+            <summary>
+            Type accessibility
+            </summary>
+        </member>
+        <member name="F:ProtoBuf.Meta.RuntimeTypeModel.Accessibility.Public">
+            <summary>
+            Available to all callers
+            </summary>
+        </member>
+        <member name="F:ProtoBuf.Meta.RuntimeTypeModel.Accessibility.Internal">
+            <summary>
+            Available to all callers in the same assembly, or assemblies specified via [InternalsVisibleTo(...)]
+            </summary>
+        </member>
         <member name="T:ProtoBuf.Meta.LockContentedEventArgs">
             <summary>
             Contains the stack-trace of the owning code when a lock-contention scenario is detected
@@ -2041,6 +2061,12 @@
         <member name="M:ProtoBuf.ProtoReader.ReadType">
             <summary>
             Reads a Type from the stream, using the model's DynamicTypeFormatting if appropriate; supported wire-types: String
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.ProtoReader.Merge(ProtoBuf.ProtoReader,System.Object,System.Object)">
+            <summary>
+            Merge two objects using the details from the current reader; this is used to change the type
+            of objects when an inheritance relationship is discovered later than usual during deserilazation.
             </summary>
         </member>
         <member name="P:ProtoBuf.ProtoReader.FieldNumber">
