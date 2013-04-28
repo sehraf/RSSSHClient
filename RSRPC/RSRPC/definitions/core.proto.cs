@@ -179,17 +179,20 @@ namespace rsctrl.core
     public enum Relationship
     {
             
-      [global::ProtoBuf.ProtoEnum(Name=@"FRIEND", Value=1)]
-      FRIEND = 1,
+      [global::ProtoBuf.ProtoEnum(Name=@"YOURSELF", Value=1)]
+      YOURSELF = 1,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"FRIEND_OF_MANY_FRIENDS", Value=2)]
-      FRIEND_OF_MANY_FRIENDS = 2,
+      [global::ProtoBuf.ProtoEnum(Name=@"FRIEND", Value=2)]
+      FRIEND = 2,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"FRIEND_OF_FRIENDS", Value=3)]
-      FRIEND_OF_FRIENDS = 3,
+      [global::ProtoBuf.ProtoEnum(Name=@"FRIEND_OF_MANY_FRIENDS", Value=3)]
+      FRIEND_OF_MANY_FRIENDS = 3,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"UNKNOWN", Value=4)]
-      UNKNOWN = 4
+      [global::ProtoBuf.ProtoEnum(Name=@"FRIEND_OF_FRIENDS", Value=4)]
+      FRIEND_OF_FRIENDS = 4,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"UNKNOWN", Value=5)]
+      UNKNOWN = 5
     }
   
     private global::ProtoBuf.IExtension extensionObject;
@@ -261,6 +264,30 @@ namespace rsctrl.core
       get { return _files; }
     }
   
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Timestamp")]
+  public partial class Timestamp : global::ProtoBuf.IExtensible
+  {
+    public Timestamp() {}
+    
+    private ulong _secs;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"secs", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public ulong secs
+    {
+      get { return _secs; }
+      set { _secs = value; }
+    }
+    private uint _microsecs;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"microsecs", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public uint microsecs
+    {
+      get { return _microsecs; }
+      set { _microsecs = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -400,6 +427,9 @@ namespace rsctrl.core
             
       [global::ProtoBuf.ProtoEnum(Name=@"FILES", Value=5)]
       FILES = 5,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"STREAM", Value=6)]
+      STREAM = 6,
             
       [global::ProtoBuf.ProtoEnum(Name=@"GXS", Value=1000)]
       GXS = 1000

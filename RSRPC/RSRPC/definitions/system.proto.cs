@@ -143,6 +143,102 @@ namespace rsctrl.system
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RequestSystemExternalAccess")]
+  public partial class RequestSystemExternalAccess : global::ProtoBuf.IExtensible
+  {
+    public RequestSystemExternalAccess() {}
+    
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ResponseSystemExternalAccess")]
+  public partial class ResponseSystemExternalAccess : global::ProtoBuf.IExtensible
+  {
+    public ResponseSystemExternalAccess() {}
+    
+    private rsctrl.core.Status _status;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"status", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public rsctrl.core.Status status
+    {
+      get { return _status; }
+      set { _status = value; }
+    }
+    private uint _ext_port;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"ext_port", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public uint ext_port
+    {
+      get { return _ext_port; }
+      set { _ext_port = value; }
+    }
+    private string _dht_key;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"dht_key", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string dht_key
+    {
+      get { return _dht_key; }
+      set { _dht_key = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RequestSystemAccount")]
+  public partial class RequestSystemAccount : global::ProtoBuf.IExtensible
+  {
+    public RequestSystemAccount() {}
+    
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ResponseSystemAccount")]
+  public partial class ResponseSystemAccount : global::ProtoBuf.IExtensible
+  {
+    public ResponseSystemAccount() {}
+    
+    private rsctrl.core.Status _status;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"status", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public rsctrl.core.Status status
+    {
+      get { return _status; }
+      set { _status = value; }
+    }
+    private string _pgp_name;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"pgp_name", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string pgp_name
+    {
+      get { return _pgp_name; }
+      set { _pgp_name = value; }
+    }
+    private string _location;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"location", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string location
+    {
+      get { return _location; }
+      set { _location = value; }
+    }
+    private string _pgp_id;
+    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"pgp_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string pgp_id
+    {
+      get { return _pgp_id; }
+      set { _pgp_id = value; }
+    }
+    private string _ssl_id;
+    [global::ProtoBuf.ProtoMember(5, IsRequired = true, Name=@"ssl_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string ssl_id
+    {
+      get { return _ssl_id; }
+      set { _ssl_id = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
     [global::ProtoBuf.ProtoContract(Name=@"RequestMsgIds")]
     public enum RequestMsgIds
     {
@@ -151,7 +247,13 @@ namespace rsctrl.system
       MsgId_RequestSystemStatus = 1,
             
       [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestSystemQuit", Value=2)]
-      MsgId_RequestSystemQuit = 2
+      MsgId_RequestSystemQuit = 2,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestSystemExternalAccess", Value=3)]
+      MsgId_RequestSystemExternalAccess = 3,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestSystemAccount", Value=4)]
+      MsgId_RequestSystemAccount = 4
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"ResponseMsgIds")]
@@ -162,7 +264,13 @@ namespace rsctrl.system
       MsgId_ResponseSystemStatus = 1,
             
       [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseSystemQuit", Value=2)]
-      MsgId_ResponseSystemQuit = 2
+      MsgId_ResponseSystemQuit = 2,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseSystemExternalAccess", Value=3)]
+      MsgId_ResponseSystemExternalAccess = 3,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseSystemAccount", Value=4)]
+      MsgId_ResponseSystemAccount = 4
     }
   
 }

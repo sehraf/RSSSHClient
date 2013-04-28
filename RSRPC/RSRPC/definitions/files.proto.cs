@@ -44,6 +44,13 @@ namespace rsctrl.files
       get { return _rate_kBs; }
       set { _rate_kBs = value; }
     }
+    private rsctrl.files.TransferState _state;
+    [global::ProtoBuf.ProtoMember(5, IsRequired = true, Name=@"state", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public rsctrl.files.TransferState state
+    {
+      get { return _state; }
+      set { _state = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -157,6 +164,92 @@ namespace rsctrl.files
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RequestShareDirList")]
+  public partial class RequestShareDirList : global::ProtoBuf.IExtensible
+  {
+    public RequestShareDirList() {}
+    
+    private string _ssl_id;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"ssl_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string ssl_id
+    {
+      get { return _ssl_id; }
+      set { _ssl_id = value; }
+    }
+    private string _path;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"path", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string path
+    {
+      get { return _path; }
+      set { _path = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ResponseShareDirList")]
+  public partial class ResponseShareDirList : global::ProtoBuf.IExtensible
+  {
+    public ResponseShareDirList() {}
+    
+    private rsctrl.core.Status _status;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"status", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public rsctrl.core.Status status
+    {
+      get { return _status; }
+      set { _status = value; }
+    }
+    private string _ssl_id;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"ssl_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string ssl_id
+    {
+      get { return _ssl_id; }
+      set { _ssl_id = value; }
+    }
+    private string _path;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"path", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string path
+    {
+      get { return _path; }
+      set { _path = value; }
+    }
+    private rsctrl.files.ResponseShareDirList.ListType _list_type;
+    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"list_type", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public rsctrl.files.ResponseShareDirList.ListType list_type
+    {
+      get { return _list_type; }
+      set { _list_type = value; }
+    }
+    private readonly global::System.Collections.Generic.List<rsctrl.core.File> _files = new global::System.Collections.Generic.List<rsctrl.core.File>();
+    [global::ProtoBuf.ProtoMember(5, Name=@"files", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<rsctrl.core.File> files
+    {
+      get { return _files; }
+    }
+  
+    [global::ProtoBuf.ProtoContract(Name=@"ListType")]
+    public enum ListType
+    {
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DIRQUERY_ROOT", Value=1)]
+      DIRQUERY_ROOT = 1,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DIRQUERY_PERSON", Value=2)]
+      DIRQUERY_PERSON = 2,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DIRQUERY_FILE", Value=3)]
+      DIRQUERY_FILE = 3,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DIRQUERY_DIR", Value=4)]
+      DIRQUERY_DIR = 4
+    }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
     [global::ProtoBuf.ProtoContract(Name=@"RequestMsgIds")]
     public enum RequestMsgIds
     {
@@ -165,7 +258,10 @@ namespace rsctrl.files
       MsgId_RequestTransferList = 1,
             
       [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestControlDownload", Value=2)]
-      MsgId_RequestControlDownload = 2
+      MsgId_RequestControlDownload = 2,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestShareDirList", Value=3)]
+      MsgId_RequestShareDirList = 3
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"ResponseMsgIds")]
@@ -176,7 +272,10 @@ namespace rsctrl.files
       MsgId_ResponseTransferList = 1,
             
       [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseControlDownload", Value=2)]
-      MsgId_ResponseControlDownload = 2
+      MsgId_ResponseControlDownload = 2,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseShareDirList", Value=3)]
+      MsgId_ResponseShareDirList = 3
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"Direction")]
@@ -188,6 +287,35 @@ namespace rsctrl.files
             
       [global::ProtoBuf.ProtoEnum(Name=@"DIRECTION_DOWNLOAD", Value=2)]
       DIRECTION_DOWNLOAD = 2
+    }
+  
+    [global::ProtoBuf.ProtoContract(Name=@"TransferState")]
+    public enum TransferState
+    {
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"TRANSFER_FAILED", Value=1)]
+      TRANSFER_FAILED = 1,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"TRANSFER_OKAY", Value=2)]
+      TRANSFER_OKAY = 2,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"TRANSFER_PAUSED", Value=3)]
+      TRANSFER_PAUSED = 3,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"TRANSFER_QUEUED", Value=4)]
+      TRANSFER_QUEUED = 4,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"TRANSFER_WAITING", Value=5)]
+      TRANSFER_WAITING = 5,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"TRANSFER_DOWNLOADING", Value=6)]
+      TRANSFER_DOWNLOADING = 6,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"TRANSFER_CHECKING_HASH", Value=7)]
+      TRANSFER_CHECKING_HASH = 7,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"TRANSFER_COMPLETE", Value=8)]
+      TRANSFER_COMPLETE = 8
     }
   
 }

@@ -37,6 +37,13 @@ namespace rsctrl.search
       get { return _no_hits; }
       set { _no_hits = value; }
     }
+    private readonly global::System.Collections.Generic.List<string> _alt_names = new global::System.Collections.Generic.List<string>();
+    [global::ProtoBuf.ProtoMember(4, Name=@"alt_names", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<string> alt_names
+    {
+      get { return _alt_names; }
+    }
+  
     [global::ProtoBuf.ProtoContract(Name=@"LocFlag")]
     public enum LocFlag
     {
@@ -170,6 +177,15 @@ namespace rsctrl.search
   {
     public RequestSearchResults() {}
     
+
+    private uint _result_limit = default(uint);
+    [global::ProtoBuf.ProtoMember(1, IsRequired = false, Name=@"result_limit", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(uint))]
+    public uint result_limit
+    {
+      get { return _result_limit; }
+      set { _result_limit = value; }
+    }
     private readonly global::System.Collections.Generic.List<uint> _search_ids = new global::System.Collections.Generic.List<uint>();
     [global::ProtoBuf.ProtoMember(2, Name=@"search_ids", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     public global::System.Collections.Generic.List<uint> search_ids

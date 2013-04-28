@@ -15,6 +15,7 @@ using rsctrl.files;
 //using rsctrl.msgs;
 using rsctrl.peers;
 using rsctrl.search;
+using rsctrl.stream;
 using rsctrl.system;
 
 using File = rsctrl.core.File;
@@ -52,6 +53,7 @@ namespace Sehraf.RSRPC
 
         Thread _t, _shutdownThread;
         bool _run;
+        const bool DEBUG = false;
 
         public RSSSHConnector RSConnector { get { return _rsConnector; } }
         public RSProtoBuf RSProtoBuf { get { return _rsProtoBuf; } }
@@ -98,12 +100,12 @@ namespace Sehraf.RSRPC
             {
                 _disconnecting = true;
                 _run = false;
-                if (_useProperDisconnect)
-                {
-                    if (shutdown)
-                        SystemShutDown();
-                    SystemCloseConnection();
-                }
+                //if (_useProperDisconnect)
+                //{
+                //    if (shutdown)
+                //        SystemShutDown();
+                //    SystemCloseConnection();
+                //}
                 _shutdownThread = new Thread(new ThreadStart(ShutDownThread));
                 _shutdownThread.Name = "Shutdown Thread";
                 _shutdownThread.Priority = ThreadPriority.Normal;
@@ -121,8 +123,10 @@ namespace Sehraf.RSRPC
 
         public void SetReadSpeed(ushort speed)
         {
+            // not needed anymore
+
             // maybe need a check here
-            _rsProtoBuf.ReadSpeed = speed;
+            //_rsProtoBuf.ReadSpeed = speed;
         }
 
         internal void Error(Exception e, ErrorFrom from)
@@ -151,10 +155,12 @@ namespace Sehraf.RSRPC
         {
             byte counter = 0;
             _rsProtoBuf.FinishQueue();
+            // wait 10 seconds to send all remaining items
             while (_rsProtoBuf.ThreadRunning && counter < 10 * 2)
             {
+                System.Diagnostics.Debug.WriteLineIf(DEBUG, "waiting to send remaining items - " + counter);
                 Thread.Sleep(500);
-                counter++;
+                counter++;                
             }
             _rsProtoBuf.StopThread();
             Thread.Sleep(100);
@@ -283,6 +289,20 @@ namespace Sehraf.RSRPC
             request.nickname = name;
             return Send<RequestSetLobbyNickname>(request, msgID);
         }
+
+        public uint ChatRequestChatHistory(ChatId chatID)
+        {
+            uint msgID = RSProtoBuf.ConstructMsgId(
+                    (byte)ExtensionId.CORE,
+                    (ushort)PackageId.CHAT,
+                    (byte)rsctrl.chat.RequestMsgIds.MsgId_RequestChatHistory,
+                    false
+                );
+
+            RequestChatHistory request = new RequestChatHistory();
+            request.id = chatID;
+            return Send<RequestChatHistory>(request, msgID);
+        }
         #endregion
 
         #region files
@@ -316,6 +336,21 @@ namespace Sehraf.RSRPC
             return Send<RequestTransferList>(request, msgID);
         }
 
+        public uint FilesRequestShareDirList(string friendsSSLID, string path)
+        {
+            uint msgID = RSProtoBuf.ConstructMsgId(
+                    (byte)ExtensionId.CORE,
+                    (ushort)PackageId.FILES,
+                    (byte)rsctrl.files.RequestMsgIds.MsgId_RequestShareDirList,
+                    false
+                );
+
+            RequestShareDirList request = new RequestShareDirList();
+            request.path = path;
+            request.ssl_id = friendsSSLID;
+            return Send<RequestShareDirList>(request, msgID);
+        }
+
         #endregion
 
         #region gxs
@@ -325,7 +360,7 @@ namespace Sehraf.RSRPC
         #endregion
 
         #region peers
-        public uint PeersAddPeer(string cert, string gpgID)
+        public uint PeersAddPeer(string pgpID, string sshID = "")
         {
             uint msgID = RSProtoBuf.ConstructMsgId(
                     (byte)ExtensionId.CORE,
@@ -335,14 +370,31 @@ namespace Sehraf.RSRPC
                 );
 
             RequestAddPeer request = new RequestAddPeer();
-            request.cert = cert;
-            request.gpg_id = gpgID;
+            request.ssl_id = sshID;
+            request.pgp_id = pgpID;
             request.cmd = RequestAddPeer.AddCmd.ADD;
             return Send<RequestAddPeer>(request, msgID);
         }
 
+        public uint PeersExaminePeer(string cert, string pgpID, RequestExaminePeer.ExamineCmd cmd)
+        {
+            uint msgID = RSProtoBuf.ConstructMsgId(
+                    (byte)ExtensionId.CORE,
+                    (ushort)PackageId.PEERS,
+                    (byte)rsctrl.peers.RequestMsgIds.MsgId_RequestExaminePeer,
+                    false
+                );
+
+            RequestExaminePeer request = new RequestExaminePeer();
+            request.cert = cert;
+            request.pgp_id = pgpID;
+            request.cmd = cmd;
+            return Send<RequestExaminePeer>(request, msgID);
+        }
+
         public uint PeersModifyPeer(Person peer, RequestModifyPeer.ModCmd cmd)
         {
+            throw new Exception("THIS IS INCOMPLETE... DON'T USE. - drBob");
             uint msgID = RSProtoBuf.ConstructMsgId(
                     (byte)ExtensionId.CORE,
                     (ushort)PackageId.PEERS,
@@ -415,7 +467,7 @@ namespace Sehraf.RSRPC
             return Send<RequestListSearches>(request, msgID);
         }
 
-        public uint SearchResult(List<uint> IDs)
+        public uint SearchResult(List<uint> IDs, uint limit = 150)
         {
             uint msgID = RSProtoBuf.ConstructMsgId(
                     (byte)ExtensionId.CORE,
@@ -426,7 +478,60 @@ namespace Sehraf.RSRPC
 
             RequestSearchResults request = new RequestSearchResults();
             request.search_ids.AddRange(IDs);
+            request.result_limit = limit;
             return Send<RequestSearchResults>(request, msgID);
+        }
+
+        #endregion
+
+        #region stream
+
+        public uint StreamRequestControlStream(RequestControlStream.StreamAction action, float rateKBs, ulong seekByte, uint streamID)
+        {
+            uint msgID = RSProtoBuf.ConstructMsgId(
+                    (byte)ExtensionId.CORE,
+                    (ushort)PackageId.STREAM,
+                    (byte)rsctrl.stream.RequestMsgIds.MsgId_RequestControlStream,
+                    false
+                );
+
+            RequestControlStream request = new RequestControlStream();
+            request.action = action;
+            request.rate_kbs = rateKBs;
+            request.seek_byte = seekByte;
+            request.stream_id = streamID;
+            return Send<RequestControlStream>(request, msgID);
+        }
+
+        public uint StreamRequestListStream(StreamType type)
+        {
+            uint msgID = RSProtoBuf.ConstructMsgId(
+                    (byte)ExtensionId.CORE,
+                    (ushort)PackageId.STREAM,
+                    (byte)rsctrl.stream.RequestMsgIds.MsgId_RequestListStreams,
+                    false
+                );
+
+            RequestListStreams request = new RequestListStreams();
+            request.request_type = type;
+            return Send<RequestListStreams>(request, msgID);
+        }
+
+        public uint StreamRequestStartFileStream(File file, ulong startByte, ulong endByte, float rateKBs)
+        {
+            uint msgID = RSProtoBuf.ConstructMsgId(
+                    (byte)ExtensionId.CORE,
+                    (ushort)PackageId.STREAM,
+                    (byte)rsctrl.stream.RequestMsgIds.MsgId_RequestStartFileStream,
+                    false
+                );
+
+            RequestStartFileStream request = new RequestStartFileStream();
+            request.end_byte = endByte;
+            request.file = file;
+            request.rate_kbs = rateKBs;
+            request.start_byte = startByte;
+            return Send<RequestStartFileStream>(request, msgID);
         }
 
         #endregion
@@ -445,54 +550,81 @@ namespace Sehraf.RSRPC
             return Send<RequestSystemStatus>(request, msgID);
         }
 
-        private void SystemCloseConnection()
+        //private void SystemCloseConnection()
+        //{
+        //    uint msgID = RSProtoBuf.ConstructMsgId(
+        //            (byte)ExtensionId.CORE,
+        //            (ushort)PackageId.SYSTEM,
+        //            (byte)rsctrl.system.RequestMsgIds.MsgId_RequestSystemQuit,
+        //            false
+        //        );
+
+        //    RequestSystemQuit request = new RequestSystemQuit();
+        //    request.quit_code = RequestSystemQuit.QuitCode.CLOSE_CHANNEL;
+
+        //    //RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg();
+        //    //msg.MsgID = msgID;
+        //    //msg.ReqID = _rsProtoBuf.GetReqID();
+        //    //msg.ProtoBuffMsg = new MemoryStream();
+        //    //Serializer.Serialize<RequestSystemQuit>(msg.ProtoBuffMsg, request);
+        //    //msg.ProtoBuffMsg.Position = 0;
+        //    //msg.BodySize = (uint)msg.ProtoBuffMsg.Length;
+
+        //    //_rsProtoBuf.Send(msg);
+
+        //    Send<RequestSystemQuit>(request, msgID);
+        //}
+
+        //private void SystemShutDown()
+        //{
+        //    uint msgID = RSProtoBuf.ConstructMsgId(
+        //            (byte)ExtensionId.CORE,
+        //            (ushort)PackageId.SYSTEM,
+        //            (byte)rsctrl.system.RequestMsgIds.MsgId_RequestSystemQuit,
+        //            false
+        //        );
+
+        //    RequestSystemQuit request = new RequestSystemQuit();
+        //    request.quit_code = RequestSystemQuit.QuitCode.SHUTDOWN_RS;
+
+        //    //RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg();
+        //    //msg.MsgID = msgID;
+        //    //msg.ReqID = _rsProtoBuf.GetReqID();
+        //    //msg.ProtoBuffMsg = new MemoryStream();
+        //    //Serializer.Serialize<RequestSystemQuit>(msg.ProtoBuffMsg, request);
+        //    //msg.ProtoBuffMsg.Position = 0;
+        //    //msg.BodySize = (uint)msg.ProtoBuffMsg.Length;
+
+        //    //_rsProtoBuf.Send(msg);
+        //    Send<RequestSystemQuit>(request, msgID);
+        //}
+
+        public uint SystemRequestSystemAccount()
         {
             uint msgID = RSProtoBuf.ConstructMsgId(
                     (byte)ExtensionId.CORE,
                     (ushort)PackageId.SYSTEM,
-                    (byte)rsctrl.system.RequestMsgIds.MsgId_RequestSystemQuit,
+                    (byte)rsctrl.system.RequestMsgIds.MsgId_RequestSystemAccount,
                     false
                 );
 
-            RequestSystemQuit request = new RequestSystemQuit();
-            request.quit_code = RequestSystemQuit.QuitCode.CLOSE_CHANNEL;
-
-            //RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg();
-            //msg.MsgID = msgID;
-            //msg.ReqID = _rsProtoBuf.GetReqID();
-            //msg.ProtoBuffMsg = new MemoryStream();
-            //Serializer.Serialize<RequestSystemQuit>(msg.ProtoBuffMsg, request);
-            //msg.ProtoBuffMsg.Position = 0;
-            //msg.BodySize = (uint)msg.ProtoBuffMsg.Length;
-
-            //_rsProtoBuf.Send(msg);
-
-            Send<RequestSystemQuit>(request, msgID);
+            RequestSystemAccount request = new RequestSystemAccount();
+            return Send<RequestSystemAccount>(request, msgID);
         }
 
-        private void SystemShutDown()
+        public uint SystemRequestExternalAccess()
         {
             uint msgID = RSProtoBuf.ConstructMsgId(
                     (byte)ExtensionId.CORE,
                     (ushort)PackageId.SYSTEM,
-                    (byte)rsctrl.system.RequestMsgIds.MsgId_RequestSystemQuit,
+                    (byte)rsctrl.system.RequestMsgIds.MsgId_RequestSystemExternalAccess,
                     false
                 );
 
-            RequestSystemQuit request = new RequestSystemQuit();
-            request.quit_code = RequestSystemQuit.QuitCode.SHUTDOWN_RS;
-
-            //RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg();
-            //msg.MsgID = msgID;
-            //msg.ReqID = _rsProtoBuf.GetReqID();
-            //msg.ProtoBuffMsg = new MemoryStream();
-            //Serializer.Serialize<RequestSystemQuit>(msg.ProtoBuffMsg, request);
-            //msg.ProtoBuffMsg.Position = 0;
-            //msg.BodySize = (uint)msg.ProtoBuffMsg.Length;
-
-            //_rsProtoBuf.Send(msg);
-            Send<RequestSystemQuit>(request, msgID);
+            RequestSystemExternalAccess request = new RequestSystemExternalAccess();
+            return Send<RequestSystemExternalAccess>(request, msgID);
         }
+        
         #endregion
         
     }

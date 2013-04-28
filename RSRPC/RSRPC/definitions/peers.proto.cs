@@ -30,11 +30,11 @@ namespace rsctrl.peers
       get { return _info; }
       set { _info = value; }
     }
-    private readonly global::System.Collections.Generic.List<string> _gpg_ids = new global::System.Collections.Generic.List<string>();
-    [global::ProtoBuf.ProtoMember(3, Name=@"gpg_ids", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<string> gpg_ids
+    private readonly global::System.Collections.Generic.List<string> _pgp_ids = new global::System.Collections.Generic.List<string>();
+    [global::ProtoBuf.ProtoMember(3, Name=@"pgp_ids", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<string> pgp_ids
     {
-      get { return _gpg_ids; }
+      get { return _pgp_ids; }
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"SetOption")]
@@ -114,47 +114,38 @@ namespace rsctrl.peers
   {
     public RequestAddPeer() {}
     
-    private string _gpg_id;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"gpg_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public string gpg_id
-    {
-      get { return _gpg_id; }
-      set { _gpg_id = value; }
-    }
     private rsctrl.peers.RequestAddPeer.AddCmd _cmd;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"cmd", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"cmd", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     public rsctrl.peers.RequestAddPeer.AddCmd cmd
     {
       get { return _cmd; }
       set { _cmd = value; }
     }
-
-    private string _cert = "";
-    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"cert", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    [global::System.ComponentModel.DefaultValue("")]
-    public string cert
+    private string _pgp_id;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"pgp_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string pgp_id
     {
-      get { return _cert; }
-      set { _cert = value; }
+      get { return _pgp_id; }
+      set { _pgp_id = value; }
+    }
+
+    private string _ssl_id = "";
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"ssl_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string ssl_id
+    {
+      get { return _ssl_id; }
+      set { _ssl_id = value; }
     }
     [global::ProtoBuf.ProtoContract(Name=@"AddCmd")]
     public enum AddCmd
     {
             
-      [global::ProtoBuf.ProtoEnum(Name=@"NOOP", Value=0)]
-      NOOP = 0,
-            
       [global::ProtoBuf.ProtoEnum(Name=@"ADD", Value=1)]
       ADD = 1,
             
       [global::ProtoBuf.ProtoEnum(Name=@"REMOVE", Value=2)]
-      REMOVE = 2,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"IMPORT", Value=3)]
-      IMPORT = 3,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"EXAMINE", Value=4)]
-      EXAMINE = 4
+      REMOVE = 2
     }
   
     private global::ProtoBuf.IExtension extensionObject;
@@ -162,23 +153,41 @@ namespace rsctrl.peers
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ResponseAddPeer")]
-  public partial class ResponseAddPeer : global::ProtoBuf.IExtensible
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RequestExaminePeer")]
+  public partial class RequestExaminePeer : global::ProtoBuf.IExtensible
   {
-    public ResponseAddPeer() {}
+    public RequestExaminePeer() {}
     
-    private rsctrl.core.Status _status;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"status", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public rsctrl.core.Status status
+    private string _pgp_id;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"pgp_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string pgp_id
     {
-      get { return _status; }
-      set { _status = value; }
+      get { return _pgp_id; }
+      set { _pgp_id = value; }
     }
-    private readonly global::System.Collections.Generic.List<rsctrl.core.Person> _peers = new global::System.Collections.Generic.List<rsctrl.core.Person>();
-    [global::ProtoBuf.ProtoMember(2, Name=@"peers", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<rsctrl.core.Person> peers
+    private rsctrl.peers.RequestExaminePeer.ExamineCmd _cmd;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"cmd", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public rsctrl.peers.RequestExaminePeer.ExamineCmd cmd
     {
-      get { return _peers; }
+      get { return _cmd; }
+      set { _cmd = value; }
+    }
+    private string _cert;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"cert", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string cert
+    {
+      get { return _cert; }
+      set { _cert = value; }
+    }
+    [global::ProtoBuf.ProtoContract(Name=@"ExamineCmd")]
+    public enum ExamineCmd
+    {
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"IMPORT", Value=3)]
+      IMPORT = 3,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"EXAMINE", Value=4)]
+      EXAMINE = 4
     }
   
     private global::ProtoBuf.IExtension extensionObject;
@@ -224,30 +233,6 @@ namespace rsctrl.peers
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ResponseModifyPeer")]
-  public partial class ResponseModifyPeer : global::ProtoBuf.IExtensible
-  {
-    public ResponseModifyPeer() {}
-    
-    private rsctrl.core.Status _status;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"status", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public rsctrl.core.Status status
-    {
-      get { return _status; }
-      set { _status = value; }
-    }
-    private readonly global::System.Collections.Generic.List<rsctrl.core.Person> _peers = new global::System.Collections.Generic.List<rsctrl.core.Person>();
-    [global::ProtoBuf.ProtoMember(2, Name=@"peers", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<rsctrl.core.Person> peers
-    {
-      get { return _peers; }
-    }
-  
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
     [global::ProtoBuf.ProtoContract(Name=@"RequestMsgIds")]
     public enum RequestMsgIds
     {
@@ -258,8 +243,11 @@ namespace rsctrl.peers
       [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestAddPeer", Value=2)]
       MsgId_RequestAddPeer = 2,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestModifyPeer", Value=3)]
-      MsgId_RequestModifyPeer = 3
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestExaminePeer", Value=3)]
+      MsgId_RequestExaminePeer = 3,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestModifyPeer", Value=4)]
+      MsgId_RequestModifyPeer = 4
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"ResponseMsgIds")]
@@ -267,13 +255,7 @@ namespace rsctrl.peers
     {
             
       [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponsePeerList", Value=1)]
-      MsgId_ResponsePeerList = 1,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseAddPeer", Value=2)]
-      MsgId_ResponseAddPeer = 2,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseModifyPeer", Value=3)]
-      MsgId_ResponseModifyPeer = 3
+      MsgId_ResponsePeerList = 1
     }
   
 }

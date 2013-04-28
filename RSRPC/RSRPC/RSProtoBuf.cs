@@ -60,6 +60,7 @@ namespace Sehraf.RSRPC
         ShellStream _stream;
         uint _nextReqID, _timeOut, _lastSize;
         ushort _readSpeed = 100; // KiB/s
+        //ushort _bufferLength = 512, _sleepTime = 10; // ~50KiB/s
         RSRPC _parent;
 
         Queue<RSProtoBuffSSHMsg> _sendQueue;
@@ -69,7 +70,35 @@ namespace Sehraf.RSRPC
         bool _run, _finishQueue, _findMagicCode;
 
         public bool ThreadRunning { get { return _t.IsAlive; } }
-        public ushort ReadSpeed { get { return _readSpeed; } set { _readSpeed = value; } }
+        //public ushort ReadSpeed 
+        //{ 
+        //    get { return _readSpeed; } 
+        //    set 
+        //    { 
+        //        _readSpeed = value;                
+        //        switch (_readSpeed)
+        //        {
+        //            case 0:
+        //            default:
+        //                break;
+        //            case 10:
+        //                _bufferLength = 512; _sleepTime = 50; // ~10KiB/s
+        //                break;
+        //            case 20:
+        //                _bufferLength = 1024; _sleepTime = 50; // ~20KiB/s
+        //                break;
+        //            case 50:
+        //                _bufferLength = 512; _sleepTime = 10; // ~50KiB/s
+        //                break;
+        //            case 100:
+        //                _bufferLength = 512; _sleepTime = 5; // ~100KiB/s
+        //                break;
+        //            case 500:
+        //                _bufferLength = 512; _sleepTime = 1; // ~500KiB/s
+        //                break;
+        //        }
+        //    } 
+        //}
 
         public RSProtoBuf(ShellStream stream, Queue<RSProtoBuffSSHMsg> sendQueue, Queue<RSProtoBuffSSHMsg> receiveQueue, RSRPC parent, uint timeout = 1000, bool useThread = true)
         {
@@ -174,7 +203,7 @@ namespace Sehraf.RSRPC
             if (GetHeader)
             {
                 // get Header
-                if (!ReadFromStream(timeOut, 16, out buffer))
+                if (!ReadFromStreamNEW(timeOut, 16, out buffer))
                     return false;
                 buffer.CopyTo(input, 0);
 
@@ -204,7 +233,7 @@ namespace Sehraf.RSRPC
 
             // get ProtoBufMsg
             byte[] PbMsg = new byte[msg.BodySize];
-            if (!ReadFromStream(timeOut, (int)msg.BodySize, out buffer))
+            if (!ReadFromStreamNEW(timeOut, msg.BodySize, out buffer))
                 return false;
             buffer.CopyTo(PbMsg, 0);
 
@@ -221,72 +250,135 @@ namespace Sehraf.RSRPC
         /// <param name="length">how many bytes</param>
         /// <param name="output">byte array (out)</param>
         /// <returns>success?</returns>
-        private bool ReadFromStream(uint timeOut, int length, out byte[] output)
+        //private bool ReadFromStream(uint timeOut, int length, out byte[] output)
+        //{
+        //    bool done = false;
+        //    //ushort bufferLength = 512, sleepTime = 10; // ~50KiB/s
+        //    //switch (_readSpeed)
+        //    //{
+        //    //    case 0:
+        //    //    default:
+        //    //        break;
+        //    //    case 10:
+        //    //        bufferLength = 512; sleepTime = 50; // ~10KiB/s
+        //    //        break;
+        //    //    case 20:
+        //    //        bufferLength = 1024; sleepTime = 50; // ~20KiB/s
+        //    //        break;
+        //    //    case 50:
+        //    //        bufferLength = 512; sleepTime = 10; // ~50KiB/s
+        //    //        break;
+        //    //    case 100:
+        //    //        bufferLength = 512; sleepTime = 5; // ~100KiB/s
+        //    //        break;
+        //    //    case 500:
+        //    //        bufferLength = 512; sleepTime = 1; // ~500KiB/s
+        //    //        break;                
+        //    //}
+        //    uint read = 0;
+        //    ushort toRead;
+        //    byte[] buffer = new byte[_bufferLength];
+        //    output = new byte[length];
+            
+        //    DateTime timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
+        //    while (DateTime.Now < timeOutTime && !done)
+        //    {
+        //        if (_stream.DataAvailable)
+        //        {
+        //            //System.Diagnostics.Debug.WriteLine("länge: " + _stream.Length);
+        //            try
+        //            {
+        //                while (_stream.DataAvailable && length > read)
+        //                {
+        //                    //toRead = (ushort)((length - read > _bufferLength) ? _bufferLength : length - read);
+        //                    toRead = (ushort)Math.Min(_bufferLength, length - read);
+        //                    _stream.Read(buffer, 0, toRead);
+        //                    Array.Copy(buffer, 0, output, read, toRead);
+        //                    read += toRead;
+
+        //                    Thread.Sleep(_sleepTime);
+        //                }
+        //                if (read == length)
+        //                    done = true;
+
+        //                // we got data - reset timeout
+        //                timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                _parent.Error(e, RSRPC.ErrorFrom.ProtoBuf);
+        //                return false;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: Stream to short (" + length + ") ... waiting (" + (timeOutTime - DateTime.Now).TotalMilliseconds + ")");
+        //            System.Threading.Thread.Sleep(250);
+        //        }
+        //    }
+        //    if (!done)
+        //    {
+        //        System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: Could not get header");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+
+        /// <summary>
+        /// Reads bytes from the SSH stream
+        /// </summary>
+        /// <param name="timeOut">timeout in ms</param>
+        /// <param name="length">how many bytes</param>
+        /// <param name="output">byte array (out)</param>
+        /// <returns>success?</returns>
+        private bool ReadFromStreamNEW(uint timeOut, uint length, out byte[] output)
         {
             bool done = false;
-            ushort bufferLength = 512, sleepTime = 10; // ~50KiB/s
-            switch (_readSpeed)
-            {
-                case 0:
-                default:
-                    break;
-                case 10:
-                    bufferLength = 512; sleepTime = 50; // ~10KiB/s
-                    break;
-                case 20:
-                    bufferLength = 1024; sleepTime = 50; // ~20KiB/s
-                    break;
-                case 50:
-                    bufferLength = 512; sleepTime = 10; // ~50KiB/s
-                    break;
-                case 100:
-                    bufferLength = 512; sleepTime = 5; // ~100KiB/s
-                    break;
-                case 500:
-                    bufferLength = 512; sleepTime = 1; // ~500KiB/s
-                    break;                
-            }
-            uint read = 0;
-            ushort toRead;
-            byte[] buffer = new byte[bufferLength];
             output = new byte[length];
-            
+            byte[] dynBuffer;
+
+            uint streamLength = 0;
+            int read = 0, toRead = 0;
+
             DateTime timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
             while (DateTime.Now < timeOutTime && !done)
             {
-                if (_stream.DataAvailable)
+                while (read < length)
                 {
-                    try
+                    if (_stream.DataAvailable)
                     {
-                        while (_stream.DataAvailable && length > read)
+                        // get stream length and calculate how many bytes we can read
+                        streamLength = (uint)_stream.Length; 
+                        toRead = (int)Math.Min(length - read, streamLength);
+                        // setup buffer
+                        dynBuffer = new byte[toRead];
+                        try
                         {
-                            toRead = (ushort)((length - read > bufferLength) ? bufferLength : length - read);
-                            _stream.Read(buffer, 0, toRead);
-                            Array.Copy(buffer, 0, output, read, toRead);
-                            read += toRead;
-
-                            Thread.Sleep(sleepTime);
+                            //read
+                            _stream.Read(dynBuffer, 0, toRead);
                         }
+                        catch (Exception e)
+                        {
+                            //System.Diagnostics.Debug.WriteLineIf(DEBUG, "Error while reading");
+                            _parent.Error(e, RSRPC.ErrorFrom.ProtoBuf);
+                            return false;
+                        }
+                        // copy to target array
+                        Array.Copy(dynBuffer, 0, output, read, toRead);
+                        read += toRead;
+
                         if (read == length)
                             done = true;
 
                         // we got data - reset timeout
                         timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
                     }
-                    catch (Exception e)
-                    {
-                        _parent.Error(e, RSRPC.ErrorFrom.ProtoBuf);
-                    }
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: Stream to short (" + length + ") ... waiting (" + (timeOutTime - DateTime.Now).TotalMilliseconds + ")");
-                    System.Threading.Thread.Sleep(250);
                 }
             }
+
             if (!done)
             {
-                System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: Could not get header");
+                System.Diagnostics.Debug.WriteLineIf(DEBUG, "rec: Could not read everything");
                 return false;
             }
             return true;
@@ -359,7 +451,7 @@ namespace Sehraf.RSRPC
         private void mainLoop()
         {
             bool foundWork;
-            byte[] header1 = new byte[4], header234 = new byte[12], buffer = new byte[1024 * 25];
+            //byte[] header1 = new byte[4], header234 = new byte[12], buffer = new byte[1024 * 25];
             RSProtoBuffSSHMsg msg = new RSProtoBuffSSHMsg(), newMsg = new RSProtoBuffSSHMsg();
             while (_run)
             {

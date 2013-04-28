@@ -481,6 +481,54 @@ namespace rsctrl.chat
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"RequestChatHistory")]
+  public partial class RequestChatHistory : global::ProtoBuf.IExtensible
+  {
+    public RequestChatHistory() {}
+    
+    private rsctrl.chat.ChatId _id;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public rsctrl.chat.ChatId id
+    {
+      get { return _id; }
+      set { _id = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ResponseChatHistory")]
+  public partial class ResponseChatHistory : global::ProtoBuf.IExtensible
+  {
+    public ResponseChatHistory() {}
+    
+    private rsctrl.core.Status _status;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"status", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public rsctrl.core.Status status
+    {
+      get { return _status; }
+      set { _status = value; }
+    }
+    private rsctrl.chat.ChatId _id;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public rsctrl.chat.ChatId id
+    {
+      get { return _id; }
+      set { _id = value; }
+    }
+    private readonly global::System.Collections.Generic.List<rsctrl.chat.ChatMessage> _msgs = new global::System.Collections.Generic.List<rsctrl.chat.ChatMessage>();
+    [global::ProtoBuf.ProtoMember(3, Name=@"msgs", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<rsctrl.chat.ChatMessage> msgs
+    {
+      get { return _msgs; }
+    }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
     [global::ProtoBuf.ProtoContract(Name=@"RequestMsgIds")]
     public enum RequestMsgIds
     {
@@ -501,7 +549,10 @@ namespace rsctrl.chat
       MsgId_RequestRegisterEvents = 5,
             
       [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestSendMessage", Value=6)]
-      MsgId_RequestSendMessage = 6
+      MsgId_RequestSendMessage = 6,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_RequestChatHistory", Value=7)]
+      MsgId_RequestChatHistory = 7
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"ResponseMsgIds")]
@@ -519,6 +570,9 @@ namespace rsctrl.chat
             
       [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseSendMessage", Value=6)]
       MsgId_ResponseSendMessage = 6,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MsgId_ResponseChatHistory", Value=7)]
+      MsgId_ResponseChatHistory = 7,
             
       [global::ProtoBuf.ProtoEnum(Name=@"MsgId_EventLobbyInvite", Value=101)]
       MsgId_EventLobbyInvite = 101,
