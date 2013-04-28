@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 using rsctrl.core;
+using rsctrl.system;
 using rsctrl.peers;
 
 using Sehraf.RSRPC;
@@ -11,11 +12,11 @@ namespace RetroShareSSHClient
 {
     class PeerProcessor
     {
-        Person _owner;
+        ResponseSystemAccount _owner; // sounds bad but seems to be the best/easiest way
         List<Person> _peerList;
         Person _selectedPeer;
 
-        Dictionary<uint, RequestPeers.SetOption> _pendingPeerRequests;
+        //Dictionary<uint, RequestPeers.SetOption> _pendingPeerRequests;
         //public Dictionary<uint, RequestPeers.SetOption> PendingPeerRequests { get { return _pendingPeerRequests; } set { _pendingPeerRequests = value; } }
 
         Bridge _b;
@@ -24,13 +25,13 @@ namespace RetroShareSSHClient
         {
             _b = Bridge.GetBridge();
 
-            _owner = new Person();
+            _owner = new ResponseSystemAccount();
             _peerList = new List<Person>();
             _selectedPeer = new Person();
-            _pendingPeerRequests = new Dictionary<uint, RequestPeers.SetOption>();
+            //_pendingPeerRequests = new Dictionary<uint, RequestPeers.SetOption>();
         }
 
-        public void Reset()
+        internal void Reset()
         {
             //_owner = null; needed?
             _peerList.Clear();
@@ -38,50 +39,50 @@ namespace RetroShareSSHClient
             _b.GUI.lb_locations.Items.Clear();
             _selectedPeer = null;
 
-            _pendingPeerRequests.Clear();
+            //_pendingPeerRequests.Clear();
         }
 
-        public void RequestPeerList(bool requestOwner = false)
-        {
-            uint regID;
-            if (requestOwner)
-            {
-                regID = _b.RPC.PeersGetFriendList(RequestPeers.SetOption.OWNID);
-                _pendingPeerRequests.Add(regID, RequestPeers.SetOption.OWNID);
-            }
-            else
-            {
-                regID = _b.RPC.PeersGetFriendList(RequestPeers.SetOption.FRIENDS);
-                _pendingPeerRequests.Add(regID, RequestPeers.SetOption.FRIENDS);
-            }
-        }
+        //internal void RequestPeerList(bool requestOwner = false)
+        //{
+        //    uint regID;
+        //    if (requestOwner)
+        //    {
+        //        regID = _b.RPC.PeersGetFriendList(RequestPeers.SetOption.OWNID);
+        //        _pendingPeerRequests.Add(regID, RequestPeers.SetOption.OWNID);
+        //    }
+        //    else
+        //    {
+        //        regID = _b.RPC.PeersGetFriendList(RequestPeers.SetOption.FRIENDS);
+        //        _pendingPeerRequests.Add(regID, RequestPeers.SetOption.FRIENDS);
+        //    }
+        //}
 
-        public void ProcessResponsePeerList(uint reqID, ResponsePeerList response)
-        {
-            RequestPeers.SetOption opt;
-            if (_pendingPeerRequests.TryGetValue(reqID, out opt))
-            {
-                _pendingPeerRequests.Remove(reqID);
-                switch (opt)
-                {
-                    case RequestPeers.SetOption.OWNID:
-                        SetOwnID(response);
-                        break;
-                    case RequestPeers.SetOption.FRIENDS:
-                        UpdatePeerList(response);
-                        break;
-                    default:
-                        // all other cases 
-                        break;
-                }
-            }
-            else
-            {
-                // peer list - but no clue what is in it
-            }
-        }
+        //internal void ProcessResponsePeerList(uint reqID, ResponsePeerList response)
+        //{
+        //    RequestPeers.SetOption opt;
+        //    if (_pendingPeerRequests.TryGetValue(reqID, out opt))
+        //    {
+        //        _pendingPeerRequests.Remove(reqID);
+        //        switch (opt)
+        //        {
+        //            case RequestPeers.SetOption.OWNID:
+        //                SetOwnID(response);
+        //                break;
+        //            case RequestPeers.SetOption.FRIENDS:
+        //                UpdatePeerList(response);
+        //                break;
+        //            default:
+        //                // all other cases 
+        //                break;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        // peer list - but no clue what is in it
+        //    };
+        //}
 
-        private void UpdatePeerList(ResponsePeerList msg)
+        internal void UpdatePeerList(ResponsePeerList msg)
         {
             // get new peerlist
             List<Person> _newPeerList = msg.peers;
@@ -98,8 +99,9 @@ namespace RetroShareSSHClient
             _peerList.Clear();
 
             _peerList = msg.peers;
-            if (_owner.locations.Count > 0)
-                _peerList.Add(_owner);
+            // i hope i don't need this anymore
+            //if (_owner.locations.Count > 0)
+            //    _peerList.Add(_owner);
             _peerList.Sort(new PersonComparer());
 
             foreach (Person p in _peerList)
@@ -144,14 +146,19 @@ namespace RetroShareSSHClient
             return true;
         }
 
-        private void SetOwnID(ResponsePeerList msg)
+        internal void SetOwnID(ResponseSystemAccount msg)
         {
-            _owner = msg.peers[0]; // i gues we just have one owner           
-            _b.GUI.Text = "RetroShare SSH Client by sehraf - " + _owner.name + "(" + _owner.gpg_id + ") ";// +l.location + " (" + l.ssl_id + ")";
+            //_owner.gpg_id = msg.pgp_id;
+            //_owner.locations[0] = msg.location;
+            //_owner.name = msg.pgp_name;
+            //_owner.relation = Person.Relationship.YOURSELF;
+            _owner = msg;
+
+            _b.GUI.Text = "RetroShare SSH Client by sehraf - " + _owner.pgp_name + "(" + _owner.pgp_id + ") ";// +l.location + " (" + l.ssl_id + ")";
 
             if (_b.ChatProcessor.Nick == "" || _b.ChatProcessor.Nick == null)
             {
-                string name = _owner.name.Trim();
+                string name = _owner.pgp_name.Trim();
                 _b.ChatProcessor.SetNick(name + " (nogui/ssh)");
             }
         }
@@ -174,7 +181,7 @@ namespace RetroShareSSHClient
             return (port >= 1024 && port <= UInt16.MaxValue);
         }
 
-        public void FriendsSelectedIndexChanged(int index)
+        internal void FriendsSelectedIndexChanged(int index)
         {
             ClearPeerForm();
             Person p = _peerList[index];
@@ -206,7 +213,7 @@ namespace RetroShareSSHClient
             _b.GUI.tb_peerID.Text = p.gpg_id;
         }
 
-        public void LocationSelevtedIndexChanged(int index)
+        internal void LocationSelevtedIndexChanged(int index)
         {
             Location l = _selectedPeer.locations[index];
             _b.GUI.tb_peerLocation.Text = l.location;
@@ -220,7 +227,7 @@ namespace RetroShareSSHClient
             //_b.GUI.tb_dyndns.Text = "NOT IMPLEMENTED";
         }
 
-        public void SavePeer(int locationIndex)
+        internal void SavePeer(int locationIndex)
         {
             Person p = _selectedPeer;
             Location l = p.locations[locationIndex];

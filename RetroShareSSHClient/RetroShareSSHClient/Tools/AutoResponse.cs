@@ -121,7 +121,7 @@ namespace RetroShareSSHClient
         /// <param name="msgIN">message to check</param>
         /// <param name="cl"></param>
         /// <returns>message(s)</returns>
-        public string[] Process(ChatMessage msgIN, GuiChatLobby cl)
+        internal string[] Process(ChatMessage msgIN, GuiChatLobby cl)
         {
             // check if auto response is activated
             if (!_b.GUI.cb_chat_arEnable.Checked)
@@ -181,7 +181,7 @@ namespace RetroShareSSHClient
         /// Shows detailed infos for an item
         /// </summary>
         /// <param name="name">name of item to show</param>
-        public void ShowItem(string name)
+        internal void ShowItem(string name)
         {
             AutoResponseItem item;
             if (!_items.TryGetValue(name, out item))
@@ -202,7 +202,7 @@ namespace RetroShareSSHClient
         /// Saves changes made 
         /// </summary>
         /// <param name="name">name of item to safe changes to</param>
-        public void SaveItem(string name)
+        internal void SaveItem(string name)
         {
             AutoResponseItem item;
             if (!_items.TryGetValue(name, out item))
@@ -228,7 +228,7 @@ namespace RetroShareSSHClient
         /// Adds the given name to _items and calls SaveItem() and UpdateARList()
         /// </summary>
         /// <param name="name">name of the new item</param>
-        public void AddNew(string name)
+        internal void AddNew(string name)
         {
             if (_items.ContainsKey(name))
             {
@@ -246,7 +246,7 @@ namespace RetroShareSSHClient
         /// Removes the item with the given name and calls UpdateARList()
         /// </summary>
         /// <param name="name">name to remove</param>
-        public void RemoveItem(string name)
+        internal void RemoveItem(string name)
         {
             if (_items.ContainsKey(name))
                 _items.Remove(name);
@@ -258,7 +258,7 @@ namespace RetroShareSSHClient
         /// </summary>
         /// <param name="name">name of the item to change</param>
         /// <param name="active">true = active</param>
-        public void SetActive(string name, bool active)
+        internal void SetActive(string name, bool active)
         {
             AutoResponseItem item;
             if (!_items.TryGetValue(name, out item))
@@ -275,7 +275,7 @@ namespace RetroShareSSHClient
         /// <summary>
         /// Resets everything
         /// </summary>
-        public void Reset()
+        internal void Reset()
         {
             
         }
@@ -412,7 +412,7 @@ namespace RetroShareSSHClient
         /// <returns>true = blacklisted</returns>
         public bool IsLobbyBlacklisted(string lobbyID)
         {
-            return _lobbyBlacklist.Contains(lobbyID) || lobbyID == ChatProcessor.GROUPCHAT;
+            return _lobbyBlacklist.Contains(lobbyID) || lobbyID == ChatProcessor.BROADCAST;
         }
 
         /// <summary>

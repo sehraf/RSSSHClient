@@ -19,7 +19,7 @@ namespace RetroShareSSHClient
 {
     public partial class MainForm : Form
     {     
-        Settings _settings;
+        LoadSaveHandler _loadSaveHandler;
         Log _log;
         uint _tickCounter;
         int selectedIndex = -1;
@@ -37,7 +37,7 @@ namespace RetroShareSSHClient
             _b.RPC.EventOccurred += EventFromThread;
             _b.RPC.ReceivedMsg += ProcessMsgFromThread;
 
-            _settings = new Settings();
+            _loadSaveHandler = new LoadSaveHandler();
             _log = new Log();
             _log.NewSession();
             _tickCounter = 0;
@@ -58,7 +58,7 @@ namespace RetroShareSSHClient
         private void LoadSettings()
         {
             Options opt;
-            if(_settings.Load(out opt)) {
+            if(_loadSaveHandler.Load(out opt)) {
                 if (opt.SaveSettings)
                 {
                     tb_host.Text = opt.Host;
@@ -69,7 +69,7 @@ namespace RetroShareSSHClient
                     cb_settingsSavePW.Checked = opt.SavePW;
                     cb_settingsReadSpeed.SelectedIndex = opt.ReadSpeedIndex;
                 }
-                if (opt.SaveChat)
+                if (opt.SaveChat) // chat includes AutoResponse
                 {
                     _b.ChatProcessor.SetNick(opt.Nick);
                     cb_settingsSaveChat.Checked = true;
@@ -95,7 +95,7 @@ namespace RetroShareSSHClient
                 opt.SavePW = cb_settingsSavePW.Checked;
                 opt.ReadSpeedIndex = (byte)cb_settingsReadSpeed.SelectedIndex;
             }
-            if (cb_settingsSaveChat.Checked)
+            if (cb_settingsSaveChat.Checked) // chat includes AutoResponse
             {
                 opt.Nick = _b.ChatProcessor.Nick;
                 opt.SaveChat = true;
@@ -103,7 +103,7 @@ namespace RetroShareSSHClient
                 opt.EnableAutoResp = cb_chat_arEnable.Checked;
                 opt.AutoResponseList = _b.AutoResponse.AutoResponseList;
             }            
-            _settings.Save(opt);
+            _loadSaveHandler.Save(opt);
         }
 
         private void EventFromThread(RSRPC.EventType type, object obj)
@@ -155,10 +155,11 @@ namespace RetroShareSSHClient
 
             _b.RPC.SystemGetStatus();
 
-            _b.PeerProcessor.RequestPeerList(true);
+            //_b.PeerProcessor.RequestPeerList(true); 
+            _b.RPC.SystemRequestSystemAccount();
 
             _b.ChatProcessor.SetNick(_b.ChatProcessor.Nick);
-            _b.ChatProcessor.AddGroupChat();
+            _b.ChatProcessor.AddBroadcast();
         }
 
         private void Connect()
@@ -279,7 +280,7 @@ namespace RetroShareSSHClient
                 // update friends (every second tick)
                 if (_tickCounter % 30 == 0 || (tc_main.SelectedTab == tp_friends && _tickCounter % 2 == 0))
                 {
-                    _b.PeerProcessor.RequestPeerList();
+                    _b.RPC.PeersGetFriendList(RequestPeers.SetOption.FRIENDS);
                 }
 
                 //chat lobbies
@@ -323,7 +324,7 @@ namespace RetroShareSSHClient
 
         private void bt_test_Click(object sender, EventArgs e)
         {
-
+            _b.RPC.SystemRequestSystemAccount();
         }
 
         private void cb_settingsReadSpeed_SelectedIndexChanged(object sender, EventArgs e)
@@ -531,6 +532,7 @@ namespace RetroShareSSHClient
             foreach (File f in fileList)
             {
                 // add all the files 
+                System.Diagnostics.Debug.WriteLine(f.name + " - " + f.size + " - " + f.hash);
             }
             tb_out.AppendText("adding " + fileList.Count + " files" + "\n");
         }
@@ -621,16 +623,18 @@ namespace RetroShareSSHClient
         AutoResponse _autoResponse;
         PeerProcessor _peer;
         SearchProcessor _search;
+        StreamProcessor _stream;
         FileProcessor _file;
 
-        internal MainForm GUI { get { return _gui; } set { _gui = value; } }
-        public RSRPC RPC { get { return _rpc; } set { _rpc = value; } }        
-        internal Processor Processor { get { return _processor; } set { _processor = value; } }
-        internal ChatProcessor ChatProcessor { get { return _chat; } set { _chat = value; } }
-        internal AutoResponse AutoResponse { get { return _autoResponse; } set { _autoResponse = value; } }
-        internal PeerProcessor PeerProcessor { get { return _peer; } set { _peer = value; } }
-        internal SearchProcessor SearchProcessor { get { return _search; } set { _search = value; } }
-        internal FileProcessor FileProcessor { get { return _file; } set { _file = value; } }
+        internal MainForm GUI { get { return _gui; } } //set { _gui = value; } }
+        public RSRPC RPC { get { return _rpc; } } //set { _rpc = value; } }        
+        internal Processor Processor { get { return _processor; } } //set { _processor = value; } }
+        internal ChatProcessor ChatProcessor { get { return _chat; } } //set { _chat = value; } }
+        internal AutoResponse AutoResponse { get { return _autoResponse; } } //set { _autoResponse = value; } }
+        internal PeerProcessor PeerProcessor { get { return _peer; } } //set { _peer = value; } }
+        internal SearchProcessor SearchProcessor { get { return _search; } } //set { _search = value; } }
+        internal StreamProcessor StreamProcessor { get { return _stream; } } //set { _stream = value; } }
+        internal FileProcessor FileProcessor { get { return _file; } } //set { _file = value; } }
 
         private Bridge(MainForm gui)
         {
@@ -649,6 +653,7 @@ namespace RetroShareSSHClient
             _b._chat = new ChatProcessor();
             _b._peer = new PeerProcessor();
             _b._search = new SearchProcessor();
+            _b._stream = new StreamProcessor();
             _b._file = new FileProcessor();
             _b._autoResponse = new AutoResponse();
         }
@@ -673,14 +678,6 @@ namespace RetroShareSSHClient
         }
 
         /// <summary>
-        /// Initialize all components
-        /// </summary>
-        //public void InitializeComponent()
-        //{
-        //    _autoResponse.Init();
-        //}
-
-        /// <summary>
         /// Resets all components
         /// </summary>
         public void Reset()
@@ -690,6 +687,7 @@ namespace RetroShareSSHClient
             _autoResponse.Reset();
             _peer.Reset();
             _search.Reset();
+            _stream.Reset();
             _file.Reset();
         }
     }

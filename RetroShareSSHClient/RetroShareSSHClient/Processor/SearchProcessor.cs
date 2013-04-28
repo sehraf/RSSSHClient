@@ -70,7 +70,7 @@ namespace RetroShareSSHClient
             _searches = new Dictionary<uint, GuiSearch>();
         }
 
-        public void Reset()
+        internal void Reset()
         {
             _pendingSearchReq.Clear();            
             _searches.Clear();
@@ -78,7 +78,7 @@ namespace RetroShareSSHClient
             _b.GUI.lb_searchResults.Items.Clear();
         }
 
-        public void RegisterSearchIDs(uint ReqID, ResponseSearchIds response)
+        internal void RegisterSearchIDs(uint ReqID, ResponseSearchIds response)
         {
             if (_pendingSearchReq.ContainsKey(ReqID))
             {
@@ -96,7 +96,7 @@ namespace RetroShareSSHClient
             }
         }
 
-        public void ProcessSearchResults(ResponseSearchResults response)
+        internal void ProcessSearchResults(ResponseSearchResults response)
         {
             GuiSearch gs = new GuiSearch();
             bool updated = false;
@@ -134,7 +134,7 @@ namespace RetroShareSSHClient
             UpdateSearchResults(_b.GUI.lb_searches.SelectedIndex);
         }
 
-        public void Search(string keyWords)
+        internal void Search(string keyWords)
         {
             keyWords = keyWords.Trim();
             if (keyWords == "")
@@ -164,7 +164,7 @@ namespace RetroShareSSHClient
             _pendingSearchReq.Add(reqID, newKeywords.Trim());
         }
 
-        public void GetSearchResults()
+        internal void GetSearchResults(uint limit = 500)
         {
             List<uint> searchIDs = new List<uint>();
             GuiSearch[] values = new GuiSearch[_searches.Values.Count];
@@ -178,11 +178,11 @@ namespace RetroShareSSHClient
                 }
             }
             if (searchIDs.Count > 0)
-                //_bridge.RPC.SearchResult(searchIDs); sending IDs doens't work at the moment
-                _b.RPC.SearchResult(new List<uint>() { });
+                //_bridge.RPC.SearchResult(searchIDs, limit); sending IDs doens't work at the moment
+                _b.RPC.SearchResult(new List<uint>() { }, limit);
         }
 
-        public void UpdateSearches()
+        internal void UpdateSearches()
         {
             GuiSearch gs2;
             uint selectedID = 0;
@@ -212,7 +212,7 @@ namespace RetroShareSSHClient
                 _b.GUI.lb_searches.SelectedIndex = selectedIndex;
         }
 
-        public void UpdateSearchResults(int index)
+        internal void UpdateSearchResults(int index)
         {
             if (index == -1)
             {
@@ -236,7 +236,7 @@ namespace RetroShareSSHClient
             //    _b.GUI.lb_searchResults.SelectedIndex = index;
         }
 
-        public bool GetSearchByIndex(ushort index, out GuiSearch gs)
+        internal bool GetSearchByIndex(ushort index, out GuiSearch gs)
         {
             gs = new GuiSearch();
             GuiSearch[] values = new GuiSearch[_searches.Values.Count];
@@ -252,7 +252,7 @@ namespace RetroShareSSHClient
             return false;
         }
 
-        public void RemoveSearch(int index)
+        internal void RemoveSearch(int index)
         {
             GuiSearch gs = new GuiSearch();
             if (GetSearchByIndex((ushort)index, out gs))
@@ -264,7 +264,7 @@ namespace RetroShareSSHClient
             }
         }
 
-        public void CloseAllSearches()
+        internal void CloseAllSearches()
         {
             GuiSearch[] values = new GuiSearch[_searches.Count];
             _searches.Values.CopyTo(values, 0);

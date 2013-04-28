@@ -43,58 +43,15 @@ namespace RetroShareSSHClient
         public AutoResponseItem[] AutoResponseList { get { return _autoResponseList; } set { _autoResponseList = value; } }
     }
 
-    class Settings
+    class LoadSaveHandler
     {
-        string _filename = "settings.bin";
+        string _filename = Settings.SettingsFileName;
 
-        public Settings(string filename = null)
+        public LoadSaveHandler(string filename = null)
         {
             if (filename != null)
                 _filename = filename;
         }
-
-        //public bool Load(out Options opt)
-        //{
-        //    if (true)
-        //        return Load2(out opt);            
-
-        //    opt = new Options();
-        //    if (File.Exists(_filename))
-        //    {
-        //        try
-        //        {
-        //            FileStream fs = new FileStream(_filename, FileMode.Open);
-        //            StreamReader sr = new StreamReader(fs);
-
-        //            opt.Host = sr.ReadLine();
-        //            opt.Port = sr.ReadLine();
-        //            opt.User = sr.ReadLine();
-        //            opt.Password = DecodeFrom64(sr.ReadLine());
-        //            opt.SaveSettings = (sr.ReadLine() == "1") ? true : false;
-        //            opt.SavePW = (sr.ReadLine() == "1") ? true : false;
-
-        //            opt.Nick = sr.ReadLine();
-        //            opt.AutoRespAnswer = sr.ReadLine();
-        //            opt.AutoRespSearch = sr.ReadLine();
-        //            opt.EnableAutoResp = (sr.ReadLine() == "1") ? true : false;
-        //            opt.SaveChat = (sr.ReadLine() == "1") ? true : false;
-        //            opt.ReadSpeedIndex = Convert.ToByte(sr.ReadLine());
-
-        //            sr.Close();
-        //            sr.Dispose();
-        //            fs.Close();
-        //            fs.Dispose();
-        //            return true;
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            System.Diagnostics.Debug.WriteLine(e.Message);
-        //            return false;
-        //        }
-        //    }
-        //    else
-        //        return false;
-        //}
 
         public bool Load(out Options opt)
         {
@@ -124,50 +81,6 @@ namespace RetroShareSSHClient
             }
 
         }
-
-        //public void Save(Options opt)
-        //{
-        //    if (true)
-        //    {
-        //        Save2(opt);
-        //        return;
-        //    }
-
-        //    if (!File.Exists(_filename))
-        //        File.Create(_filename);
-
-        //    try
-        //    {
-        //        FileStream fs = new FileStream(_filename, FileMode.Truncate);
-        //        StreamWriter sw = new StreamWriter(fs);
-
-        //        sw.WriteLine(opt.Host);
-        //        sw.WriteLine(opt.Port);
-        //        sw.WriteLine(opt.User);
-        //        sw.WriteLine(EncodeTo64(opt.Password));
-        //        sw.WriteLine(opt.SaveSettings ? "1" : "0");
-        //        sw.WriteLine(opt.SavePW ? "1" : "0");
-
-        //        sw.WriteLine(opt.Nick);
-        //        sw.WriteLine(opt.AutoRespAnswer);
-        //        sw.WriteLine(opt.AutoRespSearch);
-        //        sw.WriteLine(opt.EnableAutoResp ? "1" : "0");
-        //        sw.WriteLine(opt.SaveChat ? "1" : "0");
-        //        sw.WriteLine(opt.ReadSpeedIndex);
-
-        //        sw.Flush();
-        //        sw.Close();
-        //        sw.Dispose();
-
-        //        //fs.Flush();
-        //        fs.Close();
-        //        fs.Dispose();
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        System.Diagnostics.Debug.WriteLine(e.Message);
-        //    }
-        //}
 
         public void Save(Options opt)
         {

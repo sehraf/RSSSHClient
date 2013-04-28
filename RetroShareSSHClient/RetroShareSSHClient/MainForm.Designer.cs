@@ -621,13 +621,14 @@
             this.cb_settingsSaveChat.AutoSize = true;
             this.cb_settingsSaveChat.Location = new System.Drawing.Point(6, 65);
             this.cb_settingsSaveChat.Name = "cb_settingsSaveChat";
-            this.cb_settingsSaveChat.Size = new System.Drawing.Size(107, 17);
+            this.cb_settingsSaveChat.Size = new System.Drawing.Size(170, 17);
             this.cb_settingsSaveChat.TabIndex = 2;
-            this.cb_settingsSaveChat.Text = "save chat setting";
+            this.cb_settingsSaveChat.Text = "save chat and AutoResponse ";
             this.cb_settingsSaveChat.UseVisualStyleBackColor = true;
             // 
             // cb_settingsReadSpeed
             // 
+            this.cb_settingsReadSpeed.Enabled = false;
             this.cb_settingsReadSpeed.FormattingEnabled = true;
             this.cb_settingsReadSpeed.Location = new System.Drawing.Point(108, 86);
             this.cb_settingsReadSpeed.Name = "cb_settingsReadSpeed";
@@ -638,6 +639,7 @@
             // l_settingsReadSpeed
             // 
             this.l_settingsReadSpeed.AutoSize = true;
+            this.l_settingsReadSpeed.Enabled = false;
             this.l_settingsReadSpeed.Location = new System.Drawing.Point(7, 89);
             this.l_settingsReadSpeed.Name = "l_settingsReadSpeed";
             this.l_settingsReadSpeed.Size = new System.Drawing.Size(95, 13);

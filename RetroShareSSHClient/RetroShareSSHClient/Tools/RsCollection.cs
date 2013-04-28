@@ -24,6 +24,7 @@ namespace RetroShareSSHClient
         {
             XmlTextReader tr = new XmlTextReader(path);
             bool foundCollectionTag = false;
+            string currentPath = "";
 
             File tmpFile = new File();
             fileList = new List<File>();
@@ -40,7 +41,17 @@ namespace RetroShareSSHClient
                         foundCollectionTag = true;
                         break;
                     case "Directory":
-                        // ignore
+                        // save path 
+                        try
+                        {
+                            System.Diagnostics.Debug.WriteLineIf(DEBUG, "ReadCollection: getting file path");
+                            currentPath = tr.GetAttribute("name");
+                        }
+                        catch (Exception e)
+                        {
+                            System.Diagnostics.Debug.WriteLineIf(DEBUG, "ReadCollection: error reading file path");
+                            System.Diagnostics.Debug.WriteLineIf(DEBUG, "ReadCollection: " + e.Message);
+                        }
                         break;
                     case "File":
                         // create a tmp file to add it to the list
@@ -57,9 +68,13 @@ namespace RetroShareSSHClient
                         try
                         {
                             System.Diagnostics.Debug.WriteLineIf(DEBUG, "ReadCollection: adding file");
-                            tmpFile.size = System.Convert.ToUInt32(tr.GetAttribute(0));
-                            tmpFile.hash = tr.GetAttribute(1);
-                            tmpFile.name = tr.GetAttribute(2);
+                            //tmpFile.size = System.Convert.ToUInt32(tr.GetAttribute(0));
+                            //tmpFile.hash = tr.GetAttribute(1);
+                            //tmpFile.name = tr.GetAttribute(2);
+                            tmpFile.hash = tr.GetAttribute("sha1");
+                            tmpFile.name = tr.GetAttribute("name");
+                            tmpFile.size = System.Convert.ToUInt32(tr.GetAttribute("size"));
+                            // TODO add file path
                         }
                         catch (Exception e)
                         {
