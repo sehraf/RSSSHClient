@@ -59,8 +59,6 @@ namespace Sehraf.RSRPC
 
         ShellStream _stream;
         uint _nextReqID, _timeOut, _lastSize;
-        ushort _readSpeed = 100; // KiB/s
-        //ushort _bufferLength = 512, _sleepTime = 10; // ~50KiB/s
         RSRPC _parent;
 
         Queue<RSProtoBuffSSHMsg> _sendQueue;
@@ -157,7 +155,8 @@ namespace Sehraf.RSRPC
         /// </summary>
         public void BreakConnection()
         {
-            _stream.Write("disconnect");
+            if (_parent.IsConnected && _stream.CanWrite)
+                _stream.Write("disconnect");
         }
 
         /// <summary>
@@ -341,38 +340,36 @@ namespace Sehraf.RSRPC
             int read = 0, toRead = 0;
 
             DateTime timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
-            while (DateTime.Now < timeOutTime && !done)
+
+            while (DateTime.Now < timeOutTime && read < length && !done)
             {
-                while (read < length)
+                if (_stream.DataAvailable)
                 {
-                    if (_stream.DataAvailable)
+                    // get stream length and calculate how many bytes we can read
+                    streamLength = (uint)_stream.Length;
+                    toRead = (int)Math.Min(length - read, streamLength);
+                    // setup buffer
+                    dynBuffer = new byte[toRead];
+                    try
                     {
-                        // get stream length and calculate how many bytes we can read
-                        streamLength = (uint)_stream.Length; 
-                        toRead = (int)Math.Min(length - read, streamLength);
-                        // setup buffer
-                        dynBuffer = new byte[toRead];
-                        try
-                        {
-                            //read
-                            _stream.Read(dynBuffer, 0, toRead);
-                        }
-                        catch (Exception e)
-                        {
-                            //System.Diagnostics.Debug.WriteLineIf(DEBUG, "Error while reading");
-                            _parent.Error(e, RSRPC.ErrorFrom.ProtoBuf);
-                            return false;
-                        }
-                        // copy to target array
-                        Array.Copy(dynBuffer, 0, output, read, toRead);
-                        read += toRead;
-
-                        if (read == length)
-                            done = true;
-
-                        // we got data - reset timeout
-                        timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
+                        //read
+                        _stream.Read(dynBuffer, 0, toRead);
                     }
+                    catch (Exception e)
+                    {
+                        //System.Diagnostics.Debug.WriteLineIf(DEBUG, "Error while reading");
+                        _parent.Error(e, RSRPC.ErrorFrom.ProtoBuf);
+                        return false;
+                    }
+                    // copy to target array
+                    Array.Copy(dynBuffer, 0, output, read, toRead);
+                    read += toRead;
+
+                    if (read == length)
+                        done = true;
+
+                    // we got data - reset timeout
+                    timeOutTime = DateTime.Now.AddMilliseconds(timeOut);
                 }
             }
 
