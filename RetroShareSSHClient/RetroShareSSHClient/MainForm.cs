@@ -372,7 +372,6 @@ namespace RetroShareSSHClient
         #endregion
 
         #region chat
-        // chat
 
         private void bt_chatSend_Click(object sender, EventArgs e)
         {
@@ -390,12 +389,10 @@ namespace RetroShareSSHClient
             tb_chatMsg.Focus();
         }
 
-        //private void clb_chatLobbies_ItemCheck(object sender, ItemCheckEventArgs e)
-        //{
-        //    clb_chatLobbies.SetItemCheckState(e.Index,
-        //        _b.ChatProcessor.Joined(e.Index) ? CheckState.Checked : CheckState.Unchecked
-        //        );
-        //}
+        private void clb_chatLobbies_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            //clb_chatLobbies.SetItemCheckState(e.Index, e.CurrentValue);
+        }
 
         private void clb_chatLobbies_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -404,6 +401,13 @@ namespace RetroShareSSHClient
                 selectedIndex = clb_chatLobbies.SelectedIndex;
                 _b.ChatProcessor.ChatLobbyIndexChange(clb_chatLobbies.SelectedIndex);
             }
+        }
+
+        private void clb_chatLobbies_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            int index = clb_chatLobbies.SelectedIndex;
+            if (index > 0)  // 0 is group chat            
+                clb_chatLobbies.SetItemCheckState(index, _b.ChatProcessor.JoinLeaveChatLobby(JoinLeaveAction.toggle, clb_chatLobbies.SelectedIndex));     
         }
 
         private void tb_chatMsg_KeyUp(object sender, KeyEventArgs e)
@@ -432,22 +436,52 @@ namespace RetroShareSSHClient
         {
             int index = clb_chatLobbies.SelectedIndex;
             if (index > 0)  // 0 is group chat
-            {
-                clb_chatLobbies.SetItemCheckState(index, CheckState.Checked);
-                _b.ChatProcessor.JoinLeaveChatLobby(true, clb_chatLobbies.SelectedIndex);
-            }
+                clb_chatLobbies.SetItemCheckState(index, _b.ChatProcessor.JoinLeaveChatLobby(JoinLeaveAction.join, clb_chatLobbies.SelectedIndex));
         }
 
         private void bt_leaveChatLobby_Click(object sender, EventArgs e)
         {
             int index = clb_chatLobbies.SelectedIndex;
             if (index > 0)  // 0 is group chat
-            {
-                clb_chatLobbies.SetItemCheckState(index, CheckState.Unchecked);
-                _b.ChatProcessor.JoinLeaveChatLobby(false, clb_chatLobbies.SelectedIndex);
-            }
+                clb_chatLobbies.SetItemCheckState(index, _b.ChatProcessor.JoinLeaveChatLobby(JoinLeaveAction.leave, clb_chatLobbies.SelectedIndex));
         }
 
+        #region automatic response
+
+        private void clb_chat_arList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int index = clb_chat_arList.SelectedIndex;
+            if (index >= 0)
+                _b.AutoResponse.ShowItem(clb_chat_arList.Items[index].ToString());
+        }
+
+        private void bt_chat_arSave_Click(object sender, EventArgs e)
+        {
+            int index = clb_chat_arList.SelectedIndex;
+            if (index >= 0)
+                _b.AutoResponse.SaveItem(clb_chat_arList.Items[index].ToString());
+        }
+
+        private void bt_chat_arNew_Click(object sender, EventArgs e)
+        {
+            _b.AutoResponse.AddNew(tb_chat_arName.Text);
+        }
+
+        private void clb_chat_arList_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            int index = clb_chat_arList.SelectedIndex;
+            if (index >= 0)
+                _b.AutoResponse.SetActive(clb_chat_arList.Items[index].ToString(), e.NewValue == CheckState.Checked);
+        }
+
+        private void bt_chat_arRemove_Click(object sender, EventArgs e)
+        {
+            int index = clb_chat_arList.SelectedIndex;
+            if (index >= 0)
+                _b.AutoResponse.RemoveItem(clb_chat_arList.Items[index].ToString());
+        }
+
+        #endregion
         #endregion
 
         #region files
@@ -521,7 +555,10 @@ namespace RetroShareSSHClient
         private void bt_filesAddCollection_Click(object sender, EventArgs e)
         {
             if (ofd_collection.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+            {
                 tb_out.AppendText("Error adding collection" + "\n");
+                return;
+            }
 
             List<File> fileList;
             if (!RsCollection.ReadCollection(ofd_collection.FileName, out fileList) || fileList == null)
@@ -578,38 +615,6 @@ namespace RetroShareSSHClient
 
         #endregion
 
-        private void clb_chat_arList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            int index = clb_chat_arList.SelectedIndex;
-            if (index >= 0)
-                _b.AutoResponse.ShowItem(clb_chat_arList.Items[index].ToString());
-        }
-
-        private void bt_chat_arSave_Click(object sender, EventArgs e)
-        {
-            int index = clb_chat_arList.SelectedIndex;
-            if (index >= 0)
-                _b.AutoResponse.SaveItem(clb_chat_arList.Items[index].ToString());
-        }
-
-        private void bt_chat_arNew_Click(object sender, EventArgs e)
-        {
-            _b.AutoResponse.AddNew(tb_chat_arName.Text);
-        }
-
-        private void clb_chat_arList_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-            int index = clb_chat_arList.SelectedIndex;
-            if (index >= 0)
-                _b.AutoResponse.SetActive(clb_chat_arList.Items[index].ToString(), e.NewValue == CheckState.Checked);
-        }
-
-        private void bt_chat_arRemove_Click(object sender, EventArgs e)
-        {
-            int index = clb_chat_arList.SelectedIndex;
-            if (index >= 0)
-                _b.AutoResponse.RemoveItem(clb_chat_arList.Items[index].ToString());
-        }
 
     }
 

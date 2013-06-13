@@ -25,8 +25,17 @@ namespace RetroShareSSHClient
         public List<string> ChatUser { get { return _chatUser; } set { _chatUser = value; } }
     }
 
+    enum JoinLeaveAction
+    {
+        join,
+        leave,
+        toggle
+    }
+
     class ChatProcessor
     {
+
+
         const bool DEBUG = false;
         public const string BROADCAST = "%broadcast%";
 
@@ -368,28 +377,32 @@ namespace RetroShareSSHClient
         /// </summary>
         /// <param name="action">true = join; false = leave</param>
         /// <param name="index">lobby index</param>
-        internal void JoinLeaveChatLobby(bool action, int index)
+        internal CheckState JoinLeaveChatLobby(JoinLeaveAction action, int index)
         {
+            CheckState state = CheckState.Unchecked;
             GuiChatLobby cl = new GuiChatLobby();
             if (GetLobbyByListIndex(index, out cl))
             {
-                if (action && !cl.Joined) // join lobby
+                if ((action == JoinLeaveAction.join || action == JoinLeaveAction.toggle) && !cl.Joined) // join lobby
                 {
                     _b.RPC.ChatJoinLeaveLobby(RequestJoinOrLeaveLobby.LobbyAction.JOIN_OR_ACCEPT, cl.ID);
                     cl.Joined = true;
                     cl.Lobby.lobby_state = ChatLobbyInfo.LobbyState.LOBBYSTATE_JOINED;
+                    state = CheckState.Checked;
                 }
-                else if (!action && cl.Joined) // leave lobby 
+                else if ((action == JoinLeaveAction.leave || action == JoinLeaveAction.toggle) && cl.Joined) // leave lobby 
                 {
                     _b.RPC.ChatJoinLeaveLobby(RequestJoinOrLeaveLobby.LobbyAction.LEAVE_OR_DENY, cl.ID);
                     cl.Joined = false;
                     cl.Lobby.lobby_state = ChatLobbyInfo.LobbyState.LOBBYSTATE_VISIBLE;
+                    state = CheckState.Unchecked;
                 }
 
                 // save changes
                 _chatLobbies[cl.ID] = cl;
-                CheckChatRegistration();
+                CheckChatRegistration();                
             }
+            return state;
         }
 
         #region tick
@@ -407,8 +420,8 @@ namespace RetroShareSSHClient
                 _reDrawChat = false;
             }
 
-            // update lobbies every 30 seconds OR every 10 seconds if the connection was just established ( this will speed up getting available lobbies) 
-            if (counter % 30 == 0 || (counter < 30 && counter % 10 == 0))
+            // update lobbies every 30 seconds OR every 5 seconds if the connection was just established ( this will speed up getting available lobbies) 
+            if (counter % 30 == 0 || (counter < 30 && counter % 5 == 0))
             {
                 //_bridge.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_JOINED);
                 //_bridge.RPC.ChatGetLobbies(rsctrl.chat.RequestChatLobbies.LobbySet.LOBBYSET_INVITED);

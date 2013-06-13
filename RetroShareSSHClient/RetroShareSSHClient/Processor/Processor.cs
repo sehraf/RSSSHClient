@@ -290,7 +290,10 @@ namespace RetroShareSSHClient
             if (RSProtoBuf.Deserialize<ResponseTransferList>(msg.ProtoBuffMsg, out response, out e))
             {
                 if (response.status.code == Status.StatusCode.SUCCESS)
+                {
                     _b.FileProcessor.UpdateFileTransfers(response, msg.ReqID);
+                    //_b.FileProcessor.UpdateFileTransfersNEW(response, msg.ReqID);
+                }
             }
             else
                 System.Diagnostics.Debug.WriteLine("ProcessTransferlist: error deserializing " + e.Message);

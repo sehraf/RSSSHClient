@@ -166,6 +166,9 @@ namespace RetroShareSSHClient
 
         internal void GetSearchResults(uint limit = 500)
         {
+            if (_searches.Count == 0)
+                return;
+
             List<uint> searchIDs = new List<uint>();
             GuiSearch[] values = new GuiSearch[_searches.Values.Count];
             _searches.Values.CopyTo(values, 0);

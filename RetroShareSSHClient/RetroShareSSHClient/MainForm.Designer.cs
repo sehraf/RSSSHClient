@@ -29,6 +29,12 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.bt_connect = new System.Windows.Forms.Button();
             this.bt_disconnect = new System.Windows.Forms.Button();
             this.tb_out = new System.Windows.Forms.TextBox();
@@ -121,17 +127,30 @@
             this.gb_peerInfo = new System.Windows.Forms.GroupBox();
             this.bt_peerRemove = new System.Windows.Forms.Button();
             this.tp_files = new System.Windows.Forms.TabPage();
-            this.bt_filesAddCollection = new System.Windows.Forms.Button();
-            this.bt_filesWait = new System.Windows.Forms.Button();
-            this.bt_filesRestart = new System.Windows.Forms.Button();
-            this.bt_filesForceCheck = new System.Windows.Forms.Button();
-            this.bt_filesContinue = new System.Windows.Forms.Button();
-            this.bt_filesCancel = new System.Windows.Forms.Button();
-            this.bt_filesPause = new System.Windows.Forms.Button();
-            this.l_filesUL = new System.Windows.Forms.Label();
-            this.l_filesDL = new System.Windows.Forms.Label();
-            this.lb_filesUploads = new System.Windows.Forms.ListBox();
+            this.tv_files = new System.Windows.Forms.TabControl();
+            this.tp_filesDownload = new System.Windows.Forms.TabPage();
             this.lb_filesDownloads = new System.Windows.Forms.ListBox();
+            this.bt_filesAddCollection = new System.Windows.Forms.Button();
+            this.bt_filesPause = new System.Windows.Forms.Button();
+            this.dgv_filesDownloads = new System.Windows.Forms.DataGridView();
+            this.dlSelect = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.dlDone = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dlSpeed = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dlName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dlSize = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dlHash = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.bt_filesCancel = new System.Windows.Forms.Button();
+            this.bt_filesContinue = new System.Windows.Forms.Button();
+            this.bt_filesWait = new System.Windows.Forms.Button();
+            this.bt_filesForceCheck = new System.Windows.Forms.Button();
+            this.bt_filesRestart = new System.Windows.Forms.Button();
+            this.tp_filesUploads = new System.Windows.Forms.TabPage();
+            this.dgv_filesUploads = new System.Windows.Forms.DataGridView();
+            this.ulSpeed = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ulName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ulSize = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ulHash = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lb_filesUploads = new System.Windows.Forms.ListBox();
             this.tb_search = new System.Windows.Forms.TabPage();
             this.bt_searchAddToDL = new System.Windows.Forms.Button();
             this.bt_searchRemove = new System.Windows.Forms.Button();
@@ -159,6 +178,11 @@
             this.gb_peerNew.SuspendLayout();
             this.gb_peerInfo.SuspendLayout();
             this.tp_files.SuspendLayout();
+            this.tv_files.SuspendLayout();
+            this.tp_filesDownload.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_filesDownloads)).BeginInit();
+            this.tp_filesUploads.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_filesUploads)).BeginInit();
             this.tb_search.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -729,9 +753,10 @@
             // 
             // bt_leaveChatLobby
             // 
-            this.bt_leaveChatLobby.Location = new System.Drawing.Point(87, 149);
+            this.bt_leaveChatLobby.Enabled = false;
+            this.bt_leaveChatLobby.Location = new System.Drawing.Point(81, 149);
             this.bt_leaveChatLobby.Name = "bt_leaveChatLobby";
-            this.bt_leaveChatLobby.Size = new System.Drawing.Size(59, 23);
+            this.bt_leaveChatLobby.Size = new System.Drawing.Size(65, 23);
             this.bt_leaveChatLobby.TabIndex = 12;
             this.bt_leaveChatLobby.Text = "leave";
             this.bt_leaveChatLobby.UseVisualStyleBackColor = true;
@@ -747,7 +772,8 @@
             // 
             // bt_joinChatLobby
             // 
-            this.bt_joinChatLobby.Location = new System.Drawing.Point(7, 149);
+            this.bt_joinChatLobby.Enabled = false;
+            this.bt_joinChatLobby.Location = new System.Drawing.Point(6, 149);
             this.bt_joinChatLobby.Name = "bt_joinChatLobby";
             this.bt_joinChatLobby.Size = new System.Drawing.Size(69, 23);
             this.bt_joinChatLobby.TabIndex = 11;
@@ -777,9 +803,9 @@
             // 
             this.clb_chatUser.Enabled = false;
             this.clb_chatUser.FormattingEnabled = true;
-            this.clb_chatUser.Location = new System.Drawing.Point(7, 179);
+            this.clb_chatUser.Location = new System.Drawing.Point(6, 178);
             this.clb_chatUser.Name = "clb_chatUser";
-            this.clb_chatUser.Size = new System.Drawing.Size(139, 289);
+            this.clb_chatUser.Size = new System.Drawing.Size(140, 289);
             this.clb_chatUser.TabIndex = 10;
             // 
             // clb_chatLobbies
@@ -789,7 +815,9 @@
             this.clb_chatLobbies.Name = "clb_chatLobbies";
             this.clb_chatLobbies.Size = new System.Drawing.Size(140, 139);
             this.clb_chatLobbies.TabIndex = 6;
+            this.clb_chatLobbies.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clb_chatLobbies_ItemCheck);
             this.clb_chatLobbies.SelectedIndexChanged += new System.EventHandler(this.clb_chatLobbies_SelectedIndexChanged);
+            this.clb_chatLobbies.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.clb_chatLobbies_MouseDoubleClick);
             // 
             // gb_nickname
             // 
@@ -1098,17 +1126,7 @@
             // 
             // tp_files
             // 
-            this.tp_files.Controls.Add(this.bt_filesAddCollection);
-            this.tp_files.Controls.Add(this.bt_filesWait);
-            this.tp_files.Controls.Add(this.bt_filesRestart);
-            this.tp_files.Controls.Add(this.bt_filesForceCheck);
-            this.tp_files.Controls.Add(this.bt_filesContinue);
-            this.tp_files.Controls.Add(this.bt_filesCancel);
-            this.tp_files.Controls.Add(this.bt_filesPause);
-            this.tp_files.Controls.Add(this.l_filesUL);
-            this.tp_files.Controls.Add(this.l_filesDL);
-            this.tp_files.Controls.Add(this.lb_filesUploads);
-            this.tp_files.Controls.Add(this.lb_filesDownloads);
+            this.tp_files.Controls.Add(this.tv_files);
             this.tp_files.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tp_files.Location = new System.Drawing.Point(4, 22);
             this.tp_files.Name = "tp_files";
@@ -1117,11 +1135,49 @@
             this.tp_files.Text = "Files";
             this.tp_files.UseVisualStyleBackColor = true;
             // 
+            // tv_files
+            // 
+            this.tv_files.Controls.Add(this.tp_filesDownload);
+            this.tv_files.Controls.Add(this.tp_filesUploads);
+            this.tv_files.Location = new System.Drawing.Point(3, 3);
+            this.tv_files.Name = "tv_files";
+            this.tv_files.SelectedIndex = 0;
+            this.tv_files.Size = new System.Drawing.Size(627, 506);
+            this.tv_files.TabIndex = 13;
+            // 
+            // tp_filesDownload
+            // 
+            this.tp_filesDownload.Controls.Add(this.lb_filesDownloads);
+            this.tp_filesDownload.Controls.Add(this.bt_filesAddCollection);
+            this.tp_filesDownload.Controls.Add(this.bt_filesPause);
+            this.tp_filesDownload.Controls.Add(this.dgv_filesDownloads);
+            this.tp_filesDownload.Controls.Add(this.bt_filesCancel);
+            this.tp_filesDownload.Controls.Add(this.bt_filesContinue);
+            this.tp_filesDownload.Controls.Add(this.bt_filesWait);
+            this.tp_filesDownload.Controls.Add(this.bt_filesForceCheck);
+            this.tp_filesDownload.Controls.Add(this.bt_filesRestart);
+            this.tp_filesDownload.Location = new System.Drawing.Point(4, 22);
+            this.tp_filesDownload.Name = "tp_filesDownload";
+            this.tp_filesDownload.Padding = new System.Windows.Forms.Padding(3);
+            this.tp_filesDownload.Size = new System.Drawing.Size(619, 480);
+            this.tp_filesDownload.TabIndex = 0;
+            this.tp_filesDownload.Text = "Downloads";
+            this.tp_filesDownload.UseVisualStyleBackColor = true;
+            // 
+            // lb_filesDownloads
+            // 
+            this.lb_filesDownloads.FormattingEnabled = true;
+            this.lb_filesDownloads.Location = new System.Drawing.Point(6, 6);
+            this.lb_filesDownloads.Name = "lb_filesDownloads";
+            this.lb_filesDownloads.Size = new System.Drawing.Size(607, 342);
+            this.lb_filesDownloads.TabIndex = 0;
+            this.lb_filesDownloads.SelectedIndexChanged += new System.EventHandler(this.lb_filesDownloads_SelectedIndexChanged);
+            // 
             // bt_filesAddCollection
             // 
             this.bt_filesAddCollection.Enabled = false;
             this.bt_filesAddCollection.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.85F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_filesAddCollection.Location = new System.Drawing.Point(549, 200);
+            this.bt_filesAddCollection.Location = new System.Drawing.Point(524, 451);
             this.bt_filesAddCollection.Name = "bt_filesAddCollection";
             this.bt_filesAddCollection.Size = new System.Drawing.Size(89, 23);
             this.bt_filesAddCollection.TabIndex = 10;
@@ -1129,50 +1185,105 @@
             this.bt_filesAddCollection.UseVisualStyleBackColor = true;
             this.bt_filesAddCollection.Click += new System.EventHandler(this.bt_filesAddCollection_Click);
             // 
-            // bt_filesWait
+            // bt_filesPause
             // 
-            this.bt_filesWait.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_filesWait.Location = new System.Drawing.Point(549, 83);
-            this.bt_filesWait.Name = "bt_filesWait";
-            this.bt_filesWait.Size = new System.Drawing.Size(89, 23);
-            this.bt_filesWait.TabIndex = 9;
-            this.bt_filesWait.Text = "queue bottom";
-            this.bt_filesWait.UseVisualStyleBackColor = true;
-            this.bt_filesWait.Click += new System.EventHandler(this.bt_filesWait_Click);
+            this.bt_filesPause.Location = new System.Drawing.Point(6, 451);
+            this.bt_filesPause.Name = "bt_filesPause";
+            this.bt_filesPause.Size = new System.Drawing.Size(66, 23);
+            this.bt_filesPause.TabIndex = 4;
+            this.bt_filesPause.Text = "pause";
+            this.bt_filesPause.UseVisualStyleBackColor = true;
+            this.bt_filesPause.Click += new System.EventHandler(this.bt_filesPause_Click);
             // 
-            // bt_filesRestart
+            // dgv_filesDownloads
             // 
-            this.bt_filesRestart.Location = new System.Drawing.Point(549, 54);
-            this.bt_filesRestart.Name = "bt_filesRestart";
-            this.bt_filesRestart.Size = new System.Drawing.Size(89, 23);
-            this.bt_filesRestart.TabIndex = 8;
-            this.bt_filesRestart.Text = "restart";
-            this.bt_filesRestart.UseVisualStyleBackColor = true;
-            this.bt_filesRestart.Click += new System.EventHandler(this.bt_filesRestart_Click);
+            this.dgv_filesDownloads.AllowUserToAddRows = false;
+            this.dgv_filesDownloads.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgv_filesDownloads.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.dgv_filesDownloads.ColumnHeadersHeight = 21;
+            this.dgv_filesDownloads.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dlSelect,
+            this.dlDone,
+            this.dlSpeed,
+            this.dlName,
+            this.dlSize,
+            this.dlHash});
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgv_filesDownloads.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dgv_filesDownloads.Enabled = false;
+            this.dgv_filesDownloads.Location = new System.Drawing.Point(6, 356);
+            this.dgv_filesDownloads.Name = "dgv_filesDownloads";
+            this.dgv_filesDownloads.ReadOnly = true;
+            this.dgv_filesDownloads.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Sunken;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgv_filesDownloads.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            this.dgv_filesDownloads.Size = new System.Drawing.Size(607, 89);
+            this.dgv_filesDownloads.TabIndex = 11;
             // 
-            // bt_filesForceCheck
+            // dlSelect
             // 
-            this.bt_filesForceCheck.Location = new System.Drawing.Point(549, 142);
-            this.bt_filesForceCheck.Name = "bt_filesForceCheck";
-            this.bt_filesForceCheck.Size = new System.Drawing.Size(89, 23);
-            this.bt_filesForceCheck.TabIndex = 7;
-            this.bt_filesForceCheck.Text = "force check";
-            this.bt_filesForceCheck.UseVisualStyleBackColor = true;
-            this.bt_filesForceCheck.Click += new System.EventHandler(this.bt_filesForceCheck_Click);
+            this.dlSelect.HeaderText = "select";
+            this.dlSelect.Name = "dlSelect";
+            this.dlSelect.ReadOnly = true;
+            this.dlSelect.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.dlSelect.Visible = false;
+            this.dlSelect.Width = 40;
             // 
-            // bt_filesContinue
+            // dlDone
             // 
-            this.bt_filesContinue.Location = new System.Drawing.Point(549, 112);
-            this.bt_filesContinue.Name = "bt_filesContinue";
-            this.bt_filesContinue.Size = new System.Drawing.Size(89, 23);
-            this.bt_filesContinue.TabIndex = 6;
-            this.bt_filesContinue.Text = "queue top";
-            this.bt_filesContinue.UseVisualStyleBackColor = true;
-            this.bt_filesContinue.Click += new System.EventHandler(this.bt_filesContinue_Click);
+            this.dlDone.HeaderText = "% done";
+            this.dlDone.Name = "dlDone";
+            this.dlDone.ReadOnly = true;
+            this.dlDone.Width = 50;
+            // 
+            // dlSpeed
+            // 
+            this.dlSpeed.HeaderText = "speed [KiB/s]";
+            this.dlSpeed.Name = "dlSpeed";
+            this.dlSpeed.ReadOnly = true;
+            // 
+            // dlName
+            // 
+            this.dlName.HeaderText = "file name";
+            this.dlName.Name = "dlName";
+            this.dlName.ReadOnly = true;
+            this.dlName.Width = 314;
+            // 
+            // dlSize
+            // 
+            this.dlSize.HeaderText = "file size";
+            this.dlSize.Name = "dlSize";
+            this.dlSize.ReadOnly = true;
+            // 
+            // dlHash
+            // 
+            this.dlHash.HeaderText = "hash";
+            this.dlHash.Name = "dlHash";
+            this.dlHash.ReadOnly = true;
+            this.dlHash.Visible = false;
             // 
             // bt_filesCancel
             // 
-            this.bt_filesCancel.Location = new System.Drawing.Point(549, 171);
+            this.bt_filesCancel.Location = new System.Drawing.Point(429, 451);
             this.bt_filesCancel.Name = "bt_filesCancel";
             this.bt_filesCancel.Size = new System.Drawing.Size(89, 23);
             this.bt_filesCancel.TabIndex = 5;
@@ -1180,51 +1291,137 @@
             this.bt_filesCancel.UseVisualStyleBackColor = true;
             this.bt_filesCancel.Click += new System.EventHandler(this.bt_filesCancel_Click);
             // 
-            // bt_filesPause
+            // bt_filesContinue
             // 
-            this.bt_filesPause.Location = new System.Drawing.Point(549, 25);
-            this.bt_filesPause.Name = "bt_filesPause";
-            this.bt_filesPause.Size = new System.Drawing.Size(89, 23);
-            this.bt_filesPause.TabIndex = 4;
-            this.bt_filesPause.Text = "pause";
-            this.bt_filesPause.UseVisualStyleBackColor = true;
-            this.bt_filesPause.Click += new System.EventHandler(this.bt_filesPause_Click);
+            this.bt_filesContinue.Location = new System.Drawing.Point(239, 451);
+            this.bt_filesContinue.Name = "bt_filesContinue";
+            this.bt_filesContinue.Size = new System.Drawing.Size(89, 23);
+            this.bt_filesContinue.TabIndex = 6;
+            this.bt_filesContinue.Text = "queue top";
+            this.bt_filesContinue.UseVisualStyleBackColor = true;
+            this.bt_filesContinue.Click += new System.EventHandler(this.bt_filesContinue_Click);
             // 
-            // l_filesUL
+            // bt_filesWait
             // 
-            this.l_filesUL.AutoSize = true;
-            this.l_filesUL.Location = new System.Drawing.Point(3, 240);
-            this.l_filesUL.Name = "l_filesUL";
-            this.l_filesUL.Size = new System.Drawing.Size(46, 13);
-            this.l_filesUL.TabIndex = 3;
-            this.l_filesUL.Text = "Uploads";
+            this.bt_filesWait.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bt_filesWait.Location = new System.Drawing.Point(144, 451);
+            this.bt_filesWait.Name = "bt_filesWait";
+            this.bt_filesWait.Size = new System.Drawing.Size(89, 23);
+            this.bt_filesWait.TabIndex = 9;
+            this.bt_filesWait.Text = "queue bottom";
+            this.bt_filesWait.UseVisualStyleBackColor = true;
+            this.bt_filesWait.Click += new System.EventHandler(this.bt_filesWait_Click);
             // 
-            // l_filesDL
+            // bt_filesForceCheck
             // 
-            this.l_filesDL.AutoSize = true;
-            this.l_filesDL.Location = new System.Drawing.Point(3, 9);
-            this.l_filesDL.Name = "l_filesDL";
-            this.l_filesDL.Size = new System.Drawing.Size(60, 13);
-            this.l_filesDL.TabIndex = 2;
-            this.l_filesDL.Text = "Downloads";
+            this.bt_filesForceCheck.Location = new System.Drawing.Point(334, 451);
+            this.bt_filesForceCheck.Name = "bt_filesForceCheck";
+            this.bt_filesForceCheck.Size = new System.Drawing.Size(89, 23);
+            this.bt_filesForceCheck.TabIndex = 7;
+            this.bt_filesForceCheck.Text = "force check";
+            this.bt_filesForceCheck.UseVisualStyleBackColor = true;
+            this.bt_filesForceCheck.Click += new System.EventHandler(this.bt_filesForceCheck_Click);
+            // 
+            // bt_filesRestart
+            // 
+            this.bt_filesRestart.Location = new System.Drawing.Point(78, 451);
+            this.bt_filesRestart.Name = "bt_filesRestart";
+            this.bt_filesRestart.Size = new System.Drawing.Size(60, 23);
+            this.bt_filesRestart.TabIndex = 8;
+            this.bt_filesRestart.Text = "restart";
+            this.bt_filesRestart.UseVisualStyleBackColor = true;
+            this.bt_filesRestart.Click += new System.EventHandler(this.bt_filesRestart_Click);
+            // 
+            // tp_filesUploads
+            // 
+            this.tp_filesUploads.Controls.Add(this.dgv_filesUploads);
+            this.tp_filesUploads.Controls.Add(this.lb_filesUploads);
+            this.tp_filesUploads.Location = new System.Drawing.Point(4, 22);
+            this.tp_filesUploads.Name = "tp_filesUploads";
+            this.tp_filesUploads.Padding = new System.Windows.Forms.Padding(3);
+            this.tp_filesUploads.Size = new System.Drawing.Size(619, 480);
+            this.tp_filesUploads.TabIndex = 1;
+            this.tp_filesUploads.Text = "Uploads";
+            this.tp_filesUploads.UseVisualStyleBackColor = true;
+            // 
+            // dgv_filesUploads
+            // 
+            this.dgv_filesUploads.AllowUserToAddRows = false;
+            this.dgv_filesUploads.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgv_filesUploads.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            this.dgv_filesUploads.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_filesUploads.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ulSpeed,
+            this.ulName,
+            this.ulSize,
+            this.ulHash});
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgv_filesUploads.DefaultCellStyle = dataGridViewCellStyle5;
+            this.dgv_filesUploads.Enabled = false;
+            this.dgv_filesUploads.Location = new System.Drawing.Point(6, 375);
+            this.dgv_filesUploads.Name = "dgv_filesUploads";
+            this.dgv_filesUploads.ReadOnly = true;
+            this.dgv_filesUploads.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Sunken;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgv_filesUploads.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            this.dgv_filesUploads.Size = new System.Drawing.Size(607, 99);
+            this.dgv_filesUploads.TabIndex = 12;
+            // 
+            // ulSpeed
+            // 
+            this.ulSpeed.HeaderText = "speed [KiB/s]";
+            this.ulSpeed.Name = "ulSpeed";
+            this.ulSpeed.ReadOnly = true;
+            this.ulSpeed.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.ulSpeed.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // ulName
+            // 
+            this.ulName.HeaderText = "file name";
+            this.ulName.Name = "ulName";
+            this.ulName.ReadOnly = true;
+            this.ulName.Width = 364;
+            // 
+            // ulSize
+            // 
+            this.ulSize.HeaderText = "file size";
+            this.ulSize.Name = "ulSize";
+            this.ulSize.ReadOnly = true;
+            // 
+            // ulHash
+            // 
+            this.ulHash.HeaderText = "hash";
+            this.ulHash.Name = "ulHash";
+            this.ulHash.ReadOnly = true;
+            this.ulHash.Visible = false;
             // 
             // lb_filesUploads
             // 
             this.lb_filesUploads.FormattingEnabled = true;
-            this.lb_filesUploads.Location = new System.Drawing.Point(3, 256);
+            this.lb_filesUploads.Location = new System.Drawing.Point(6, 6);
             this.lb_filesUploads.Name = "lb_filesUploads";
-            this.lb_filesUploads.Size = new System.Drawing.Size(540, 251);
+            this.lb_filesUploads.Size = new System.Drawing.Size(607, 355);
             this.lb_filesUploads.TabIndex = 1;
             this.lb_filesUploads.SelectedIndexChanged += new System.EventHandler(this.lb_filesUploads_SelectedIndexChanged);
-            // 
-            // lb_filesDownloads
-            // 
-            this.lb_filesDownloads.FormattingEnabled = true;
-            this.lb_filesDownloads.Location = new System.Drawing.Point(3, 25);
-            this.lb_filesDownloads.Name = "lb_filesDownloads";
-            this.lb_filesDownloads.Size = new System.Drawing.Size(540, 212);
-            this.lb_filesDownloads.TabIndex = 0;
-            this.lb_filesDownloads.SelectedIndexChanged += new System.EventHandler(this.lb_filesDownloads_SelectedIndexChanged);
             // 
             // tb_search
             // 
@@ -1349,7 +1546,11 @@
             this.gb_peerInfo.ResumeLayout(false);
             this.gb_peerInfo.PerformLayout();
             this.tp_files.ResumeLayout(false);
-            this.tp_files.PerformLayout();
+            this.tv_files.ResumeLayout(false);
+            this.tp_filesDownload.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_filesDownloads)).EndInit();
+            this.tp_filesUploads.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_filesUploads)).EndInit();
             this.tb_search.ResumeLayout(false);
             this.tb_search.PerformLayout();
             this.ResumeLayout(false);
@@ -1422,8 +1623,6 @@
         internal System.Windows.Forms.ListBox lb_filesUploads;
         internal System.Windows.Forms.ListBox lb_filesDownloads;
         private System.Windows.Forms.TabPage tb_search;
-        private System.Windows.Forms.Label l_filesDL;
-        private System.Windows.Forms.Label l_filesUL;
         private System.Windows.Forms.Button bt_filesContinue;
         private System.Windows.Forms.Button bt_filesCancel;
         private System.Windows.Forms.Button bt_filesPause;
@@ -1470,6 +1669,21 @@
         private System.Windows.Forms.Button bt_chat_arSave;
         internal System.Windows.Forms.CheckBox cb_chat_arEnable;
         private System.Windows.Forms.Button bt_chat_arRemove;
+        internal System.Windows.Forms.DataGridView dgv_filesUploads;
+        internal System.Windows.Forms.DataGridView dgv_filesDownloads;
+        private System.Windows.Forms.TabControl tv_files;
+        private System.Windows.Forms.TabPage tp_filesDownload;
+        private System.Windows.Forms.TabPage tp_filesUploads;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ulSpeed;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ulName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ulSize;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ulHash;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn dlSelect;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dlDone;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dlSpeed;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dlName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dlSize;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dlHash;
     }
 }
 
