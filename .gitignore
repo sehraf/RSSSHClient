@@ -1,6 +1,6 @@
 # Build Folders (you can keep bin if you'd like, to store dlls and pdbs)
 [Oo]bj/
-[Bb]in/
+#[Bb]in/
 *.user
 /TestResults
 *.vspscc
@@ -15,3 +15,6 @@ protogen.bat
 
 # mstest test results
 TestResults
+
+log.txt
+settings.bin
