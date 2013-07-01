@@ -24,6 +24,8 @@ namespace RetroShareSSHClient
         uint _tickCounter;
         int selectedIndex = -1;
 
+        bool _flip = false;
+
         Bridge _b;
 
         public uint TickCounter { get { return _tickCounter; } }
@@ -148,6 +150,11 @@ namespace RetroShareSSHClient
             catch { }
         }
 
+        public void SendToIRCFromThread(string msg)
+        {
+            this.Invoke((MethodInvoker)delegate { _b.ChatProcessor.sendToIRC(msg); });
+        }
+
         private void ConnectionEstablished()
         {
             _tickCounter = 0;
@@ -160,6 +167,7 @@ namespace RetroShareSSHClient
 
             _b.ChatProcessor.SetNick(_b.ChatProcessor.Nick);
             _b.ChatProcessor.AddBroadcast();
+            //_b.ChatProcessor.AddIRC();
         }
 
         private void Connect()
@@ -324,7 +332,11 @@ namespace RetroShareSSHClient
 
         private void bt_test_Click(object sender, EventArgs e)
         {
-            _b.RPC.SystemRequestSystemAccount();
+            if (_flip)
+                _b.IRCProcessor.stop();
+            else
+                _b.IRCProcessor.starte();
+            _flip = !_flip;
         }
 
         private void cb_settingsReadSpeed_SelectedIndexChanged(object sender, EventArgs e)
@@ -630,6 +642,7 @@ namespace RetroShareSSHClient
         SearchProcessor _search;
         StreamProcessor _stream;
         FileProcessor _file;
+        IRCProcessor _irc;
 
         internal MainForm GUI { get { return _gui; } } //set { _gui = value; } }
         public RSRPC RPC { get { return _rpc; } } //set { _rpc = value; } }        
@@ -640,6 +653,7 @@ namespace RetroShareSSHClient
         internal SearchProcessor SearchProcessor { get { return _search; } } //set { _search = value; } }
         internal StreamProcessor StreamProcessor { get { return _stream; } } //set { _stream = value; } }
         internal FileProcessor FileProcessor { get { return _file; } } //set { _file = value; } }
+        internal IRCProcessor IRCProcessor { get { return _irc; } }
 
         private Bridge(MainForm gui)
         {
@@ -661,6 +675,7 @@ namespace RetroShareSSHClient
             _b._stream = new StreamProcessor();
             _b._file = new FileProcessor();
             _b._autoResponse = new AutoResponse();
+            _b._irc = new IRCProcessor();
         }
 
         /// <summary>
@@ -694,6 +709,7 @@ namespace RetroShareSSHClient
             _search.Reset();
             _stream.Reset();
             _file.Reset();
+            _irc.Reset();
         }
     }
 }

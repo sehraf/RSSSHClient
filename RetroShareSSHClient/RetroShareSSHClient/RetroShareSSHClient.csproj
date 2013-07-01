@@ -15,7 +15,7 @@
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Meebey.SmartIrc4net">
+      <HintPath>..\..\RSRPC\RSRPC\bin\Debug\irc\Meebey.SmartIrc4net.dll</HintPath>
+    </Reference>
     <Reference Include="protobuf-net">
       <HintPath>..\..\RSRPC\RSRPC\bin\Debug\protobuf-net.dll</HintPath>
     </Reference>
@@ -64,6 +67,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Processor\FileProcessor.cs" />
+    <Compile Include="Processor\IRCProcessor.cs" />
     <Compile Include="Processor\PeerProcessor.cs" />
     <Compile Include="Processor\Processor.cs" />
     <Compile Include="Processor\SearchProcessor.cs" />
@@ -86,7 +90,9 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

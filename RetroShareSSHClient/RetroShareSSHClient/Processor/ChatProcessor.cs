@@ -38,6 +38,7 @@ namespace RetroShareSSHClient
 
         const bool DEBUG = false;
         public const string BROADCAST = "%broadcast%";
+        public const string IRC = "IRC Bridge";
 
         Dictionary<string, GuiChatLobby> _chatLobbies;
         bool _isRegistered;
@@ -249,7 +250,10 @@ namespace RetroShareSSHClient
             }
 
             //AutoAnswer(Processor.RemoteTags(response.msg.msg));
-            AutoAnswer(response, cl);            
+            AutoAnswer(response, cl);
+
+            if(cl.Lobby.lobby_name == IRC)
+                _b.IRCProcessor.WriteMsg(response.peer_nickname + ": " + Processor.RemoteTags(response.msg));
         }
 
         internal void AddMsgToLobby(string ID, string msg)
@@ -313,7 +317,7 @@ namespace RetroShareSSHClient
 
         internal void SetNick(string nick)
         {
-                _nick = nick;
+            _nick = nick;
             _b.GUI.tb_chatNickname.Text = _nick;
 
             if (_b.RPC.IsConnected)
@@ -352,6 +356,42 @@ namespace RetroShareSSHClient
                 cl.ChatUser = new List<string> { };
                 _chatLobbies.Add(cl.ID, cl);
                 CheckChatRegistration();
+            }
+        }
+
+        internal void AddIRC()
+        {
+            if (!_chatLobbies.ContainsKey(IRC))
+            {
+                _b.RPC.ChatCreateLobby(IRC, "Bridge to IRC channel", LobbyPrivacyLevel.PRIVACY_PUBLIC);
+
+                //ChatLobbyInfo lobby = new ChatLobbyInfo();
+                //lobby.lobby_name = "Broadcast";
+                //lobby.lobby_id = BROADCAST;
+
+                //GuiChatLobby cl = new GuiChatLobby();
+                //cl.Lobby = lobby;
+                //cl.Joined = true;
+                //cl.Unread = false;
+                //{
+                //    _b.GUI.clb_chatLobbies.Items.Add(cl.Lobby.lobby_name, true);
+                //    cl.Index = (ushort)_b.GUI.clb_chatLobbies.Items.IndexOf(cl.Lobby.lobby_name);
+                //}
+                //cl.ChatText = DateTime.Now.ToShortDateString() + " - " + DateTime.Now.ToShortTimeString() + "\n";
+                //cl.ChatUser = new List<string> { };
+                //_chatLobbies.Add(cl.ID, cl);
+                //CheckChatRegistration();
+            }
+        }
+
+        internal void sendToIRC(string msg)
+        {
+            GuiChatLobby[] values = new GuiChatLobby[_chatLobbies.Values.Count];
+            _chatLobbies.Values.CopyTo(values, 0);
+            foreach (GuiChatLobby gl in values)
+            {
+                if (gl.Lobby.lobby_name == IRC)
+                    SendChatMsg(gl, msg);
             }
         }
 

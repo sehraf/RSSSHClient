@@ -2,6 +2,13 @@
 
 A lightweight SSH Client for RetroShare (nogui) Server.
 
+##IRC Bridge##
+This was a proof of concept done on a free weekend. 
+__I don't plan to continue working on this!__
+
+If you want to use it you'll need SmartIrc4net - https://github.com/meebey/SmartIrc4net
+_I have no idea if the licences are compatible .. so no libs or binary :P_
+
 ##What is RetroShare?##
 
 RetroShare is a secure decentralised communication platform.
