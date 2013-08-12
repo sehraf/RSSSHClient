@@ -150,7 +150,7 @@ namespace RetroShareSSHClient
             catch { }
         }
 
-        public void SendToIRCFromThread(string msg)
+        public void SendToChatFromIRCFromThread(string msg)
         {
             this.Invoke((MethodInvoker)delegate { _b.ChatProcessor.sendToIRC(msg); });
         }

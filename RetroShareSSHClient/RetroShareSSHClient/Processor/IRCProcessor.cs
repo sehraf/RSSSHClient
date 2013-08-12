@@ -51,6 +51,7 @@ namespace RetroShareSSHClient
                 _client.RfcJoin(_channel);
 
                 _client.SendMessage(SendType.Notice, _channel, "Linking RS internal chat to this channel...");
+                _b.GUI.SendToChatFromIRCFromThread("Linking " + _channel + " to this lobby...");
 
                 _ircThread = new Thread(new ThreadStart(ircChatThread));
                 _ircThread.Name = "IRC Thread";
@@ -122,7 +123,7 @@ namespace RetroShareSSHClient
         void _client_OnChannelMessage(object sender, IrcEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("_client_OnChannelMessage - " + e.Data.Message);
-            _b.GUI.SendToIRCFromThread(e.Data.Nick + ": " + e.Data.Message);
+            _b.GUI.SendToChatFromIRCFromThread(e.Data.Nick + ": " + e.Data.Message);
         }
 
     }
