@@ -106,7 +106,7 @@ namespace RetroShareSSHClient
                 System.Diagnostics.Debug.WriteLineIf(DEBUG, "user: " + lobby.no_peers + " - names: " + lobby.nicknames.Count + " - friends: " + lobby.participating_friends.Count);
                 cl = _chatLobbies[ID];
                 cl.Lobby = lobby;
-                cl.ChatUser = lobby.participating_friends;
+                cl.ChatUser = lobby.nicknames;
                 _chatLobbies[ID] = cl;
                 _b.GUI.clb_chatLobbies.Items[cl.Index] = nameToShow;
 

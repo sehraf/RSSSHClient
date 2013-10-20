@@ -801,7 +801,6 @@
             // 
             // clb_chatUser
             // 
-            this.clb_chatUser.Enabled = false;
             this.clb_chatUser.FormattingEnabled = true;
             this.clb_chatUser.Location = new System.Drawing.Point(6, 178);
             this.clb_chatUser.Name = "clb_chatUser";
@@ -1175,7 +1174,6 @@
             // 
             // bt_filesAddCollection
             // 
-            this.bt_filesAddCollection.Enabled = false;
             this.bt_filesAddCollection.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.85F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_filesAddCollection.Location = new System.Drawing.Point(524, 451);
             this.bt_filesAddCollection.Name = "bt_filesAddCollection";

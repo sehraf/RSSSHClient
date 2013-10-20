@@ -569,7 +569,8 @@ namespace RetroShareSSHClient
             foreach (File f in fileList)
             {
                 // add all the files 
-                System.Diagnostics.Debug.WriteLine(f.name + " - " + f.size + " - " + f.hash);
+                //System.Diagnostics.Debug.WriteLine(f.name + " - " + f.size + " - " + f.hash);
+                _b.RPC.FilesControllDownload(RequestControlDownload.Action.ACTION_START, f);
             }
             tb_out.AppendText("adding " + fileList.Count + " files" + "\n");
         }
