@@ -478,7 +478,7 @@ namespace Sehraf.RSRPC
 
             RequestSearchResults request = new RequestSearchResults();
             request.search_ids.AddRange(IDs);
-            request.result_limit = limit;
+            //request.result_limit = limit;
             return Send<RequestSearchResults>(request, msgID);
         }
 
